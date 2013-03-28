@@ -63,11 +63,14 @@
     var ResonatorView = Backbone.View.extend({
         model: Resonator,
         position: "N",
-        initialize: function() {
-            this.el = paper.circle(portalX,portalY,RESO_RADIUS);
+        initialize: function(args) {
+            this.raphaElement = paper.circle(portalX,portalY,RESO_RADIUS);
+            this.setElement(this.raphaElement.node);
+            this.delegateEvents(this.events);
         },
         events: {
-            "click": "details"
+            "click": "details",
+            "hover": "details"
         },
 
         details: function () {
@@ -75,10 +78,9 @@
         },
 
         render: function () {
-            console.log("render");
-            console.log(this.el);
             var xy = xyForReso(this.model.get("distanceToPortal"),this.position)
-            this.el.animate({"cx":xy.x, "cy": xy.y},500);
+            this.raphaElement.animate({"cx":xy.x, "cy": xy.y},500);
+            return this;
         }
     });
 
@@ -154,7 +156,6 @@
         resonators["SW"].set({"distanceToPortal": 25, energyTotal: 645, level: 5});
         resonators["S"].set({"distanceToPortal": 25, energyTotal: 832, level: 4});
 
-        console.log(resonators["W"].getPercentage());
     }
 
     // Creates canvas 320 × 200 at 10, 50
