@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>IPAS - Ingress Portal Attack Simulator</title>
+    <script type="text/javascript" src="js/libs/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="js/libs/underscore-min.js"></script>
+    <script type="text/javascript" src="js/libs/backbone-min.js"></script>
+    <script type="text/javascript" src="js/libs/raphael-min.js"></script>
+
+    <link href='http://fonts.googleapis.com/css?family=Coda' rel='stylesheet' type='text/css'>
+    <style type="text/css">
+        body {
+            color: #F2F2F2;
+            background-color: #0B0C0D;
+            font-family: coda, arial, helvetica, sans-serif;
+        }
+        .clearer {
+            float: none;
+            clear: both;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>IPAS - Ingress Portal Attack Simulator</h1>
+
+<p>This simulator lets you plan an attack on an enemy portal. It tries to simulate the damage of your bursters,
+    depending on the position and level</p>
+
+<p>As there are some game mechanisms not fully analysed yet, you can switch between different calculation methods
+    regarding shield influence and damage reduction due to distance</p>
+
+<div id="setup" style="float: left">All resos are 40 m from center</div>
+<div id="paper" style="background-color: #333; width: 500px; height: 500px; float: left"></div>
+<div id="attackinfo" style="float: left"></div>
+<div class="clearer"></div>
+<span>Resistance FTW! Made by <a href="http://github.com/xosofox">GraphRacer</a></span>
+
+<script type="text/javascript">
+
+    var MAX_RESO_RANGE = 40;
+    var RESO_RADIUS = 10;
+
+    var Portal  = Backbone.Model.extend({
+
+    });
+
+    var Resonator = Backbone.Model.extend({
+        defaults: {
+            "distanceToPortal": 40,
+            energyTotal: 1000,
+            level: 1
+        },
+        getMaxEnergy: function () {
+            return reso_capacity[this.get("level") - 1];
+        },
+        getPercentage: function () {
+            return Math.round(1000 * this.get("energyTotal") / this.getMaxEnergy()) / 10;
+        }
+    });
+
+    var ResonatorView = Backbone.View.extend({
+        model: Resonator,
+        position: "N",
+        initialize: function() {
+            this.el = paper.circle(portalX,portalY,RESO_RADIUS);
+        },
+        events: {
+            "click": "details"
+        },
+
+        details: function () {
+            alert("Details");
+        },
+
+        render: function () {
+            console.log("render");
+            console.log(this.el);
+            var xy = xyForReso(this.model.get("distanceToPortal"),this.position)
+            this.el.animate({"cx":xy.x, "cy": xy.y},500);
+        }
+    });
+
+</script>
+
+<script type="text/javascript">
+
+    var sqrt2 = 1/Math.sqrt(2);
+    var directionModifier = {
+        "N": { x: 0, y: -1 },
+        "NE": { x: sqrt2, y: -sqrt2 },
+        "E": { x: 1, y: 0 },
+        "SE": { x: sqrt2, y: sqrt2 },
+        "S": { x: 0, y: 1 },
+        "SW": { x: -sqrt2, y: sqrt2 },
+        "W": { x: -1, y: 0 },
+        "NW": { x: -sqrt2, y: -sqrt2 }
+    }
+
+    function xyForReso (distance, direction) {
+        var dm = directionModifier[direction];
+        var distPix = mInPx(distance);
+        return {x: (portalX + dm.x * distPix), y: (portalY + dm.y * distPix)};
+    }
+
+    function mInPx(m) {
+        return m * rimPix / MAX_RESO_RANGE;
+    }
+
+    var ap_level = [0, 10000, 30000, 70000, 150000, 300000, 600000, 1200000];
+    var xm_level = [3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000];
+    var reso_capacity = [1000, 1500, 2000, 2500, 3000, 4000, 5000, 6000];
+    var burster_dmg = [150, 300, 500, 900, 1200, 1500, 1800, 2700];
+    var burster_range = [42, 48, 58, 72, 90, 112, 138, 168];
+    var level_color = ["#fece5a", "#ffa630", "#ff7315", "#e40000", "#fd2992", "#eb26cd", "#eb26cd", "#9627f4"];
+
+    var attacks = [];
+
+    var width = 500;
+    var height = 500;
+    var portalX = 250;
+    var portalY = 250;
+    var directions = [ "W", "NW", "N", "NE", "SW", "S", "SE", "E"]; //Actually, I have not idea right now how official Ingress counting converts to directions
+
+    var rimPix = 200;
+    //rim in meters = 40m
+    var pix2m = rimPix / 40;
+
+    var i = 0;
+
+    var resonators = {};
+    var resonatorViews = {};
+    var reso;
+    function init() {
+
+        for (i = 0; i < 8; i++) {
+            reso = new Resonator();
+            resonators[directions[i]] = reso;
+            var rv = new ResonatorView({
+                model: reso,
+                position: directions[i]
+            });
+            rv.position = directions[i];
+            rv.render();
+            resonatorViews[directions[i]] = rv;
+        }
+
+        resonators["NE"].set({"distanceToPortal": 38, energyTotal: 1575, level: 5});
+        resonators["NW"].set({"distanceToPortal": 24, energyTotal: 1975, level: 6});
+        resonators["E"].set({"distanceToPortal": 35, energyTotal: 1575, level: 5});
+        resonators["W"].set({"distanceToPortal": 26, energyTotal: 2207, level: 7});
+        resonators["SE"].set({"distanceToPortal": 29, energyTotal: 657, level: 5});
+        resonators["SW"].set({"distanceToPortal": 25, energyTotal: 645, level: 5});
+        resonators["S"].set({"distanceToPortal": 25, energyTotal: 832, level: 4});
+
+        console.log(resonators["W"].getPercentage());
+    }
+
+    // Creates canvas 320 × 200 at 10, 50
+    var paper = Raphael(document.getElementById("paper"), 500, 500);
+
+    // Creates circle at x = 50, y = 40, with radius 10
+    var portal = paper.circle(250, 250, 10);
+    // Sets the fill attribute of the circle to red (#f00)
+    portal.attr("fill", "#3f3");
+    // Sets the stroke attribute of the circle to white
+    portal.attr("stroke", "#3c3");
+
+    var rim = paper.circle(250, 250, 200);
+    rim.attr("stroke", "#f3f");
+
+    init();
+
+</script>
+
+</body>
+</html>
