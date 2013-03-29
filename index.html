@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
+    <meta charset="utf-8">
     <title>IPAS - Ingress Portal Attack Simulator</title>
     <script type="text/javascript" src="js/libs/jquery-1.9.1.min.js"></script>
     <script type="text/javascript" src="js/libs/underscore-min.js"></script>
@@ -14,7 +14,9 @@
             color: #F2F2F2;
             background-color: #0B0C0D;
             font-family: coda, arial, helvetica, sans-serif;
+            font-size: 10pt;
         }
+
         .clearer {
             float: none;
             clear: both;
@@ -32,17 +34,20 @@
 <p>As there are some game mechanisms not fully analysed yet, you can switch between different calculation methods
     regarding shield influence and damage reduction due to distance</p>
 
-    <div id="setup" style="float: left; width: 200px">
-	    Portal Info<br />
-	    <div id="portalinfo">Level: <span id="portallevel">0</span></div>
-	    <br />
-	    Resonator Info<br />
-	    <div id="resonatorlist" style="position: relative">
-	    </div>
+<div id="setup" style="float: left; width: 200px">
+    Portal Info<br />
+
+    <div id="portalinfo">Level: <span id="portallevel">0</span></div>
+    <br />
+    Resonator Info<br />
+
+    <div id="resonatorlist" style="position: relative">
     </div>
+</div>
 <div id="paper" style="background-color: #333; width: 500px; height: 500px; float: left"></div>
 <div id="attackinfo" style="float: left">
-Attacks</div>
+    Attacks
+</div>
 <div class="clearer"></div>
 <span>Resistance FTW! Made by <a href="http://github.com/xosofox">GraphRacer</a></span>
 
@@ -52,7 +57,7 @@ Attacks</div>
     var RESO_RADIUS = 10;
     var PORTAL_RADIUS = 20;
 
-    var Portal  = Backbone.Model.extend({
+    var Portal = Backbone.Model.extend({
 
     });
 
@@ -73,42 +78,36 @@ Attacks</div>
     var ResonatorView = Backbone.View.extend({
         model: Resonator,
         position: "N",
-        initialize: function(args) {
-            this.raphaElement = paper.circle(portalX,portalY, RESO_RADIUS);
-	    this.raphaElement.drag(
-		    function(dx,dy,x,y,e) {
-		    	var el=this.raphaElement;
-			//el.attr({cx:el.ox+dx, cy:el.oy+dy});
-			this.model.set("distanceToPortal",Math.round(distanceToPortalForXY(el.ox+dx,el.oy+dy)));
-		    },
-		    function() {
-		    	var el=this.raphaElement;
-			el.ox=el.attr("cx");
-			el.oy=el.attr("cy");
-		    },
-		    function(e) {
-			    this.render();
-		    },
-		    this,this,this //contexts for drag functions
-	    );
+        initialize: function (args) {
+            this.raphaElement = paper.circle(portalX, portalY, RESO_RADIUS);
+            this.raphaElement.drag(
+                    function (dx, dy, x, y, e) {
+                        var el = this.raphaElement;
+                        //el.attr({cx:el.ox+dx, cy:el.oy+dy});
+                        this.model.set("distanceToPortal", Math.round(distanceToPortalForXY(el.ox + dx, el.oy + dy)));
+                    },
+                    function () {
+                        var el = this.raphaElement;
+                        el.ox = el.attr("cx");
+                        el.oy = el.attr("cy");
+                    },
+                    function (e) {
+                        this.render();
+                    },
+                    this, this, this //contexts for drag functions
+            );
             this.setElement(this.raphaElement.node);
             this.delegateEvents(this.events);
-	    this.listenTo(this.model, "change", this.render);
+            this.listenTo(this.model, "change", this.render);
         },
 
         events: {
-            "click": "zoom",
-        },
-
-        zoom: function (e) {
-		console.info("zoom");
-		e.preventDefault();
         },
 
         render: function () {
-            var xy = xyForResoDistance(this.model.get("distanceToPortal"),this.position)
-	    var level=this.model.get("level");
-	    this.raphaElement.animate({"cx":xy.x, "cy": xy.y, "fill": level_color[level-1] }).toFront();
+            var xy = xyForResoDistance(this.model.get("distanceToPortal"), this.position)
+            var level = this.model.get("level");
+            this.raphaElement.animate({"cx": xy.x, "cy": xy.y, "fill": level_color[level - 1] }).toFront();
             return this;
         }
     });
@@ -117,20 +116,20 @@ Attacks</div>
     });
 
     var ResonatorDetailView = Backbone.View.extend({
-tagName: "td",
-	class: "resoInfo",
+        tagName: "td",
+        class: "resoInfo",
         model: Resonator,
         position: "N",
-        initialize: function(args) {
-	    this.listenTo(this.model, "change", this.render);
+        initialize: function (args) {
+            this.listenTo(this.model, "change", this.render);
         },
-	events: {
-	},
+        events: {
+        },
         render: function () {
-		var level=this.model.get("level");
-		var perc=this.model.getPercentage();
-		this.$el.html(level+ '<span style="width: 50px; display: block; border: 1px solid green" title="'+this.model.get("energyTotal")+ '/' + this.model.getMaxEnergy() + ' XM"><span style="width: '+perc+'%; background-color: '+ level_color[level-1]+ '; display: block" >&nbsp;</span></span><span class="distance" style="font-size: 10px">'+this.model.get("distanceToPortal")+ " m</span>");
-		return this;
+            var level = this.model.get("level");
+            var perc = this.model.getPercentage();
+            this.$el.html(level + '<span style="width: 50px; display: block; border: 1px solid green" title="' + this.model.get("energyTotal") + '/' + this.model.getMaxEnergy() + ' XM"><span style="width: ' + perc + '%; background-color: ' + level_color[level - 1] + '; display: block" >&nbsp;</span></span><span class="distance" style="font-size: 10px">' + this.model.get("distanceToPortal") + " m</span>");
+            return this;
         }
     });
 
@@ -138,7 +137,7 @@ tagName: "td",
 
 <script type="text/javascript">
 
-    var sqrt2 = 1/Math.sqrt(2);
+    var sqrt2 = 1 / Math.sqrt(2);
     var directionModifier = {
         "N": { x: 0, y: -1 },
         "NE": { x: sqrt2, y: -sqrt2 },
@@ -150,23 +149,23 @@ tagName: "td",
         "NW": { x: -sqrt2, y: -sqrt2 }
     }
 
-    function xyForResoDistance (distance, direction) {
+    function xyForResoDistance(distance, direction) {
         var dm = directionModifier[direction];
         var distPix = mInPx(distance);
         return {x: (portalX + dm.x * distPix), y: (portalY + dm.y * distPix)};
     }
 
-function distanceToPortalForXY(x,y) {
-	var xx = x-portalX;
-	var yy = y- portalY;
-	var pix = Math.sqrt(Math.pow(x-portalX,2)+Math.pow(y-portalY,2));
-	m = pixInM(pix);
-	return m >MAX_RESO_RANGE ? MAX_RESO_RANGE : m;
-}
+    function distanceToPortalForXY(x, y) {
+        var xx = x - portalX;
+        var yy = y - portalY;
+        var pix = Math.sqrt(Math.pow(x - portalX, 2) + Math.pow(y - portalY, 2));
+        m = pixInM(pix);
+        return m > MAX_RESO_RANGE ? MAX_RESO_RANGE : m;
+    }
 
-function pixInM(p) {
-	return p/rimPix*MAX_RESO_RANGE;
-}
+    function pixInM(p) {
+        return p / rimPix * MAX_RESO_RANGE;
+    }
     function mInPx(m) {
         return m * rimPix / MAX_RESO_RANGE;
     }
@@ -195,9 +194,9 @@ function pixInM(p) {
     var reso;
     function init() {
 
-	    var tab=$('<table>').attr({"width":"100%"});
-    var tbody=$('<tbody>');
-	    tab.append(tbody);
+        var tab = $('<table>').attr({"width": "100%"});
+        var tbody = $('<tbody>');
+        tab.append(tbody);
 
         for (i = 0; i < 8; i++) {
             reso = new Resonator();
@@ -210,18 +209,18 @@ function pixInM(p) {
             rv.render();
             resonatorViews[directions[i]] = rv;
 
-	    var rdv  = new ResonatorDetailView({
+            var rdv = new ResonatorDetailView({
                 model: reso,
                 position: directions[i]
-	    });
+            });
 
-	    if (i%2==0) {
-		    var tr=$('<tr>');
-		    tbody.append(tr);
-	    }
-	    tr.append(rdv.el);
+            if (i % 2 == 0) {
+                var tr = $('<tr>');
+                tbody.append(tr);
+            }
+            tr.append(rdv.el);
         }
-	$('#resonatorlist').append(tab);
+        $('#resonatorlist').append(tab);
 
         resonators["N"].set({"distanceToPortal": 34, energyTotal: 975, level: 4});
         resonators["NW"].set({"distanceToPortal": 24, energyTotal: 1975, level: 6});
@@ -247,14 +246,17 @@ function pixInM(p) {
     rim.attr("stroke", "#f3f");
 
     init();
-    $("#paper").on("click",function(e) {
-		    var x=e.offsetX;
-		    var y=e.offsetY;
-		    console.log(x,y);
-		    alert(x);
-		    paper.circle(x,y,5);
-		    e.preventDefault();
-		    });
+    $("#paper").click(function (e) {
+        if (typeof e.offsetX === "undefined" || typeof e.offsetY === "undefined") {
+            var targetOffset = $(e.currentTarget).offset();
+            e.offsetX = e.pageX - targetOffset.left;
+            e.offsetY = e.pageY - targetOffset.top;
+        }
+        var x = e.offsetX;
+        var y = e.offsetY;
+        paper.circle(x, y, 5);
+        e.preventDefault();
+    });
 
 
 </script>
