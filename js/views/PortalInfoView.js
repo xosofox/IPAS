@@ -5,6 +5,7 @@ var PortalInfoView = Backbone.View.extend({
 		this.render();
 	},
 	render: function () {
-		this.$el.html("Level: "+ this.model.get("level"));
+		var level=this.model.get("level");
+		this.$el.html('<h1 style="color: ' + level_color[level-1] + '">'+level+'</h3>');
 	}
 });

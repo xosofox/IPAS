@@ -7,7 +7,13 @@ var Portal = Backbone.Model.extend({
 		this.resonators=this.get("resonators")
 		this.listenTo(this.resonators,"add change",this.recalc);
 	},
-	recalc: function() {
+	recalc: function(changedReso) {
+		if (changedReso.hasChanged("distanceToPortal")) {
+			if (EQUIDISTANT) {
+				this.resonators.invoke("set",{"distanceToPortal":changedReso.get("distanceToPortal")});
+			}
+		}
+
 		var level=0;
 		_.each(this.resonators.pluck("level"),function(l) {
 			level+=l;
