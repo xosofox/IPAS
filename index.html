@@ -8,40 +8,39 @@
     <script type="text/javascript" src="js/libs/backbone-min.js"></script>
     <script type="text/javascript" src="js/libs/raphael-min.js"></script>
 
-    <link href='http://fonts.googleapis.com/css?family=Coda' rel='stylesheet' type='text/css'>
-    <style type="text/css">
-        body {
-            color: #F2F2F2;
-            background-color: #0B0C0D;
-            font-family: coda, arial, helvetica, sans-serif;
-            font-size: 10pt;
-        }
+    <script type="text/javascript" src="js/settings.js"></script>
+    <script type="text/javascript" src="js/util.js"></script>
 
-        .clearer {
-            float: none;
-            clear: both;
-        }
-    </style>
+    <script type="text/javascript" src="js/models/Resonator.js"></script>
+    <script type="text/javascript" src="js/models/ResonatorCollection.js"></script>
+    <script type="text/javascript" src="js/models/Portal.js"></script>
+
+    <script type="text/javascript" src="js/views/PortalInfoView.js"></script>
+    <script type="text/javascript" src="js/views/ResonatorDetailList.js"></script>
+    <script type="text/javascript" src="js/views/ResonatorDetailView.js"></script>
+    <script type="text/javascript" src="js/views/ResonatorView.js"></script>
+
+    <link href="css/style.css" rel="stylesheet" type="text/css" />
+    <link href='http://fonts.googleapis.com/css?family=Coda' rel='stylesheet' type='text/css' />
 </head>
 
 <body>
 
 <h1>IPAS - Ingress Portal Attack Simulator</h1>
-
-<p>This simulator lets you plan an attack on an enemy portal. It tries to simulate the damage of your bursters,
-    depending on the position and level</p>
-
-<p>As there are some game mechanisms not fully analysed yet, you can switch between different calculation methods
-    regarding shield influence and damage reduction due to distance</p>
+<p>This simulator lets you plan an attack on an enemy portal. It tries to simulate the damage of your bursters, depending on the position and level</p>
+<p>As there are some game mechanisms not fully analysed yet, you can switch between different calculation methods regarding shield influence and damage reduction due to distance</p>
 
 <div id="setup" style="float: left; width: 200px">
     Portal Info<br />
 
-    <div id="portalinfo">Level: <span id="portallevel">0</span></div>
+    <div id="portalinfo"></div>
     <br />
     Resonator Info<br />
 
-    <div id="resonatorlist" style="position: relative">
+    <div  style="position: relative">
+        <table width="100%">
+            <tbody id="resonatorlist"></tbody>
+        </table>
     </div>
 </div>
 <div id="paper" style="background-color: #333; width: 500px; height: 500px; float: left"></div>
@@ -53,199 +52,28 @@
 
 <script type="text/javascript">
 
-    var MAX_RESO_RANGE = 40;
-    var RESO_RADIUS = 10;
-    var PORTAL_RADIUS = 20;
-
-    var Portal = Backbone.Model.extend({
-
-    });
-
-    var Resonator = Backbone.Model.extend({
-        defaults: {
-            "distanceToPortal": MAX_RESO_RANGE,
-            energyTotal: 1000,
-            level: 1
-        },
-        getMaxEnergy: function () {
-            return reso_capacity[this.get("level") - 1];
-        },
-        getPercentage: function () {
-            return Math.round(1000 * this.get("energyTotal") / this.getMaxEnergy()) / 10;
-        }
-    });
-
-    var ResonatorView = Backbone.View.extend({
-        model: Resonator,
-        position: "N",
-        initialize: function (args) {
-            this.raphaElement = paper.circle(portalX, portalY, RESO_RADIUS);
-            this.raphaElement.drag(
-                    function (dx, dy, x, y, e) {
-                        var el = this.raphaElement;
-                        //el.attr({cx:el.ox+dx, cy:el.oy+dy});
-                        this.model.set("distanceToPortal", Math.round(distanceToPortalForXY(el.ox + dx, el.oy + dy)));
-                    },
-                    function () {
-                        var el = this.raphaElement;
-                        el.ox = el.attr("cx");
-                        el.oy = el.attr("cy");
-                    },
-                    function (e) {
-                        this.render();
-                    },
-                    this, this, this //contexts for drag functions
-            );
-            this.setElement(this.raphaElement.node);
-            this.delegateEvents(this.events);
-            this.listenTo(this.model, "change", this.render);
-        },
-
-        events: {
-        },
-
-        render: function () {
-            var xy = xyForResoDistance(this.model.get("distanceToPortal"), this.position)
-            var level = this.model.get("level");
-            this.raphaElement.animate({"cx": xy.x, "cy": xy.y, "fill": level_color[level - 1] }).toFront();
-            return this;
-        }
-    });
-
-    var ResonatorDetailList = Backbone.View.extend({
-    });
-
-    var ResonatorDetailView = Backbone.View.extend({
-        tagName: "td",
-        class: "resoInfo",
-        model: Resonator,
-        position: "N",
-        initialize: function (args) {
-            this.listenTo(this.model, "change", this.render);
-        },
-        events: {
-        },
-        render: function () {
-            var level = this.model.get("level");
-            var perc = this.model.getPercentage();
-            this.$el.html(level + '<span style="width: 50px; display: block; border: 1px solid green" title="' + this.model.get("energyTotal") + '/' + this.model.getMaxEnergy() + ' XM"><span style="width: ' + perc + '%; background-color: ' + level_color[level - 1] + '; display: block" >&nbsp;</span></span><span class="distance" style="font-size: 10px">' + this.model.get("distanceToPortal") + " m</span>");
-            return this;
-        }
-    });
-
-</script>
-
-<script type="text/javascript">
-
-    var sqrt2 = 1 / Math.sqrt(2);
-    var directionModifier = {
-        "N": { x: 0, y: -1 },
-        "NE": { x: sqrt2, y: -sqrt2 },
-        "E": { x: 1, y: 0 },
-        "SE": { x: sqrt2, y: sqrt2 },
-        "S": { x: 0, y: 1 },
-        "SW": { x: -sqrt2, y: sqrt2 },
-        "W": { x: -1, y: 0 },
-        "NW": { x: -sqrt2, y: -sqrt2 }
-    }
-
-    function xyForResoDistance(distance, direction) {
-        var dm = directionModifier[direction];
-        var distPix = mInPx(distance);
-        return {x: (portalX + dm.x * distPix), y: (portalY + dm.y * distPix)};
-    }
-
-    function distanceToPortalForXY(x, y) {
-        var xx = x - portalX;
-        var yy = y - portalY;
-        var pix = Math.sqrt(Math.pow(x - portalX, 2) + Math.pow(y - portalY, 2));
-        m = pixInM(pix);
-        return m > MAX_RESO_RANGE ? MAX_RESO_RANGE : m;
-    }
-
-    function pixInM(p) {
-        return p / rimPix * MAX_RESO_RANGE;
-    }
-    function mInPx(m) {
-        return m * rimPix / MAX_RESO_RANGE;
-    }
-
-    var ap_level = [0, 10000, 30000, 70000, 150000, 300000, 600000, 1200000];
-    var xm_level = [3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000];
-    var reso_capacity = [1000, 1500, 2000, 2500, 3000, 4000, 5000, 6000];
-    var burster_dmg = [150, 300, 500, 900, 1200, 1500, 1800, 2700];
-    var burster_range = [42, 48, 58, 72, 90, 112, 138, 168];
-    var level_color = ["#fece5a", "#ffa630", "#ff7315", "#e40000", "#fd2992", "#eb26cd", "#c124e0", "#9627f4"];
-
     var attacks = [];
 
     var width = 500;
     var height = 500;
     var portalX = 250;
     var portalY = 250;
-    var directions = [ "W", "NW", "N", "NE", "SW", "S", "SE", "E"]; //Actually, I have not idea right now how official Ingress counting converts to directions
-
     var rimPix = 200;
     //rim in meters = 40m
-    var i = 0;
 
-    var resonators = {};
-    var resonatorViews = {};
-    var reso;
-    function init() {
-
-        var tab = $('<table>').attr({"width": "100%"});
-        var tbody = $('<tbody>');
-        tab.append(tbody);
-
-        for (i = 0; i < 8; i++) {
-            reso = new Resonator();
-            resonators[directions[i]] = reso;
-            var rv = new ResonatorView({
-                model: reso,
-                position: directions[i]
-            });
-            rv.position = directions[i];
-            rv.render();
-            resonatorViews[directions[i]] = rv;
-
-            var rdv = new ResonatorDetailView({
-                model: reso,
-                position: directions[i]
-            });
-
-            if (i % 2 == 0) {
-                var tr = $('<tr>');
-                tbody.append(tr);
-            }
-            tr.append(rdv.el);
-        }
-        $('#resonatorlist').append(tab);
-
-        resonators["N"].set({"distanceToPortal": 34, energyTotal: 975, level: 4});
-        resonators["NW"].set({"distanceToPortal": 24, energyTotal: 1975, level: 6});
-        resonators["NE"].set({"distanceToPortal": 38, energyTotal: 1575, level: 5});
-        resonators["E"].set({"distanceToPortal": 35, energyTotal: 1575, level: 5});
-        resonators["SE"].set({"distanceToPortal": 29, energyTotal: 657, level: 5});
-        resonators["S"].set({"distanceToPortal": 25, energyTotal: 832, level: 4});
-        resonators["SW"].set({"distanceToPortal": 25, energyTotal: 645, level: 5});
-        resonators["W"].set({"distanceToPortal": 26, energyTotal: 2207, level: 7});
-
-    }
 
     // Creates canvas
     var paper = Raphael(document.getElementById("paper"), width, height);
     // Creates circle
-    var portal = paper.circle(portalX, portalY, PORTAL_RADIUS);
+    var portalDot = paper.circle(portalX, portalY, PORTAL_RADIUS);
     // Sets the fill attribute of the circle
-    portal.attr("fill", "#3f3");
+    portalDot.attr("fill", "#3f3");
     // Sets the stroke attribute of the circle
-    portal.attr("stroke", "#3c3");
+    portalDot.attr("stroke", "#3c3");
 
     var rim = paper.circle(250, 250, 200);
     rim.attr("stroke", "#f3f");
 
-    init();
     $("#paper").click(function (e) {
         if (typeof e.offsetX === "undefined" || typeof e.offsetY === "undefined") {
             var targetOffset = $(e.currentTarget).offset();
@@ -256,6 +84,37 @@
         var y = e.offsetY;
         paper.circle(x, y, 5);
         e.preventDefault();
+    });
+
+    var portal = new Portal({ });
+    var resonators = portal.get("resonators");
+    $(document).ready(function () {
+        resonators.add({"distanceToPortal": 34, energyTotal: 975, level: 4});
+        resonators.add({"distanceToPortal": 24, energyTotal: 1975, level: 6});
+        resonators.add({"distanceToPortal": 38, energyTotal: 1575, level: 5});
+        resonators.add({"distanceToPortal": 35, energyTotal: 1575, level: 5});
+        resonators.add({"distanceToPortal": 29, energyTotal: 657, level: 5});
+        resonators.add({"distanceToPortal": 25, energyTotal: 832, level: 4});
+        resonators.add({"distanceToPortal": 25, energyTotal: 645, level: 5});
+        resonators.add({"distanceToPortal": 26, energyTotal: 2207, level: 7});
+
+        resonators.each(function (reso,i) {
+            var rv = new ResonatorView({
+                model: reso,
+                position: directions[i]
+            });
+            rv.render();
+        })
+
+        var resolist = new ResonatorDetailList({
+            el: "#resonatorlist",
+            collection: resonators
+        });
+
+        var pinfo = new PortalInfoView({
+            model: portal,
+            el: '#portalinfo'
+        });
     });
 
 

@@ -1,0 +1,11 @@
+body {
+    color: #F2F2F2;
+    background-color: #0B0C0D;
+    font-family: coda, arial, helvetica, sans-serif;
+    font-size: 10pt;
+}
+
+.clearer {
+    float: none;
+    clear: both;
+}
