@@ -12,6 +12,6 @@ Currently working:
 - rendering of the resos in level's color,
 - reso indicators on the left
 - Change distance of the resos by left/right clicking on the distance (e.g. 24 m)
-- wildly click on the canvas to mark spots
+- dragndrop resos
 
 

@@ -58,7 +58,7 @@ Attacks</div>
 
     var Resonator = Backbone.Model.extend({
         defaults: {
-            "distanceToPortal": 40,
+            "distanceToPortal": MAX_RESO_RANGE,
             energyTotal: 1000,
             level: 1
         },
@@ -75,6 +75,20 @@ Attacks</div>
         position: "N",
         initialize: function(args) {
             this.raphaElement = paper.circle(portalX,portalY, RESO_RADIUS);
+	    this.raphaElement.drag(
+		    function(dx,dy,x,y,e) {
+		    	var el=this.raphaElement;
+			//el.attr({cx:el.ox+dx, cy:el.oy+dy});
+			this.model.set("distanceToPortal",Math.round(distanceToPortalForXY(el.ox+dx,el.oy+dy)));
+		    },
+		    function() {
+		    	var el=this.raphaElement;
+			el.ox=el.attr("cx");
+			el.oy=el.attr("cy");
+		    },
+		    function() { this.render();  },
+		    this,this,this //contexts for drag functions
+	    );
             this.setElement(this.raphaElement.node);
             this.delegateEvents(this.events);
 	    this.listenTo(this.model, "change", this.render);
@@ -85,13 +99,13 @@ Attacks</div>
         },
 
         zoom: function () {
-		console.log("zoom");
+		console.info("zoom");
         },
 
         render: function () {
-            var xy = xyForReso(this.model.get("distanceToPortal"),this.position)
+            var xy = xyForResoDistance(this.model.get("distanceToPortal"),this.position)
 	    var level=this.model.get("level");
-	    this.raphaElement.animate({"cx":xy.x, "cy": xy.y, "fill": level_color[level-1] },500).toFront();
+	    this.raphaElement.animate({"cx":xy.x, "cy": xy.y, "fill": level_color[level-1] }).toFront();
             return this;
         }
     });
@@ -113,7 +127,7 @@ tagName: "td",
 	},
 	incDist: function() {
 		var d=this.model.get("distanceToPortal");
-		if (d<40)
+		if (d<MAX_RESO_RANGE)
 		this.model.set("distanceToPortal",d+1);
 	},
 	decDist: function() {
@@ -145,12 +159,23 @@ tagName: "td",
         "NW": { x: -sqrt2, y: -sqrt2 }
     }
 
-    function xyForReso (distance, direction) {
+    function xyForResoDistance (distance, direction) {
         var dm = directionModifier[direction];
         var distPix = mInPx(distance);
         return {x: (portalX + dm.x * distPix), y: (portalY + dm.y * distPix)};
     }
 
+function distanceToPortalForXY(x,y) {
+	var xx = x-portalX;
+	var yy = y- portalY;
+	var pix = Math.sqrt(Math.pow(x-portalX,2)+Math.pow(y-portalY,2));
+	m = pixInM(pix);
+	return m >MAX_RESO_RANGE ? MAX_RESO_RANGE : m;
+}
+
+function pixInM(p) {
+	return p/rimPix*MAX_RESO_RANGE;
+}
     function mInPx(m) {
         return m * rimPix / MAX_RESO_RANGE;
     }
@@ -172,8 +197,6 @@ tagName: "td",
 
     var rimPix = 200;
     //rim in meters = 40m
-    var pix2m = rimPix / 40;
-
     var i = 0;
 
     var resonators = {};
@@ -232,7 +255,7 @@ tagName: "td",
     var rim = paper.circle(250, 250, 200);
     rim.attr("stroke", "#f3f");
 
-    $("#paper").click(function(e) {
+    $("#paper").on("click",function(e) {
 		    var x=e.offsetX;
 		    var y=e.offsetY;
 		    console.log(x,y);
@@ -241,10 +264,6 @@ tagName: "td",
 
     init();
     rim.toBack();
-
-    eve.on("click.*.*",function(a,b,c) {
-		    console.log(a,b,c);
-		    });
 
 $(document).ready(function(){ 
 		document.oncontextmenu = function() {return false;}
