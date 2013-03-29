@@ -86,7 +86,9 @@ Attacks</div>
 			el.ox=el.attr("cx");
 			el.oy=el.attr("cy");
 		    },
-		    function() { this.render();  },
+		    function(e) {
+			    this.render();
+		    },
 		    this,this,this //contexts for drag functions
 	    );
             this.setElement(this.raphaElement.node);
@@ -98,8 +100,9 @@ Attacks</div>
             "click": "zoom",
         },
 
-        zoom: function () {
+        zoom: function (e) {
 		console.info("zoom");
+		e.preventDefault();
         },
 
         render: function () {
@@ -122,18 +125,6 @@ tagName: "td",
 	    this.listenTo(this.model, "change", this.render);
         },
 	events: {
-		"click .distance": "incDist",
-		"contextmenu .distance": "decDist"
-	},
-	incDist: function() {
-		var d=this.model.get("distanceToPortal");
-		if (d<MAX_RESO_RANGE)
-		this.model.set("distanceToPortal",d+1);
-	},
-	decDist: function() {
-		var d=this.model.get("distanceToPortal");
-		if (d>0)
-		this.model.set("distanceToPortal",d-1);
 	},
         render: function () {
 		var level=this.model.get("level");
@@ -255,20 +246,16 @@ function pixInM(p) {
     var rim = paper.circle(250, 250, 200);
     rim.attr("stroke", "#f3f");
 
+    init();
     $("#paper").on("click",function(e) {
 		    var x=e.offsetX;
 		    var y=e.offsetY;
 		    console.log(x,y);
+		    alert(x);
 		    paper.circle(x,y,5);
+		    e.preventDefault();
 		    });
 
-    init();
-    rim.toBack();
-
-$(document).ready(function(){ 
-		document.oncontextmenu = function() {return false;}
-		});
-    
 
 </script>
 
