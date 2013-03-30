@@ -5,17 +5,29 @@ var ResonatorView = Backbone.View.extend({
 		this.raphaElement.drag(
 			function (dx, dy, x, y, e) {
 				var el = this.raphaElement;
+				//during drag, just update to latest target position
+				//calculation happens in interval
+				el.cx = el.ox+dx;
+				el.cy = el.oy+dy;
 				//el.attr({cx:el.ox+dx, cy:el.oy+dy});
-				this.model.set("distanceToPortal", Math.round(distanceToPortalForXY(el.ox + dx, el.oy + dy)));
+				//this.model.set("distanceToPortal", Math.round(distanceToPortalForXY(el.ox + dx, el.oy + dy)));
 			},
 			function () {
 				var el = this.raphaElement;
+				//save original pos when starting
 				el.ox = el.attr("cx");
 				el.oy = el.attr("cy");
+				var me = this;
+				//set up regular check for dragresult, not doing the calculation on every pixel
+				this.dragInterval=setInterval(function() {
+					if (typeof el.cx !== "undefined") {
+						me.model.set("distanceToPortal", Math.round(distanceToPortalForXY(el.cx, el.cy)));
+					}
+				},100);
 			},
 			function (e) {
-				this.render();
-				e.preventDefault();
+				//remove the drag check interval
+				clearInterval(this.dragInterval);
 			},
 			this, this, this //contexts for drag functions
 		);
