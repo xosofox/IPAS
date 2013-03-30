@@ -21,7 +21,8 @@ function distanceToPortalForXY(x, y) {
 	var yy = y - portalY;
 	var pix = Math.sqrt(Math.pow(x - portalX, 2) + Math.pow(y - portalY, 2));
 	m = pixInM(pix);
-	return m > MAX_RESO_RANGE ? MAX_RESO_RANGE : m;
+	//return m > MAX_RESO_RANGE ? MAX_RESO_RANGE : m;   //not this functions job!
+	return m;
 }
 
 function pixInM(p) {

@@ -4,7 +4,27 @@ var PORTAL_RADIUS = 20;
 var EQUIDISTANT = true;
 var DECAY_RATE = .15;
 
-var directions = [ "W", "NW", "N", "NE", "SW", "S", "SE", "E"]; //Actually, I have not idea right now how official Ingress counting 0-7 converts to directions
+//var directions = [ "W", "NW", "N", "NE", "SW", "S", "SE", "E"]; //Actually, I have not idea right now how official Ingress counting 0-7 converts to directions
+/* from intel map
+Original-Ingress:
+
+0 4
+1 5
+2 6
+3 7
+
+
+compared with IITC
+0: E
+1: NE
+2: N
+3: NW
+4: W
+5: SW
+6: S
+7: SE
+ */
+var directions = [ "E", "NE", "N", "NW", "W", "SW", "S", "SE"];
 var ap_level = [0, 10000, 30000, 70000, 150000, 300000, 600000, 1200000];
 var xm_level = [3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000];
 var reso_capacity = [1000, 1500, 2000, 2500, 3000, 4000, 5000, 6000];

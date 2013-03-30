@@ -21,7 +21,9 @@ var ResonatorView = Backbone.View.extend({
 				//set up regular check for dragresult, not doing the calculation on every pixel
 				this.dragInterval=setInterval(function() {
 					if (typeof el.cx !== "undefined") {
-						me.model.set("distanceToPortal", Math.round(distanceToPortalForXY(el.cx, el.cy)));
+						var d= Math.round(distanceToPortalForXY(el.cx, el.cy));
+						d=d>MAX_RESO_RANGE ? MAX_RESO_RANGE : d;
+						me.model.set("distanceToPortal", d);
 					}
 				},100);
 			},
