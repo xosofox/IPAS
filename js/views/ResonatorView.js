@@ -40,9 +40,14 @@ var ResonatorView = Backbone.View.extend({
 	},
 
 	render: function () {
+		if (this.model.get("energyTotal")<=0) {
+			this.raphaElement.hide();
+		} else {
+			this.raphaElement.show();
 		var xy = xyForResoDistance(this.model.get("distanceToPortal"), this.options.position)
 		var level = this.model.get("level");
 		this.raphaElement.animate({"cx": xy.x, "cy": xy.y, "fill": level_color[level - 1] }).toFront();
+		}
 		return this;
 	}
 });
