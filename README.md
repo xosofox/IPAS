@@ -11,7 +11,8 @@ Currently working:
 
 - rendering of the resos in level's color,
 - reso indicators on the left
-- Change distance of the resos by left/right clicking on the distance (e.g. 24 m)
 - dragndrop resos
-
+- select preset configurations
+- select days of decay
+- click to create an attack
 

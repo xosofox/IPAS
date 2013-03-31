@@ -22,7 +22,7 @@
         <script type="text/javascript" src="js/views/ResonatorDetailList.js"></script>
         <script type="text/javascript" src="js/views/ResonatorDetailView.js"></script>
         <script type="text/javascript" src="js/views/ResonatorView.js"></script>
-        <script type="text/javascript" src="js/views/AttackInfoView.js"></script>
+        <script type="text/javascript" src="js/views/AttackSetupView.js"></script>
 
         <link href="css/style.css" rel="stylesheet" type="text/css" />
         <link href='http://fonts.googleapis.com/css?family=Coda' rel='stylesheet' type='text/css' />
@@ -54,16 +54,53 @@
         <div id="paper" style="background-color: #333; width: 500px; height: 500px; float: left"></div>
         <div id="attackinfo" style="float: left">
             Attacks
-            <div id="attackinfoview"></div>
+            <div id="attacksetup"></div>
+            <div id="attacklist"></div>
         </div>
         <div class="clearer"></div>
         <span>Resistance FTW! Made by <a href="http://github.com/xosofox">GraphRacer</a></span>
 
         <script type="text/javascript">
 
-            var AttackSetup = Backbone.Model.extend({});
+		var AttackSetup = Backbone.Model.extend({
+defaults: {
+	level: 1
+	}
+	});
+	    var Attack = Backbone.Model.extend({
+		defaults: {
+			x: 0,
+			y: 0,
+			level: 1
+		}
+	});
 
-            var attacks = [];
+	var AttackCollection = Backbone.Collection.extend({
+		model: Attack
+	});
+
+	var attacks = new AttackCollection();
+	var AttackInfoView = Backbone.View.extend({
+		render: function() {
+			this.$el.html("Attack Level " + this.model.get("level"));
+			return this;
+		}
+	});
+
+	var AttackListView = Backbone.View.extend({
+		initialize: function() {
+			_.bindAll(this,"addOne");
+			this.listenTo(this.collection,"add",this.addOne);
+		},
+		addOne: function (at) {
+			var av = new AttackInfoView({
+				model: at
+			});
+			this.$el.append(av.render().el);
+		},
+		render: function() {
+		}
+	});
 
             var width = 500;
             var height = 500;
@@ -76,7 +113,8 @@
             // Creates canvas
             var paper = Raphael(document.getElementById("paper"), width, height);
             var border = paper.rect(0, 0, width, height);
-            border.attr("fill", "#333");
+            border.attr("fill", "#f33");
+	    border.attr("opacity",0.0);
             // Creates circle
             var portalDot = paper.circle(portalX, portalY, PORTAL_RADIUS);
             // Sets the fill attribute of the circle
@@ -112,12 +150,14 @@
                 }
                 var x = e.offsetX;
                 var y = e.offsetY;
-                paper.circle(x, y, 5);
+		attacks.add({x:x,y:y,level: attackSetup.get("level")});
                 e.preventDefault();
             });
 
             var portal = new Portal({ });
             var resonators = portal.get("resonators");
+	    var portalElements;
+	    var attackSetup = new AttackSetup();
             $(document).ready(function () {
                 resonators.add({"distanceToPortal": 34, energyTotal: 975, level: 4});
                 resonators.add({"distanceToPortal": 24, energyTotal: 1975, level: 6});
@@ -128,6 +168,7 @@
                 resonators.add({"distanceToPortal": 25, energyTotal: 645, level: 5});
                 resonators.add({"distanceToPortal": 26, energyTotal: 2207, level: 7});
 
+		paper.setStart();
                 resonators.each(function (reso, i) {
                     var rv = new ResonatorView({
                         model: reso,
@@ -135,6 +176,7 @@
                     });
                     rv.render();
                 })
+		    portalElements=paper.setFinish();
 
                 var resolist = new ResonatorDetailList({
                     el: "#resonatorlist",
@@ -146,12 +188,18 @@
                     el: '#portalinfo'
                 });
 
-                var ai = new AttackInfoView({
-                    model: new AttackSetup(),
-                    el: "#attackinfoview"
+                var ai = new AttackSetupView({
+			model: attackSetup,
+                    el: "#attacksetup"
                 });
-            });
 
+		var alv = new AttackListView({
+			collection: attacks,
+			el: '#attacklist'
+		});
+
+            });
+	    border.toFront();
 
         </script>
 
