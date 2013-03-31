@@ -8,7 +8,7 @@ var ResonatorDetailList = Backbone.View.extend({
 	},
 	render: function () {
 		var tr;
-		var me=this;
+		var me = this;
 		this.collection.each(function (reso, i) {
 			if ((i % 2) == 0) {
 				tr = $('<tr></tr>');

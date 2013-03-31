@@ -1,126 +1,159 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8">
-    <title>IPAS - Ingress Portal Attack Simulator</title>
-    <script type="text/javascript" src="js/libs/jquery-1.9.1.min.js"></script>
-    <script type="text/javascript" src="js/libs/underscore-min.js"></script>
-    <script type="text/javascript" src="js/libs/backbone-min.js"></script>
-    <script type="text/javascript" src="js/libs/raphael-min.js"></script>
-    <script type="text/javascript" src="js/libs/html5slider.js"></script>
+    <head>
+        <meta charset="utf-8">
+        <title>IPAS - Ingress Portal Attack Simulator</title>
+        <script type="text/javascript" src="js/libs/jquery-1.9.1.min.js"></script>
+        <script type="text/javascript" src="js/libs/underscore-min.js"></script>
+        <script type="text/javascript" src="js/libs/backbone-min.js"></script>
+        <script type="text/javascript" src="js/libs/raphael-min.js"></script>
+        <script type="text/javascript" src="js/libs/html5slider.js"></script>
 
-    <script type="text/javascript" src="js/settings.js"></script>
-    <script type="text/javascript" src="js/util.js"></script>
-    <script type="text/javascript" src="js/presets.js"></script>
+        <script type="text/javascript" src="js/settings.js"></script>
+        <script type="text/javascript" src="js/util.js"></script>
+        <script type="text/javascript" src="js/presets.js"></script>
 
-    <script type="text/javascript" src="js/models/Resonator.js"></script>
-    <script type="text/javascript" src="js/models/ResonatorCollection.js"></script>
-    <script type="text/javascript" src="js/models/Portal.js"></script>
+        <script type="text/javascript" src="js/models/Resonator.js"></script>
+        <script type="text/javascript" src="js/models/ResonatorCollection.js"></script>
+        <script type="text/javascript" src="js/models/Portal.js"></script>
+        <script type="text/javascript" src="js/models/AttackSetup.js"></script>
 
-    <script type="text/javascript" src="js/views/PortalInfoView.js"></script>
-    <script type="text/javascript" src="js/views/ResonatorDetailList.js"></script>
-    <script type="text/javascript" src="js/views/ResonatorDetailView.js"></script>
-    <script type="text/javascript" src="js/views/ResonatorView.js"></script>
+        <script type="text/javascript" src="js/views/PortalInfoView.js"></script>
+        <script type="text/javascript" src="js/views/ResonatorDetailList.js"></script>
+        <script type="text/javascript" src="js/views/ResonatorDetailView.js"></script>
+        <script type="text/javascript" src="js/views/ResonatorView.js"></script>
+        <script type="text/javascript" src="js/views/AttackInfoView.js"></script>
 
-    <link href="css/style.css" rel="stylesheet" type="text/css" />
-    <link href='http://fonts.googleapis.com/css?family=Coda' rel='stylesheet' type='text/css' />
-</head>
+        <link href="css/style.css" rel="stylesheet" type="text/css" />
+        <link href='http://fonts.googleapis.com/css?family=Coda' rel='stylesheet' type='text/css' />
+    </head>
 
-<body>
+    <body>
 
-<h1>IPAS - Ingress Portal Attack Simulator</h1>
-<p>This simulator lets you plan an attack on an enemy portal. It tries to simulate the damage of your bursters, depending on the position and level</p>
-<p>As there are some game mechanisms not fully analysed yet, you can switch between different calculation methods regarding shield influence and damage reduction due to distance</p>
+        <h1>IPAS - Ingress Portal Attack Simulator</h1>
 
-<div id="setup" style="float: left; width: 200px">
-    Portal Info<br />
+        <p>This simulator lets you plan an attack on an enemy portal. It tries to simulate the damage of your bursters,
+            depending on the position and level</p>
 
-    <div id="portalinfo"></div>
-    <br />
-    Resonator Info<br />
+        <p>As there are some game mechanisms not fully analysed yet, you can switch between different calculation
+            methods regarding shield influence and damage reduction due to distance</p>
 
-    <div  style="position: relative">
-        <table width="100%">
-            <tbody id="resonatorlist"></tbody>
-        </table>
-    </div>
-</div>
-<div id="paper" style="background-color: #333; width: 500px; height: 500px; float: left"></div>
-<div id="attackinfo" style="float: left">
-    Attacks
-</div>
-<div class="clearer"></div>
-<span>Resistance FTW! Made by <a href="http://github.com/xosofox">GraphRacer</a></span>
+        <div id="setup" style="float: left; width: 200px">
+            Portal Info<br />
 
-<script type="text/javascript">
+            <div id="portalinfo"></div>
+            <br />
+            Resonator Info<br />
 
-    var attacks = [];
+            <div style="position: relative">
+                <table width="100%">
+                    <tbody id="resonatorlist"></tbody>
+                </table>
+            </div>
+        </div>
+        <div id="paper" style="background-color: #333; width: 500px; height: 500px; float: left"></div>
+        <div id="attackinfo" style="float: left">
+            Attacks
+            <div id="attackinfoview"></div>
+        </div>
+        <div class="clearer"></div>
+        <span>Resistance FTW! Made by <a href="http://github.com/xosofox">GraphRacer</a></span>
 
-    var width = 500;
-    var height = 500;
-    var portalX = 250;
-    var portalY = 250;
-    var rimPix = 200;
-    //rim in meters = 40m
+        <script type="text/javascript">
+
+            var AttackSetup = Backbone.Model.extend({});
+
+            var attacks = [];
+
+            var width = 500;
+            var height = 500;
+            var portalX = 250;
+            var portalY = 250;
+            var rimPix = 200;
+            //rim in meters = 40m
 
 
-    // Creates canvas
-    var paper = Raphael(document.getElementById("paper"), width, height);
-    // Creates circle
-    var portalDot = paper.circle(portalX, portalY, PORTAL_RADIUS);
-    // Sets the fill attribute of the circle
-    portalDot.attr("fill", "#3f3");
-    // Sets the stroke attribute of the circle
-    portalDot.attr("stroke", "#3c3");
+            // Creates canvas
+            var paper = Raphael(document.getElementById("paper"), width, height);
+            var border = paper.rect(0, 0, width, height);
+            border.attr("fill", "#333");
+            // Creates circle
+            var portalDot = paper.circle(portalX, portalY, PORTAL_RADIUS);
+            // Sets the fill attribute of the circle
+            portalDot.attr("fill", "#3f3");
+            // Sets the stroke attribute of the circle
+            portalDot.attr("stroke", "#3c3");
 
-    var rim = paper.circle(250, 250, 200);
-    rim.attr("stroke", "#f3f");
+            var rim = paper.circle(250, 250, 200);
+            rim.attr("stroke", "#f3f");
 
-    $("#paper").click(function (e) {
-        if (typeof e.offsetX === "undefined" || typeof e.offsetY === "undefined") {
-            var targetOffset = $(e.currentTarget).offset();
-            e.offsetX = e.pageX - targetOffset.left;
-            e.offsetY = e.pageY - targetOffset.top;
-        }
-        var x = e.offsetX;
-        var y = e.offsetY;
-        paper.circle(x, y, 5);
-        e.preventDefault();
-    });
-
-    var portal = new Portal({ });
-    var resonators = portal.get("resonators");
-    $(document).ready(function () {
-        resonators.add({"distanceToPortal": 34, energyTotal: 975, level: 4});
-        resonators.add({"distanceToPortal": 24, energyTotal: 1975, level: 6});
-        resonators.add({"distanceToPortal": 38, energyTotal: 1575, level: 5});
-        resonators.add({"distanceToPortal": 35, energyTotal: 1575, level: 5});
-        resonators.add({"distanceToPortal": 29, energyTotal: 657, level: 5});
-        resonators.add({"distanceToPortal": 25, energyTotal: 832, level: 4});
-        resonators.add({"distanceToPortal": 25, energyTotal: 645, level: 5});
-        resonators.add({"distanceToPortal": 26, energyTotal: 2207, level: 7});
-
-        resonators.each(function (reso,i) {
-            var rv = new ResonatorView({
-                model: reso,
-                position: directions[i]
+            var crosshair = paper.circle(30, 30, 30);
+            border.mousemove(function (el, x, y) {
+                var e = this.node;
+                if (typeof e.offsetX === "undefined" || typeof e.offsetY === "undefined") {
+                    var targetOffset = $(e).offset();
+                    e.offsetX = targetOffset.left;
+                    e.offsetY = targetOffset.top;
+                }
+                x = x - e.offsetX;
+                y = y - e.offsetY;
+                //console.log(x,y);
+                crosshair.attr({"cx": x, "cy": y});
+                //console.log(this);
+                //console.log(e);
+                //console.log(i);
+                //console.log(k);
             });
-            rv.render();
-        })
+            $("#paper").click(function (e) {
+                if (typeof e.offsetX === "undefined" || typeof e.offsetY === "undefined") {
+                    var targetOffset = $(e.currentTarget).offset();
+                    e.offsetX = e.pageX - targetOffset.left;
+                    e.offsetY = e.pageY - targetOffset.top;
+                }
+                var x = e.offsetX;
+                var y = e.offsetY;
+                paper.circle(x, y, 5);
+                e.preventDefault();
+            });
 
-        var resolist = new ResonatorDetailList({
-            el: "#resonatorlist",
-            collection: resonators
-        });
+            var portal = new Portal({ });
+            var resonators = portal.get("resonators");
+            $(document).ready(function () {
+                resonators.add({"distanceToPortal": 34, energyTotal: 975, level: 4});
+                resonators.add({"distanceToPortal": 24, energyTotal: 1975, level: 6});
+                resonators.add({"distanceToPortal": 38, energyTotal: 1575, level: 5});
+                resonators.add({"distanceToPortal": 35, energyTotal: 1575, level: 5});
+                resonators.add({"distanceToPortal": 29, energyTotal: 657, level: 5});
+                resonators.add({"distanceToPortal": 25, energyTotal: 832, level: 4});
+                resonators.add({"distanceToPortal": 25, energyTotal: 645, level: 5});
+                resonators.add({"distanceToPortal": 26, energyTotal: 2207, level: 7});
 
-        var pinfo = new PortalInfoView({
-            model: portal,
-            el: '#portalinfo'
-        });
-    });
+                resonators.each(function (reso, i) {
+                    var rv = new ResonatorView({
+                        model: reso,
+                        position: directions[i]
+                    });
+                    rv.render();
+                })
+
+                var resolist = new ResonatorDetailList({
+                    el: "#resonatorlist",
+                    collection: resonators
+                });
+
+                var pinfo = new PortalInfoView({
+                    model: portal,
+                    el: '#portalinfo'
+                });
+
+                var ai = new AttackInfoView({
+                    model: new AttackSetup(),
+                    el: "#attackinfoview"
+                });
+            });
 
 
-</script>
+        </script>
 
-</body>
+    </body>
 </html>

@@ -1,0 +1,1 @@
+var AttackSetup = Backbone.Model.extend({});
