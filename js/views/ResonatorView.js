@@ -7,8 +7,8 @@ var ResonatorView = Backbone.View.extend({
 				var el = this.raphaElement;
 				//during drag, just update to latest target position
 				//calculation happens in interval
-				el.cx = el.ox+dx;
-				el.cy = el.oy+dy;
+				el.cx = el.ox + dx;
+				el.cy = el.oy + dy;
 				//el.attr({cx:el.ox+dx, cy:el.oy+dy});
 				//this.model.set("distanceToPortal", Math.round(distanceToPortalForXY(el.ox + dx, el.oy + dy)));
 			},
@@ -19,13 +19,13 @@ var ResonatorView = Backbone.View.extend({
 				el.oy = el.attr("cy");
 				var me = this;
 				//set up regular check for dragresult, not doing the calculation on every pixel
-				this.dragInterval=setInterval(function() {
+				this.dragInterval = setInterval(function () {
 					if (typeof el.cx !== "undefined") {
-						var d= Math.round(distanceToPortalForXY(el.cx, el.cy));
-						d=d>MAX_RESO_RANGE ? MAX_RESO_RANGE : d;
+						var d = Math.round(distanceToPortalForXY(el.cx, el.cy));
+						d = d > MAX_RESO_RANGE ? MAX_RESO_RANGE : d;
 						me.model.set("distanceToPortal", d);
 					}
-				},100);
+				}, 100);
 			},
 			function (e) {
 				//remove the drag check interval
@@ -42,13 +42,13 @@ var ResonatorView = Backbone.View.extend({
 	},
 
 	render: function () {
-		if (this.model.get("energyTotal")<=0) {
+		if (this.model.get("energyTotal") <= 0) {
 			this.raphaElement.hide();
 		} else {
 			this.raphaElement.show();
-		var xy = xyForResoDistance(this.model.get("distanceToPortal"), this.options.position)
-		var level = this.model.get("level");
-		this.raphaElement.animate({"cx": xy.x, "cy": xy.y, "fill": level_color[level - 1] }).toFront();
+			var xy = xyForResoDistance(this.model.get("distanceToPortal"), this.options.position)
+			var level = this.model.get("level");
+			this.raphaElement.animate({"cx": xy.x, "cy": xy.y, "fill": level_color[level - 1] }).toFront();
 		}
 		return this;
 	}
