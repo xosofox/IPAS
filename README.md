@@ -15,4 +15,4 @@ Currently working:
 - select preset configurations
 - select days of decay
 - click to create an attack
-
+- calculate damage to the resonators
