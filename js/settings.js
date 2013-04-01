@@ -6,23 +6,23 @@ var DECAY_RATE = .15;
 
 //var directions = [ "W", "NW", "N", "NE", "SW", "S", "SE", "E"]; //Actually, I have not idea right now how official Ingress counting 0-7 converts to directions
 /* from intel map
-Original-Ingress:
+ Original-Ingress:
 
-0 4
-1 5
-2 6
-3 7
+ 0 4
+ 1 5
+ 2 6
+ 3 7
 
 
-compared with IITC
-0: E
-1: NE
-2: N
-3: NW
-4: W
-5: SW
-6: S
-7: SE
+ compared with IITC
+ 0: E
+ 1: NE
+ 2: N
+ 3: NW
+ 4: W
+ 5: SW
+ 6: S
+ 7: SE
  */
 var directions = [ "E", "NE", "N", "NW", "W", "SW", "S", "SE"];
 var ap_level = [0, 10000, 30000, 70000, 150000, 300000, 600000, 1200000];

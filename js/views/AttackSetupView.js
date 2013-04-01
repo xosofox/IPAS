@@ -17,8 +17,8 @@ var AttackSetupView = Backbone.View.extend({
 	},
 	attacklevel: function (e) {
 		var level = $(e.currentTarget).val();
-			    this.model.set("level",level);
-			     $('#bursterlevel').val(level);
+		this.model.set("level", level);
+		$('#bursterlevel').val(level);
 		crosshair.attr("r", mInPx(burster_range[level - 1]));
 	},
 	render: function () {

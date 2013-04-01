@@ -32,9 +32,9 @@ var PortalInfoView = Backbone.View.extend({
 		$('#decayDays').text(days);
 		this.model.set("decayDays", days).decay();
 	},
-	switchEquidistant: function() {
-		EQUIDISTANT = ! EQUIDISTANT;
-	   },
+	switchEquidistant: function () {
+		EQUIDISTANT = !EQUIDISTANT;
+	},
 	render: function () {
 		var level = this.model.get("level");
 		this.portallevel.text(level).css("color", level_color[level - 1]);
