@@ -1,1 +1,5 @@
-var AttackSetup = Backbone.Model.extend({});
+var AttackSetup = Backbone.Model.extend({
+	defaults: {
+		level: 1
+	}
+});

@@ -9,20 +9,24 @@
     <script type="text/javascript" src="js/libs/raphael-min.js"></script>
     <script type="text/javascript" src="js/libs/html5slider.js"></script>
 
+    <script type="text/javascript" src="js/presets.js"></script>
     <script type="text/javascript" src="js/settings.js"></script>
     <script type="text/javascript" src="js/util.js"></script>
-    <script type="text/javascript" src="js/presets.js"></script>
 
+    <script type="text/javascript" src="js/models/Attack.js"></script>
+    <script type="text/javascript" src="js/models/AttackCollection.js"></script>
+    <script type="text/javascript" src="js/models/AttackSetup.js"></script>
+    <script type="text/javascript" src="js/models/Portal.js"></script>
     <script type="text/javascript" src="js/models/Resonator.js"></script>
     <script type="text/javascript" src="js/models/ResonatorCollection.js"></script>
-    <script type="text/javascript" src="js/models/Portal.js"></script>
-    <script type="text/javascript" src="js/models/AttackSetup.js"></script>
 
+    <script type="text/javascript" src="js/views/AttackInfoView.js"></script>
+    <script type="text/javascript" src="js/views/AttackListView.js"></script>
+    <script type="text/javascript" src="js/views/AttackSetupView.js"></script>
     <script type="text/javascript" src="js/views/PortalInfoView.js"></script>
     <script type="text/javascript" src="js/views/ResonatorDetailList.js"></script>
     <script type="text/javascript" src="js/views/ResonatorDetailView.js"></script>
     <script type="text/javascript" src="js/views/ResonatorView.js"></script>
-    <script type="text/javascript" src="js/views/AttackSetupView.js"></script>
 
     <link href="css/style.css" rel="stylesheet" type="text/css" />
     <link href='http://fonts.googleapis.com/css?family=Coda' rel='stylesheet' type='text/css' />
@@ -30,240 +34,170 @@
 
 <body>
 
-<h1>IPAS - Ingress Portal Attack Simulator</h1>
+    <h1>IPAS - Ingress Portal Attack Simulator</h1>
 
-<p>This simulator lets you plan an attack on an enemy portal. It tries to simulate the damage of your bursters,
-    depending on the position and level</p>
+    <p>This simulator lets you plan an attack on an enemy portal. It tries to simulate the damage of your bursters,
+        depending on the position and level</p>
 
-<p>As there are some game mechanisms not fully analysed yet, the plan is that you can switch between different
-    calculation methods regarding shield influence and damage reduction due to distance</p>
+    <p>As there are some game mechanisms not fully analysed yet, the plan is that you can switch between different
+        calculation methods regarding shield influence and damage reduction due to distance</p>
 
-<p>Currently, distance influence is quadratic, not linear</p>
+    <p>Currently, distance influence is quadratic, not linear</p>
 
-<div id="setup" style="float: left; width: 200px">
-    Portal Info<br />
+    <div id="setup" style="float: left; width: 200px">
+        Portal Info<br />
 
-    <div id="portalinfo"></div>
-    <br />
-    Resonator Info<br />
+        <div id="portalinfo"></div>
+        <br />
+        Resonator Info<br />
 
-    <div style="position: relative">
-        <table width="100%">
-            <tbody id="resonatorlist"></tbody>
-        </table>
+        <div style="position: relative">
+            <table width="100%">
+                <tbody id="resonatorlist"></tbody>
+            </table>
+        </div>
     </div>
-</div>
-<div id="paper" style="background-color: #333; width: 500px; height: 500px; float: left"></div>
-<div id="attackinfo" style="float: left">
-    Attacks
-    <div id="attacksetup"></div>
-    <div id="attacklist"></div>
-</div>
-<div class="clearer"></div>
-<span>V 0.87 - Resistance FTW! Made by GraphRacer <a href="http://github.com/xosofox/IPAS">GitHub</a></span> <a
+    <div id="paper" style="background-color: #333; width: 500px; height: 500px; float: left"></div>
+    <div id="attackinfo" style="float: left">
+        Attacks
+        <div id="attacksetup"></div>
+        <div id="attacklist"></div>
+    </div>
+    <div class="clearer"></div>
+    <span>V 0.87 - Resistance FTW! Made by GraphRacer <a href="http://github.com/xosofox/IPAS">GitHub</a></span> <a
         href="http://profiles.google.com/xosofox">G+</a> <a href="http://twitter.com/xosofox">Twitter</a>
-<g:plusone href="http://ipas.graphracer.com" size="small"></g:plusone>
-<script type="text/javascript">
-    (function () {
-        var po = document.createElement('script');
-        po.type = 'text/javascript';
-        po.async = true;
-        po.src = 'https://apis.google.com/js/plusone.js';
-        var s = document.getElementsByTagName('script')[0];
-        s.parentNode.insertBefore(po, s);
-    })();
-</script>
-<script type="text/javascript">
+    <g:plusone href="http://ipas.graphracer.com" size="small"></g:plusone>
+    <script type="text/javascript">
+        (function () {
+            var po = document.createElement('script');
+            po.type = 'text/javascript';
+            po.async = true;
+            po.src = 'https://apis.google.com/js/plusone.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(po, s);
+        })();
+    </script>
+    <script type="text/javascript">
 
-    var AttackSetup = Backbone.Model.extend({
-        defaults: {
-            level: 1
-        }
-    });
-    var Attack = Backbone.Model.extend({
-        defaults: {
-            x: 0,
-            y: 0,
-            level: 1
-        },
-        initialize: function () {
-            //calc results
-            //for now, HIT every reso!
-            var me = this;
-            _.each(resonatorViews, function (resoView, i) {
-                var level = me.get("level");
-                var energy = resoView.model.get("energyTotal");
-                var distancePix = Math.sqrt(Math.pow(me.get("x") - resoView.raphaElement.attr("cx"), 2) + Math.pow(me.get("y") - resoView.raphaElement.attr("cy"), 2));
-                var distanceM = pixInM(distancePix);
-                console.log("Entfernung", i, distanceM);
-                var maxRange = burster_range[level - 1];
-                var maxDamage = burster_damage[level - 1];
-                // Damage = MaxDamage * [ 1 - (distance / MaxRange)2 ]
-                damage = maxDamage * ( 1 - Math.pow(distanceM / maxRange, 2) );
-                damage = damage < 0 ? 0 : damage;
-                console.log("Schaden", damage);
-                // or
-                // linear
-                // damage = maxDamage * distanceM / maxRange;
-                energy = resoView.model.get("energyTotal");
-                console.log(energy);
-                energy -= damage;
-                console.log(energy);
-                resoView.model.set("energyTotal", energy);
+
+        var width = 500;
+        var height = 500;
+        var portalX = 250;
+        var portalY = 250;
+        var rimPix = 200;
+        //rim in meters = 40m
+
+        // Creates canvas
+        var paper = Raphael(document.getElementById("paper"), width, height);
+        var border = paper.rect(0, 0, width, height);
+        border.attr("fill", "#f33");
+        border.attr("opacity", 0.0);
+        // Creates circle
+        var portalDot = paper.circle(portalX, portalY, PORTAL_RADIUS);
+        // Sets the fill attribute of the circle
+        portalDot.attr("fill", "#3f3");
+        // Sets the stroke attribute of the circle
+        portalDot.attr("stroke", "#3c3");
+
+        var rim = paper.circle(250, 250, 200);
+        rim.attr("stroke", "#f3f");
+
+        var crosshair = paper.circle(portalX, portalY, mInPx(42));
+        border.mousemove(function (el, x, y) {
+            var e = this.node;
+            if (typeof e.offsetX === "undefined" || typeof e.offsetY === "undefined") {
+                var targetOffset = $(e).offset();
+                e.offsetX = targetOffset.left;
+                e.offsetY = targetOffset.top;
+            }
+            x = x - e.offsetX;
+            y = y - e.offsetY;
+            crosshair.attr({"cx": x, "cy": y});
+        });
+        $("#paper").click(function (e) {
+            if (typeof e.offsetX === "undefined" || typeof e.offsetY === "undefined") {
+                var targetOffset = $(e.currentTarget).offset();
+                e.offsetX = e.pageX - targetOffset.left;
+                e.offsetY = e.pageY - targetOffset.top;
+            }
+            var x = e.offsetX;
+            var y = e.offsetY;
+            attacks.add({x: x, y: y, level: attackSetup.get("level")});
+            e.preventDefault();
+        });
+
+        var portal = new Portal({ });
+        var resonators = portal.get("resonators");
+        var resonatorViews = [];
+        var portalElements;
+        var attacks = new AttackCollection();
+        var attackSetup = new AttackSetup();
+        $(document).ready(function () {
+            /*
+             resonators.add({"distanceToPortal": 34, energyTotal: 975, level: 4});
+             resonators.add({"distanceToPortal": 24, energyTotal: 1975, level: 6});
+             resonators.add({"distanceToPortal": 38, energyTotal: 1575, level: 5});
+             resonators.add({"distanceToPortal": 35, energyTotal: 1575, level: 5});
+             resonators.add({"distanceToPortal": 29, energyTotal: 657, level: 5});
+             resonators.add({"distanceToPortal": 25, energyTotal: 832, level: 4});
+             resonators.add({"distanceToPortal": 25, energyTotal: 645, level: 5});
+             resonators.add({"distanceToPortal": 26, energyTotal: 2207, level: 7});
+             */
+            for (i = 0; i < 8; i++) {
+                resonators.add({"distanceToPortal": 35, energyTotal: 1000, level: 1});
+            }
+
+
+            paper.setStart();
+            resonators.each(function (reso, i) {
+                var rv = new ResonatorView({
+                    model: reso,
+                    position: directions[i]
+                });
+                resonatorViews.push(rv);
+                rv.render();
+            })
+            portalElements = paper.setFinish();
+
+            var resolist = new ResonatorDetailList({
+                el: "#resonatorlist",
+                collection: resonators
             });
-        }
-    });
 
-    var AttackCollection = Backbone.Collection.extend({
-        model: Attack
-    });
-
-    var attacks = new AttackCollection();
-    var AttackInfoView = Backbone.View.extend({
-        render: function () {
-            this.$el.html("Attack Level " + this.model.get("level"));
-            return this;
-        }
-    });
-
-    var AttackListView = Backbone.View.extend({
-        initialize: function () {
-            _.bindAll(this, "addOne");
-            this.listenTo(this.collection, "add", this.addOne);
-        },
-        addOne: function (at) {
-            var av = new AttackInfoView({
-                model: at
+            var pinfo = new PortalInfoView({
+                model: portal,
+                el: '#portalinfo'
             });
-            this.$el.append(av.render().el);
-        },
-        render: function () {
-        }
-    });
 
-    var width = 500;
-    var height = 500;
-    var portalX = 250;
-    var portalY = 250;
-    var rimPix = 200;
-    //rim in meters = 40m
-
-
-    // Creates canvas
-    var paper = Raphael(document.getElementById("paper"), width, height);
-    var border = paper.rect(0, 0, width, height);
-    border.attr("fill", "#f33");
-    border.attr("opacity", 0.0);
-    // Creates circle
-    var portalDot = paper.circle(portalX, portalY, PORTAL_RADIUS);
-    // Sets the fill attribute of the circle
-    portalDot.attr("fill", "#3f3");
-    // Sets the stroke attribute of the circle
-    portalDot.attr("stroke", "#3c3");
-
-    var rim = paper.circle(250, 250, 200);
-    rim.attr("stroke", "#f3f");
-
-    var crosshair = paper.circle(portalX, portalY, mInPx(42));
-    border.mousemove(function (el, x, y) {
-        var e = this.node;
-        if (typeof e.offsetX === "undefined" || typeof e.offsetY === "undefined") {
-            var targetOffset = $(e).offset();
-            e.offsetX = targetOffset.left;
-            e.offsetY = targetOffset.top;
-        }
-        x = x - e.offsetX;
-        y = y - e.offsetY;
-        //console.log(x,y);
-        crosshair.attr({"cx": x, "cy": y});
-        //console.log(this);
-        //console.log(e);
-        //console.log(i);
-        //console.log(k);
-    });
-    $("#paper").click(function (e) {
-        if (typeof e.offsetX === "undefined" || typeof e.offsetY === "undefined") {
-            var targetOffset = $(e.currentTarget).offset();
-            e.offsetX = e.pageX - targetOffset.left;
-            e.offsetY = e.pageY - targetOffset.top;
-        }
-        var x = e.offsetX;
-        var y = e.offsetY;
-        attacks.add({x: x, y: y, level: attackSetup.get("level")});
-        e.preventDefault();
-    });
-
-    var portal = new Portal({ });
-    var resonators = portal.get("resonators");
-    var resonatorViews = [];
-    var portalElements;
-    var attackSetup = new AttackSetup();
-    $(document).ready(function () {
-        /*
-         resonators.add({"distanceToPortal": 34, energyTotal: 975, level: 4});
-         resonators.add({"distanceToPortal": 24, energyTotal: 1975, level: 6});
-         resonators.add({"distanceToPortal": 38, energyTotal: 1575, level: 5});
-         resonators.add({"distanceToPortal": 35, energyTotal: 1575, level: 5});
-         resonators.add({"distanceToPortal": 29, energyTotal: 657, level: 5});
-         resonators.add({"distanceToPortal": 25, energyTotal: 832, level: 4});
-         resonators.add({"distanceToPortal": 25, energyTotal: 645, level: 5});
-         resonators.add({"distanceToPortal": 26, energyTotal: 2207, level: 7});
-         */
-        for (i = 0; i < 8; i++) {
-            resonators.add({"distanceToPortal": 35, energyTotal: 1000, level: 1});
-        }
-
-
-        paper.setStart();
-        resonators.each(function (reso, i) {
-            var rv = new ResonatorView({
-                model: reso,
-                position: directions[i]
+            var ai = new AttackSetupView({
+                model: attackSetup,
+                el: "#attacksetup"
             });
-            resonatorViews.push(rv);
-            rv.render();
-        })
-        portalElements = paper.setFinish();
 
-        var resolist = new ResonatorDetailList({
-            el: "#resonatorlist",
-            collection: resonators
+            var alv = new AttackListView({
+                collection: attacks,
+                el: '#attacklist'
+            });
+
         });
+        border.toFront();
 
-        var pinfo = new PortalInfoView({
-            model: portal,
-            el: '#portalinfo'
-        });
+    </script>
 
-        var ai = new AttackSetupView({
-            model: attackSetup,
-            el: "#attacksetup"
-        });
-
-        var alv = new AttackListView({
-            collection: attacks,
-            el: '#attacklist'
-        });
-
-    });
-    border.toFront();
-
-</script>
-
-<!-- Piwik -->
-<script type="text/javascript">
-    var pkBaseURL = (("https:" == document.location.protocol) ? "https://stats.graphracer.com/" : "http://stats.graphracer.com/");
-    document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script type="text/javascript">
-    try {
-        var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 15);
-        piwikTracker.trackPageView();
-        piwikTracker.enableLinkTracking();
-    } catch (err) {
-    }
-</script>
-<noscript><p><img src="http://stats.graphracer.com/piwik.php?idsite=15" style="border:0" alt="" /></p></noscript>
-<!-- End Piwik Tracking Code -->
+    <!-- Piwik -->
+    <script type="text/javascript">
+        var pkBaseURL = (("https:" == document.location.protocol) ? "https://stats.graphracer.com/" : "http://stats.graphracer.com/");
+        document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+    <script type="text/javascript">
+        try {
+            var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 15);
+            piwikTracker.trackPageView();
+            piwikTracker.enableLinkTracking();
+        } catch (err) {
+        }
+    </script>
+    <noscript><p><img src="http://stats.graphracer.com/piwik.php?idsite=15" style="border:0" alt="" /></p></noscript>
+    <!-- End Piwik Tracking Code -->
 </body>
 </html>
