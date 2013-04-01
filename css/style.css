@@ -5,6 +5,10 @@ body {
     font-size: 10pt;
 }
 
+a {
+	color: #999;
+}
+
 .clearer {
     float: none;
     clear: both;

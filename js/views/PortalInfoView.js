@@ -11,7 +11,8 @@ var PortalInfoView = Backbone.View.extend({
 		html += '</select><br />';
 		html += '<label for="decay">Decayed (<span id="decayDays">0</span> days)</label><br />';
 		html += '<input type="range" step="1" min="0" max="7" id="decay" class="decaySelector" value="0" /><br />';
-		html += '<label for="equidistant">All resos same distance: <input type="checkbox" id="equidistant">';
+		html += '<label for="equidistant">All resos same distance: <input type="checkbox" id="equidistant" checked="checked"><br />';
+		html += 'You can drag & drop resos to change distance';
 
 		this.$el.html(html);
 		this.portallevel = $('#portallevel', this.$el);
@@ -19,7 +20,8 @@ var PortalInfoView = Backbone.View.extend({
 	},
 	events: {
 		"change .presetSelect": "preconfigure",
-		"change .decaySelector": "decay"
+		"change .decaySelector": "decay",
+		"change #equidistant": "switchEquidistant"
 	},
 	preconfigure: function (e) {
 		var id = $(e.currentTarget).val();
@@ -30,6 +32,9 @@ var PortalInfoView = Backbone.View.extend({
 		$('#decayDays').text(days);
 		this.model.set("decayDays", days).decay();
 	},
+	switchEquidistant: function() {
+		EQUIDISTANT = ! EQUIDISTANT;
+	   },
 	render: function () {
 		var level = this.model.get("level");
 		this.portallevel.text(level).css("color", level_color[level - 1]);

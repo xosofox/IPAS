@@ -32,11 +32,10 @@
 
         <h1>IPAS - Ingress Portal Attack Simulator</h1>
 
-        <p>This simulator lets you plan an attack on an enemy portal. It tries to simulate the damage of your bursters,
-            depending on the position and level</p>
+        <p>This simulator lets you plan an attack on an enemy portal. It tries to simulate the damage of your bursters, depending on the position and level</p>
 
-        <p>As there are some game mechanisms not fully analysed yet, you can switch between different calculation
-            methods regarding shield influence and damage reduction due to distance</p>
+        <p>As there are some game mechanisms not fully analysed yet, the plan is that you can switch between different calculation methods regarding shield influence and damage reduction due to distance</p>
+	<p>Currently, distance influence is quadratic, not linear</p>
 
         <div id="setup" style="float: left; width: 200px">
             Portal Info<br />
@@ -58,8 +57,14 @@
             <div id="attacklist"></div>
         </div>
         <div class="clearer"></div>
-        <span>Resistance FTW! Made by <a href="http://github.com/xosofox">GraphRacer</a></span>
-
+	<span>V 0.87 - Resistance FTW! Made by GraphRacer <a href="http://github.com/xosofox/IPAS">GitHub</a></span> <a href="http://profiles.google.com/xosofox">G+</a> <a href="http://twitter.com/xosofox">Twitter</a> <g:plusone href="http://ipas.graphracer.com" size="small"></g:plusone>
+<script type="text/javascript">
+  (function() {
+    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+    po.src = 'https://apis.google.com/js/plusone.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+  })();
+</script>
         <script type="text/javascript">
 
 		var AttackSetup = Backbone.Model.extend({
@@ -72,7 +77,33 @@ defaults: {
 			x: 0,
 			y: 0,
 			level: 1
-		}
+			},
+initialize: function() {
+	//calc results
+	//for now, HIT every reso!
+	var me=this;
+	_.each(resonatorViews,function(resoView,i) {
+		var level = me.get("level");
+		var energy=resoView.model.get("energyTotal");
+		var distancePix = Math.sqrt( Math.pow(me.get("x")-resoView.raphaElement.attr("cx"),2) + Math.pow(me.get("y")-resoView.raphaElement.attr("cy"),2));
+		var distanceM = pixInM(distancePix);
+		console.log("Entfernung",i,distanceM);
+		var maxRange = burster_range[level - 1];
+		var maxDamage  = burster_damage[level -1];
+		// Damage = MaxDamage * [ 1 - (distance / MaxRange)2 ]
+		damage = maxDamage * ( 1 - Math.pow(distanceM / maxRange,2) );
+		damage = damage < 0 ? 0 : damage;
+		console.log("Schaden",damage);
+		// or
+		// linear
+		// damage = maxDamage * distanceM / maxRange;
+		energy = resoView.model.get("energyTotal");
+		console.log(energy);
+		energy-=damage;
+		console.log(energy);
+		resoView.model.set("energyTotal",energy);
+		});
+}
 	});
 
 	var AttackCollection = Backbone.Collection.extend({
@@ -125,7 +156,7 @@ defaults: {
             var rim = paper.circle(250, 250, 200);
             rim.attr("stroke", "#f3f");
 
-            var crosshair = paper.circle(30, 30, 30);
+	    var crosshair = paper.circle(portalX,portalY,mInPx(42));
             border.mousemove(function (el, x, y) {
                 var e = this.node;
                 if (typeof e.offsetX === "undefined" || typeof e.offsetY === "undefined") {
@@ -144,24 +175,13 @@ defaults: {
             });
             $("#paper").click(function (e) {
                 if (typeof e.offsetX === "undefined" || typeof e.offsetY === "undefined") {
-                    var targetOffset = $(e.currentTarget).offset();
+                   var targetOffset = $(e.currentTarget).offset();
                     e.offsetX = e.pageX - targetOffset.left;
                     e.offsetY = e.pageY - targetOffset.top;
                 }
                 var x = e.offsetX;
                 var y = e.offsetY;
 		attacks.add({x:x,y:y,level: attackSetup.get("level")});
-
-		//ugly hack as PoC
-		_.each(resonatorViews,function(resoView,i) {
-			resoX = resoView.raphaElement.attr("cx");
-			resoY = resoView.raphaElement.attr("cy");
-			console.log("Reso",i,resoX,resoY,x,y);
-			if (crosshair.isPointInside(resoX,resoY)) {
-				//reso hit
-				console.log("Reso "+i+" has been hit");
-				}
-				});
                 e.preventDefault();
             });
 
@@ -171,6 +191,7 @@ defaults: {
 	    var portalElements;
 	    var attackSetup = new AttackSetup();
             $(document).ready(function () {
+			    /*
                 resonators.add({"distanceToPortal": 34, energyTotal: 975, level: 4});
                 resonators.add({"distanceToPortal": 24, energyTotal: 1975, level: 6});
                 resonators.add({"distanceToPortal": 38, energyTotal: 1575, level: 5});
@@ -179,6 +200,11 @@ defaults: {
                 resonators.add({"distanceToPortal": 25, energyTotal: 832, level: 4});
                 resonators.add({"distanceToPortal": 25, energyTotal: 645, level: 5});
                 resonators.add({"distanceToPortal": 26, energyTotal: 2207, level: 7});
+		*/
+			    for (i=0;i<8;i++) {
+                resonators.add({"distanceToPortal": 35, energyTotal: 1000, level: 1});
+		}
+
 
 		paper.setStart();
                 resonators.each(function (reso, i) {
