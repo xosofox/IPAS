@@ -151,11 +151,23 @@ defaults: {
                 var x = e.offsetX;
                 var y = e.offsetY;
 		attacks.add({x:x,y:y,level: attackSetup.get("level")});
+
+		//ugly hack as PoC
+		_.each(resonatorViews,function(resoView,i) {
+			resoX = resoView.raphaElement.attr("cx");
+			resoY = resoView.raphaElement.attr("cy");
+			console.log("Reso",i,resoX,resoY,x,y);
+			if (crosshair.isPointInside(resoX,resoY)) {
+				//reso hit
+				console.log("Reso "+i+" has been hit");
+				}
+				});
                 e.preventDefault();
             });
 
             var portal = new Portal({ });
             var resonators = portal.get("resonators");
+	    var resonatorViews=[];
 	    var portalElements;
 	    var attackSetup = new AttackSetup();
             $(document).ready(function () {
@@ -174,6 +186,7 @@ defaults: {
                         model: reso,
                         position: directions[i]
                     });
+		    resonatorViews.push(rv);
                     rv.render();
                 })
 		    portalElements=paper.setFinish();

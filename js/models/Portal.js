@@ -14,7 +14,8 @@ var Portal = Backbone.Model.extend({
 	reposition: function (changedReso) {
 		if (changedReso.hasChanged("distanceToPortal")) {
 			if (EQUIDISTANT) {
-				this.resonators.invoke("set", {"distanceToPortal": changedReso.get("distanceToPortal")});
+				var d = changedReso.get("distanceToPortal");
+				this.resonators.invoke("set", {"distanceToPortal": d });
 			}
 		}
 
