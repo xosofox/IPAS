@@ -24,8 +24,12 @@ var Attack = Backbone.Model.extend({
 			// var damage = maxDamage * distanceM / maxRange;
 			energy = resoView.model.get("energyTotal");
 			if (energy > 0) {
-				energy -= damage;
-				energy = energy > 0 ? energy : 0;
+				if (energy > damage) {
+					energy -= damage;
+				} else {
+					damage = energy;
+					energy = 0
+				}
 				resoView.model.set("energyTotal", energy);
 			} else {
 				//no reso, no damage!
@@ -34,7 +38,7 @@ var Attack = Backbone.Model.extend({
 
 			me.attributes.damageTotal += damage;
 			me.attributes.energyPortal += energy;
-			me.attributes.energyPortalMax += reso_capacity[resoView.model.get("level")];
+			me.attributes.energyPortalMax += reso_capacity[resoView.model.get("level")-1];
 		});
 	}
 });
