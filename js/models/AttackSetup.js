@@ -1,5 +1,6 @@
 var AttackSetup = Backbone.Model.extend({
 	defaults: {
-		level: 1
+		level: 1,
+        formula: "reddit"
 	}
 });

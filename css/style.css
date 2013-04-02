@@ -13,3 +13,7 @@ a {
     float: none;
     clear: both;
 }
+
+li.old {
+    display: none;
+}

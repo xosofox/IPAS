@@ -31,3 +31,31 @@ var reso_capacity = [1000, 1500, 2000, 2500, 3000, 4000, 5000, 6000];
 var burster_damage = [150, 300, 500, 900, 1200, 1500, 1800, 2700];
 var burster_range = [42, 48, 58, 72, 90, 112, 138, 168];
 var level_color = ["#fece5a", "#ffa630", "#ff7315", "#e40000", "#fd2992", "#eb26cd", "#c124e0", "#9627f4"];
+
+var DAMAGE_FUNCTIONS = {
+    "linear": {
+        title: "Linear",
+        func: function (distanceM, maxRange, maxDamage, level) {
+            var damage = maxDamage * ( 1 - distanceM / maxRange);
+            damage = damage < 0 ? 0 : damage;
+            return damage;
+        }
+    },
+    square: {
+        title: "Square",
+            func: function (distanceM, maxRange, maxDamage, level) {
+                var damage = maxDamage * ( 1 - Math.pow(distanceM / maxRange, 2) );
+                damage = damage < 0 ? 0 : damage;
+                return damage;
+            }
+    },
+    reddit: {
+        title: "Reddit",
+        func: function (distanceM, maxRange, maxDamage, level) {
+            // L8: (2700)*0.5^(x/(168/5))) as of reddit: http://vi.reddit.com/r/Ingress/comments/17umoi/has_burster_falloff_ever_been_confirmed_to_be/
+            var damage = maxDamage * Math.pow(.5, distanceM / (maxRange / 5));
+            damage = damage < 0 ? 0 : damage;
+            return damage;
+        }
+    }
+};
