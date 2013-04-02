@@ -28,6 +28,10 @@ var Attack = Backbone.Model.extend({
 			// or
 			// linear
 			// var damage = maxDamage * distanceM / maxRange;
+            // or
+            //expo
+            // L8: (2700)*0.5^(x/(168/5))) as of reddit: http://vi.reddit.com/r/Ingress/comments/17umoi/has_burster_falloff_ever_been_confirmed_to_be/
+            var damage = maxDamage * Math.pow(.5,distanceM/(maxRange/5));
 			energy = resoView.model.get("energyTotal");
 			if (energy > 0) {
 				if (energy > damage) {
