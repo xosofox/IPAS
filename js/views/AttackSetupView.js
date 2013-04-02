@@ -15,9 +15,13 @@ var AttackSetupView = Backbone.View.extend({
         });
         html += '</select> ';
         html += '<span id="dmggraph">-</span><br />';
+        html += '<a id="formulasource" href="">... as seen here</a><br />';
 
 		this.$el.html(html);
-        $('#damageformula',this.el).val(this.model.get("formula"));
+        var code=this.model.get("formula");
+        $('#damageformula',this.el).val(code);
+        console.log(code);
+        $('#formulasource').attr("href",DAMAGE_FUNCTIONS[code].url);
         this.updateSparkline();
 		//this.render();
 	},

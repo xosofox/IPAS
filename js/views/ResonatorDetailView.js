@@ -1,6 +1,6 @@
 var ResonatorDetailView = Backbone.View.extend({
 	tagName: "td",
-	class: "resoInfo",
+	className: "resoInfo",
 	model: Resonator,
 	position: "N",
 	initialize: function (args) {
