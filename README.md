@@ -17,3 +17,4 @@ Currently working:
 - click to create an attack
 - calculate damage to the resonators
 - show damage result details
+- show damage percentage on each reso (a little bit like the Ingress app, you know...)

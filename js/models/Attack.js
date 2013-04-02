@@ -4,11 +4,17 @@ var Attack = Backbone.Model.extend({
 		y: 0,
 		level: 1,
 		damageTotal: 0,
+        damagePerResonator: [],
 		energyPortal: 0,
 		energyPortalMax: 0
 	},
 	initialize: function () {
+        _.bindAll(this,"calculate");
+        this.calculate();
+    },
+    calculate: function() {
 		var me = this;
+        var dpr = this.get("damagePerResonator");
 		_.each(resonatorViews, function (resoView, i) {
 			var level = me.get("level");
 			var energy = resoView.model.get("energyTotal");
@@ -36,9 +42,17 @@ var Attack = Backbone.Model.extend({
 				damage = 0;
 			}
 
+            var resoCapa = reso_capacity[resoView.model.get("level")-1];
+            dpr[i]={};
+            dpr[i].damage = damage;
+            dpr[i].percent = damage / resoCapa;
+
 			me.attributes.damageTotal += damage;
 			me.attributes.energyPortal += energy;
-			me.attributes.energyPortalMax += reso_capacity[resoView.model.get("level")-1];
+			me.attributes.energyPortalMax += resoCapa;
+
 		});
+        attackDamageView.setModel(this);
+        attackDamageView.render();
 	}
 });

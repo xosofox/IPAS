@@ -20,6 +20,7 @@
     <script type="text/javascript" src="js/models/Resonator.js"></script>
     <script type="text/javascript" src="js/models/ResonatorCollection.js"></script>
 
+    <script type="text/javascript" src="js/views/AttackDamageView.js"></script>
     <script type="text/javascript" src="js/views/AttackInfoView.js"></script>
     <script type="text/javascript" src="js/views/AttackListView.js"></script>
     <script type="text/javascript" src="js/views/AttackSetupView.js"></script>
@@ -30,19 +31,30 @@
 
     <link href="css/style.css" rel="stylesheet" type="text/css" />
     <link href='http://fonts.googleapis.com/css?family=Coda' rel='stylesheet' type='text/css' />
+    <script type="text/javascript">
+        /* <![CDATA[ */
+        (function() {
+            var s = document.createElement('script'), t = document.getElementsByTagName('script')[0];
+            s.type = 'text/javascript';
+            s.async = true;
+            s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+            t.parentNode.insertBefore(s, t);
+        })();
+        /* ]]> */</script>
 </head>
 
 <body>
 
     <h1>IPAS - Ingress Portal Attack Simulator</h1>
 
-    <p>This simulator lets you plan an attack on an enemy portal. It tries to simulate the damage of your bursters,
-        depending on the position and level</p>
+    <p>Simulate an Attack! Select a configuration, drag & drop the resos, then click to attack.<br />
+    Currently, distance influence is quadratic, not linear</p>
+    Latest changes
 
-    <p>As there are some game mechanisms not fully analysed yet, the plan is that you can switch between different
-        calculation methods regarding shield influence and damage reduction due to distance</p>
-
-    <p>Currently, distance influence is quadratic, not linear</p>
+    <ul>
+        <li>0.89: Show damage percentage on the reso</li>
+        <li>0.88: Show damage details in the list</li>
+    </ul>
 
     <div id="setup" style="float: left; width: 200px">
         Portal Info<br />
@@ -64,7 +76,7 @@
         <div id="attacklist"></div>
     </div>
     <div class="clearer"></div>
-    <span>V 0.88 - Resistance FTW! Made by GraphRacer <a href="http://github.com/xosofox/IPAS">GitHub</a></span> <a
+    <span>V 0.89 - Resistance FTW! Made by GraphRacer <a href="http://github.com/xosofox/IPAS">GitHub</a></span> <a
         href="http://profiles.google.com/xosofox">G+</a> <a href="http://twitter.com/xosofox">Twitter</a>
     <g:plusone href="http://ipas.graphracer.com" size="small"></g:plusone>
     <script type="text/javascript">
@@ -77,6 +89,9 @@
             s.parentNode.insertBefore(po, s);
         })();
     </script>
+    <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://ipas.graphracer.com/"></a>
+    <noscript><a href="http://flattr.com/thing/1223254/IPAS-Ingress-Portal-Attack-Simulator" target="_blank">
+        <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0" /></a></noscript>
     <script type="text/javascript">
 
 
@@ -132,6 +147,7 @@
         var portalElements;
         var attacks = new AttackCollection();
         var attackSetup = new AttackSetup();
+        var attackDamageView = new AttackDamageView({});
         $(document).ready(function () {
             /*
              resonators.add({"distanceToPortal": 34, energyTotal: 975, level: 4});
