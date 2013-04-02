@@ -15,9 +15,12 @@ var AttackSetupView = Backbone.View.extend({
         });
         html += '</select> ';
         html += '<span id="dmggraph">-</span><br />';
+        html += '<a id="formulasource" href="">... as seen here</a><br />';
 
 		this.$el.html(html);
-        $('#damageformula',this.el).val(this.model.get("formula"));
+        var formula=this.model.get("formula");
+        $('#damageformula',this.el).val(formula);
+        $('#formulasource').attr("href",DAMAGE_FUNCTIONS[formula].url);
         this.updateSparkline();
 		//this.render();
 	},
@@ -36,6 +39,7 @@ var AttackSetupView = Backbone.View.extend({
         var formula = $(e.currentTarget).val();
         this.model.set("formula", formula);
         $('#damageformula').val(formula);
+        $('#formulasource').attr("href",DAMAGE_FUNCTIONS[formula].url);
         this.updateSparkline();
     },
     updateSparkline: function () {
