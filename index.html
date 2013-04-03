@@ -187,20 +187,10 @@
         var attackDamageView = new AttackDamageView({});
         var router;
         $(document).ready(function () {
-            /*
-             resonators.add({"distanceToPortal": 34, energyTotal: 975, level: 4});
-             resonators.add({"distanceToPortal": 24, energyTotal: 1975, level: 6});
-             resonators.add({"distanceToPortal": 38, energyTotal: 1575, level: 5});
-             resonators.add({"distanceToPortal": 35, energyTotal: 1575, level: 5});
-             resonators.add({"distanceToPortal": 29, energyTotal: 657, level: 5});
-             resonators.add({"distanceToPortal": 25, energyTotal: 832, level: 4});
-             resonators.add({"distanceToPortal": 25, energyTotal: 645, level: 5});
-             resonators.add({"distanceToPortal": 26, energyTotal: 2207, level: 7});
-             */
+            //init resos
             for (i = 0; i < 8; i++) {
-                resonators.add({"distanceToPortal": 35, energyTotal: 1000, level: 1});
+                resonators.add({});
             }
-
 
             paper.setStart();
             resonators.each(function (reso, i) {

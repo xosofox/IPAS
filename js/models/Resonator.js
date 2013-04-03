@@ -1,6 +1,6 @@
 var Resonator = Backbone.Model.extend({
 	defaults: {
-		"distanceToPortal": MAX_RESO_RANGE,
+		"distanceToPortal": 35,
 		energyTotal: 1000,
 		level: 1
 	},
