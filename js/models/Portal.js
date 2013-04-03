@@ -14,15 +14,6 @@ var Portal = Backbone.Model.extend({
         this.listenTo(this.resonators, "add change", this.reposition);
     },
     reposition: function (changedReso) {
-        if (changedReso) {
-            if (changedReso.hasChanged("distanceToPortal")) {
-                if (EQUIDISTANT && !EQUIDISTANT_SKIP) {
-                    var d = changedReso.get("distanceToPortal");
-                    this.resonators.invoke("set", {"distanceToPortal": d });
-                }
-            }
-        }
-
         var level = 0;
         _.each(this.resonators.pluck("level"), function (l) {
             level += l;
@@ -51,7 +42,6 @@ var Portal = Backbone.Model.extend({
         }
     },
     loadFromConfigHash: function (confighash) {
-        EQUIDISTANT_SKIP=true;
         var parts = confighash.split("|");
         var resohash = parts[0];
         var shieldhash = parts[1];
@@ -59,12 +49,11 @@ var Portal = Backbone.Model.extend({
         _.each(resoVals, function (resoval, i) {
             var values = resoval.split(",");
             resonators.at(i).set({
-                level: parseInt(values[0],10),
-                distanceToPortal: parseInt(values[1],10),
-                energyTotal: parseInt(values[2],10)
+                level: parseInt(values[0], 10),
+                distanceToPortal: parseInt(values[1], 10),
+                energyTotal: parseInt(values[2], 10)
             });
         })
-        EQUIDISTANT_SKIP=false;
     },
     getConfigHash: function () {
         var hashparts = [];

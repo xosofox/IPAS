@@ -23,7 +23,6 @@ var AttackDamageView = Backbone.View.extend({
             var xy = xyForResoDistance(resoView.model.get("distanceToPortal")+8,directions[i]);
             var perc =Math.round(me.model.attributes.damagePerResonator[i].percent*1000)/10;
             //only show it if there was damage
-            console.log(perc);
             if (perc>0) {
                 me.dmgViews[i].attr("x",xy.x).attr("y",xy.y).attr("text",perc + "%").attr("opacity",1);
             } else {

@@ -2,7 +2,6 @@ var MAX_RESO_RANGE = 40;
 var RESO_RADIUS = 10;
 var PORTAL_RADIUS = 20;
 var EQUIDISTANT = true;
-var EQUIDISTANT_SKIP = false;
 var DECAY_RATE = .15;
 
 //var directions = [ "W", "NW", "N", "NE", "SW", "S", "SE", "E"]; //Actually, I have not idea right now how official Ingress counting 0-7 converts to directions
