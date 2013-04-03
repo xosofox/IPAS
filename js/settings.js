@@ -62,7 +62,7 @@ var DAMAGE_FUNCTIONS = {
         url: "https://docs.google.com/spreadsheet/ccc?key=0Ar-r_EH0Cv2udFZaWXEtNnA4MGJqbmU0dDBpdVNxVmc"
     },
     reddit: {
-        title: "ChPech's decomile",
+        title: "ChPech's decompile",
         func: function (distanceM, maxRange, maxDamage, level) {
             // L8: (2700)*0.5^(x/(168/5))) as of reddit: http://vi.reddit.com/r/Ingress/comments/17umoi/has_burster_falloff_ever_been_confirmed_to_be/
             var damage = maxDamage * Math.pow(.5, distanceM / (maxRange / 5));
