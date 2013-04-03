@@ -53,13 +53,13 @@
 
     <div style="width: 45%; float: left; padding: 2px;">
         Simulate an Attack!<br />Select a configuration, drag & drop the resos, then click to attack.<br />
-		Work in progress: <a href="http://iitc.jonatkins.com/">IITC integration</a><br />
-		Yet to come: Better initial setup, shields, reset attack, ...
+		Work in progress: Reset attacks<br />
+		Yet to come: Better initial setup, shields, ...
     </div>
     <div style="width: 45%; float: left; margin-left: 10px;padding: 2px;">
         Latest changes
         <ul>
-            <li>13-04-03 0.9.4: Config Permalink</li>
+            <li>13-04-03 0.9.4: Config Permalink and <a href="iitc.html">IITC Integration via userscript</a></li>
             <li>13-04-03 0.9.3: No-one noticed? Calc formula change was not taken into account - MEA CULPA</li>
             <li class="old">13-04-02 0.9.2: Burster Summary and new formulas</li>
             <li class="old">13-04-02 0.9.1: Select damage fall-off function</li>
@@ -91,7 +91,8 @@
         Portal Info<br />
 
         <div id="portalinfo"></div>
-        <a style="cursor: pointer" onclick="router.navigate(portal.getConfigHash(), {trigger: true, replace: true});">Portal Status Permalink</a>
+        <a style="cursor: pointer" onclick="router.navigate(portal.getConfigHash(), {trigger: true, replace: true});">Portal Status Permalink</a><br />
+        <a href="iitc.html">IITC Integration Information</a>
         <br />
         Resonator Info<br />
         <div style="position: relative">
