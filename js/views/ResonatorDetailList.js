@@ -9,8 +9,10 @@ var ResonatorDetailList = Backbone.View.extend({
 	render: function () {
 		var tr;
 		var me = this;
-		this.collection.each(function (reso, i) {
-			if ((i % 2) == 0) {
+        //render in same order as IITC
+        _.each([2, 1, 3, 0, 4, 7, 5, 6], function(i,counter) {
+            var reso=me.collection.at(i);
+			if ((counter % 2) == 0) {
 				tr = $('<tr></tr>');
 				me.$el.append(tr);
 			}
