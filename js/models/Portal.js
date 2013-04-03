@@ -1,9 +1,11 @@
 var Portal = Backbone.Model.extend({
 	resonators: {},
+    shields:[],
 	level: {},
 	defaults: {
 		decayDays: 0,
-		level: 1
+		level: 1,
+        shields: [0,0,0,0]
 	},
 	initialize: function () {
 		_.bindAll(this, "reposition", "applyPreset");
@@ -45,5 +47,12 @@ var Portal = Backbone.Model.extend({
 		} else {
 			alert("Could not find preset " + presetId);
 		}
-	}
+	},
+    getConfigHash: function() {
+        var hashparts=[];
+        this.resonators.each(function(reso,i) {
+            hashparts.push(reso.get("level") + "," + reso.get("distanceToPortal") + "," + reso.get("energyTotal"));
+        })
+        return hashparts.join(";") + "|" + this.shields.join(",");
+    }
 });

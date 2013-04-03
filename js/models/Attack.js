@@ -17,21 +17,15 @@ var Attack = Backbone.Model.extend({
         var dpr = this.get("damagePerResonator");
 		_.each(resonatorViews, function (resoView, i) {
 			var level = me.get("level");
+            var formula = attackSetup.get("formula");
 			var energy = resoView.model.get("energyTotal");
 			var distancePix = Math.sqrt(Math.pow(me.get("x") - resoView.raphaElement.attr("cx"), 2) + Math.pow(me.get("y") - resoView.raphaElement.attr("cy"), 2));
 			var distanceM = pixInM(distancePix);
 			var maxRange = burster_range[level - 1];
 			var maxDamage = burster_damage[level - 1];
-			// Damage = MaxDamage * [ 1 - (distance / MaxRange)2 ]
-			var damage = maxDamage * ( 1 - Math.pow(distanceM / maxRange, 2) );
-			damage = damage < 0 ? 0 : damage;
-			// or
-			// linear
-			// var damage = maxDamage * distanceM / maxRange;
-            // or
-            //expo
-            // L8: (2700)*0.5^(x/(168/5))) as of reddit: http://vi.reddit.com/r/Ingress/comments/17umoi/has_burster_falloff_ever_been_confirmed_to_be/
-            var damage = maxDamage * Math.pow(.5,distanceM/(maxRange/5));
+
+            var damage = DAMAGE_FUNCTIONS[formula].func(distanceM, maxRange, maxDamage, level);
+
 			energy = resoView.model.get("energyTotal");
 			if (energy > 0) {
 				if (energy > damage) {
