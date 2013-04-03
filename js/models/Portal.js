@@ -8,10 +8,11 @@ var Portal = Backbone.Model.extend({
         shields: [0, 0, 0, 0]
     },
     initialize: function () {
-        _.bindAll(this, "reposition", "applyPreset");
+        _.bindAll(this, "reposition", "applyPreset","saveConfig","reset");
         this.set("resonators", new ResonatorCollection()),
             this.resonators = this.get("resonators")
         this.listenTo(this.resonators, "add change", this.reposition);
+        this.saveConfig();
     },
     reposition: function (changedReso) {
         var level = 0;
@@ -23,10 +24,11 @@ var Portal = Backbone.Model.extend({
         this.set("level", level >= 1 ? Math.floor(level) : 1);
     },
     decay: function () {
+        this.reset();
         var days = this.get("decayDays");
         var perc = DECAY_RATE * days;
         this.resonators.each(function (e, i) {
-            e.set("energyTotal", e.getMaxEnergy() * (1 - perc));
+            e.set("energyTotal", e.get("energyTotal") - e.getMaxEnergy() * perc);
         });
     },
     applyPreset: function (presetId) {
@@ -40,6 +42,7 @@ var Portal = Backbone.Model.extend({
         } else {
             alert("Could not find preset " + presetId);
         }
+        this.saveConfig();
     },
     loadFromConfigHash: function (confighash) {
         var parts = confighash.split("|");
@@ -53,7 +56,8 @@ var Portal = Backbone.Model.extend({
                 distanceToPortal: parseInt(values[1], 10),
                 energyTotal: parseInt(values[2], 10)
             });
-        })
+        });
+        this.saveConfig();
     },
     getConfigHash: function () {
         var hashparts = [];
@@ -61,5 +65,11 @@ var Portal = Backbone.Model.extend({
             hashparts.push(reso.get("level") + "," + reso.get("distanceToPortal") + "," + reso.get("energyTotal"));
         })
         return hashparts.join(";") + "|" + this.get("shields").join(",");
+    },
+    saveConfig: function() {
+        this.set("config",this.getConfigHash());
+    },
+    reset: function() {
+        this.loadFromConfigHash(this.get("config"));
     }
 });
