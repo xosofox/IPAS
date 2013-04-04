@@ -45,8 +45,9 @@ var Portal = Backbone.Model.extend({
         } else {
             alert("Could not find preset " + presetId);
         }
+        this.recharge();
         this.saveConfig();
-		this.recharge();
+        this.decay();
     },
     loadFromConfigHash: function (confighash) {
         var parts = confighash.split("|");
@@ -77,7 +78,6 @@ var Portal = Backbone.Model.extend({
         this.resonators.each(function (e, i) {
             e.set("energyTotal", e.getMaxEnergy());
         });
-		this.decay();
 	},
     reset: function () {
         this.loadFromConfigHash(this.get("config"));
