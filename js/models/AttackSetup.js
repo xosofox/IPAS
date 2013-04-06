@@ -3,4 +3,5 @@ var AttackSetup = Backbone.Model.extend({
 		level: 1,
         formula: "ssergni"
 	}
+
 });

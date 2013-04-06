@@ -9,6 +9,7 @@
     <script type="text/javascript" src="js/libs/raphael-min.js"></script>
     <script type="text/javascript" src="js/libs/html5slider.js"></script>
     <script type="text/javascript" src="js/libs/jquery.sparkline.min.js"></script>
+	<script type="text/javascript" src="js/libs/heatmap.js"></script>
 
     <script type="text/javascript" src="js/presets.js"></script>
     <script type="text/javascript" src="js/settings.js"></script>
@@ -27,6 +28,7 @@
     <script type="text/javascript" src="js/views/AttackDamageView.js"></script>
     <script type="text/javascript" src="js/views/AttackInfoView.js"></script>
     <script type="text/javascript" src="js/views/AttackListView.js"></script>
+	<script type="text/javascript" src="js/views/DamageHeatMapView.js"></script>
     <script type="text/javascript" src="js/views/AttackSetupView.js"></script>
     <script type="text/javascript" src="js/views/AttackSummaryView.js"></script>
     <script type="text/javascript" src="js/views/BursterRangeView.js"></script>
@@ -116,7 +118,12 @@
 
     </div>
 </div>
-<div id="paper" style="background-color: #333; width: 500px; height: 500px; float: left"></div>
+
+<div style="width: 500px; height: 500px; float: left;">
+	<div id="damageheatmap" style="background-color: #999; width: 500px; height: 500px; position: absolute;"></div>
+	<div id="paper" style="width: 500px; height: 500px; position: absolute; z-index: 100000000;"></div>
+</div>
+
 <div id="attackinfo" style="float: left">
     Attacks
     <div id="attacksetup"></div>
@@ -125,6 +132,7 @@
     <div id="attacklist"></div>
     <div id="prediction"></div>
 </div>
+
 <div class="clearer"></div>
 How the hell does Ingress really do it??? <a
         href="https://plus.google.com/communities/115073414859905315934">Discuss</a><br /><a
@@ -180,7 +188,10 @@ How the hell does Ingress really do it??? <a
         }
         var x = e.offsetX;
         var y = e.offsetY;
-        attacks.add({x: x, y: y, level: attackSetup.get("level")});
+		var attack = new Attack({x: x, y: y, level: attackSetup.get("level")});
+		attack.attack();
+        attacks.add(attack);
+		
         e.preventDefault();
     });
 
@@ -191,6 +202,7 @@ How the hell does Ingress really do it??? <a
     var portalElements;
     var attacks = new AttackCollection();
     var prediction = new Prediction();
+	var mockAttacks = new AttackCollection();
     var attackSetup = new AttackSetup();
     var attackDamageView = new AttackDamageView({});
     var player = new Player();
@@ -198,6 +210,8 @@ How the hell does Ingress really do it??? <a
         model: player
     });
     var router;
+
+	var damageHeatMapView;
 
     $(document).ready(function () {
         paper.setStart();
@@ -230,6 +244,13 @@ How the hell does Ingress really do it??? <a
             collection: attacks,
             el: '#attacklist'
         });
+		
+        damageHeatMapView = new DamageHeatMapView({
+			model: attackSetup,
+            collection: mockAttacks,
+            el: '#damageheatmap'
+        });
+
 
         var asv = new AttackSummaryView({
             collection: attacks,
@@ -246,6 +267,7 @@ How the hell does Ingress really do it??? <a
 
         router = new AppRouter();
         Backbone.history.start();
+		
     });
     border.toFront();
 
