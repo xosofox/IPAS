@@ -9,6 +9,7 @@
     <script type="text/javascript" src="js/libs/raphael-min.js"></script>
     <script type="text/javascript" src="js/libs/html5slider.js"></script>
     <script type="text/javascript" src="js/libs/jquery.sparkline.min.js"></script>
+	<script type="text/javascript" src="js/libs/heatmap.js"></script>
 
     <script type="text/javascript" src="js/presets.js"></script>
     <script type="text/javascript" src="js/settings.js"></script>
@@ -24,6 +25,7 @@
     <script type="text/javascript" src="js/views/AttackDamageView.js"></script>
     <script type="text/javascript" src="js/views/AttackInfoView.js"></script>
     <script type="text/javascript" src="js/views/AttackListView.js"></script>
+	<script type="text/javascript" src="js/views/DamageHeatMapView.js"></script>
     <script type="text/javascript" src="js/views/AttackSetupView.js"></script>
     <script type="text/javascript" src="js/views/AttackSummaryView.js"></script>
     <script type="text/javascript" src="js/views/PortalInfoView.js"></script>
@@ -107,13 +109,19 @@
 
     </div>
 </div>
-<div id="paper" style="background-color: #333; width: 500px; height: 500px; float: left"></div>
+
+<div style="width: 500px; height: 500px; float: left;">
+	<div id="damageheatmap" style="background-color: #999; width: 500px; height: 500px; position: absolute;"></div>
+	<div id="paper" style="width: 500px; height: 500px; position: absolute; z-index: 100000000;"></div>
+</div>
+
 <div id="attackinfo" style="float: left">
     Attacks
     <div id="attacksetup"></div>
     <div id="attacksummary"></div>
-    <div id="attacklist"></div>
+    <div id="attacklist"></div>	
 </div>
+
 <div class="clearer"></div>
 How the hell does Ingress really do it??? <a
         href="https://plus.google.com/communities/115073414859905315934">Discuss</a><br /><a
@@ -160,6 +168,23 @@ How the hell does Ingress really do it??? <a
     var rim = paper.circle(250, 250, 200);
     rim.attr("stroke", "#f3f");
 
+	//Creates the attackmap
+	/*
+	var attackmap = Raphael(document.getElementById("attackmap"), width/10, height/10);
+    var attackmapBorder = attackmap.rect(0, 0, width/10, height/10);
+    attackmapBorder.attr("fill", "#f33");
+    attackmapBorder.attr("opacity", 0.0);
+    // Creates circle
+    var portalDot = attackmap.circle(portalX/10, portalY/10, PORTAL_RADIUS/10);
+    // Sets the fill attribute of the circle
+    portalDot.attr("fill", "#3f3");
+    // Sets the stroke attribute of the circle
+    portalDot.attr("stroke", "#3c3");
+
+    var rim = attackmap.circle(25, 25, 20);
+    rim.attr("stroke", "#f3f");
+	*/
+	
     var crosshair = paper.circle(portalX, portalY, mInPx(42));
     border.mousemove(function (el, x, y) {
         var e = this.node;
@@ -172,6 +197,7 @@ How the hell does Ingress really do it??? <a
         y = y - e.offsetY;
         crosshair.attr({"cx": x, "cy": y});
     });
+	
     $("#paper").click(function (e) {
         if (typeof e.offsetX === "undefined" || typeof e.offsetY === "undefined") {
             var targetOffset = $(e.currentTarget).offset();
@@ -180,7 +206,10 @@ How the hell does Ingress really do it??? <a
         }
         var x = e.offsetX;
         var y = e.offsetY;
-        attacks.add({x: x, y: y, level: attackSetup.get("level")});
+		var attack = new Attack({x: x, y: y, level: attackSetup.get("level")});
+		attack.attack();
+        attacks.add(attack);
+		
         e.preventDefault();
     });
 
@@ -189,9 +218,11 @@ How the hell does Ingress really do it??? <a
     var resonatorViews = [];
     var portalElements;
     var attacks = new AttackCollection();
+	var mockAttacks = new AttackCollection();
     var attackSetup = new AttackSetup();
     var attackDamageView = new AttackDamageView({});
     var router;
+	var damageHeatMapView;
     $(document).ready(function () {
         paper.setStart();
         resonators.each(function (reso, i) {
@@ -223,6 +254,13 @@ How the hell does Ingress really do it??? <a
             collection: attacks,
             el: '#attacklist'
         });
+		
+        damageHeatMapView = new DamageHeatMapView({
+			model: attackSetup,
+            collection: mockAttacks,
+            el: '#damageheatmap'
+        });
+
 
         var asv = new AttackSummaryView({
             collection: attacks,
@@ -231,6 +269,7 @@ How the hell does Ingress really do it??? <a
 
         router = new AppRouter();
         Backbone.history.start();
+		
     });
     border.toFront();
 
