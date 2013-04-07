@@ -2,7 +2,8 @@ var ResonatorView = Backbone.View.extend({
     model: Resonator,
     initialize: function (args) {
         this.raphaElement = paper.circle(portalX, portalY, RESO_RADIUS);
-        this.raphaElement.drag(
+        this.raphaElementTxt = paper.text(portalX, portalY, "1");
+        this.raphaElementTxt.drag(
             function (dx, dy, x, y, e) {
                 var el = this.raphaElement;
                 //during drag, just update to latest target position
@@ -52,7 +53,8 @@ var ResonatorView = Backbone.View.extend({
             this.raphaElement.show();
             var xy = xyForResoDistance(this.model.get("distanceToPortal"), this.options.position)
             var level = this.model.get("level");
-            this.raphaElement.animate({"cx": xy.x, "cy": xy.y, "fill": level_color[level - 1] }).toFront();
+            this.raphaElement.animate({"cx": xy.x, "cy": xy.y, "fill": level_color[level - 1],"text": level }).toFront();
+            this.raphaElementTxt.animate({"x": xy.x, "y": xy.y}).attr("text",level).toFront();
         }
         return this;
     }

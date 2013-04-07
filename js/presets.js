@@ -80,27 +80,27 @@ var PRESETS = {
 	"single_player_level_7": {
 		"title": "One Player Level 7",
 		"resonators": [
-			{"level": 6},
-			{"level": 4},
-			{"level": 5},
 			{"level": 7},
+			{"level": 4},
 			{"level": 6},
 			{"level": 4},
 			{"level": 5},
-			{"level": 4}
+			{"level": 4},
+			{"level": 6},
+			{"level": 5}
 		]
 	},
 	"single_player_level_8": {
 		"title": "One Player Level 8",
 		"resonators": [
-			{"level": 6},
+			{"level": 8},
 			{"level": 4},
+			{"level": 6},
 			{"level": 5},
 			{"level": 7},
-			{"level": 6},
 			{"level": 4},
-			{"level": 5},
-			{"level": 8}
+			{"level": 6},
+			{"level": 5}
 		]
 	},
 	"plain_level_2": {
