@@ -8,17 +8,17 @@ var Portal = Backbone.Model.extend({
         shields: [0, 0, 0, 0]
     },
     initialize: function () {
-        _.bindAll(this, "reposition", "applyPreset", "saveConfig", "reset","recharge","fill");
+        _.bindAll(this, "reposition", "applyPreset", "saveConfig", "reset", "recharge", "fill");
         this.set("resonators", new ResonatorCollection());
         this.resonators = this.get("resonators");
         //init 8 resos
-        for (i = 0; i < 8; i++) {
+        for (var i = 0; i < 8; i++) {
             this.resonators.add({});
         }
         this.listenTo(this.resonators, "add change", this.reposition);
         this.saveConfig();
     },
-    reposition: function (changedReso) {
+    reposition: function () {
         var level = 0;
         _.each(this.resonators.pluck("level"), function (l) {
             level += l;
@@ -31,7 +31,7 @@ var Portal = Backbone.Model.extend({
         this.reset();
         var days = this.get("decayDays");
         var perc = DECAY_RATE * days;
-        this.resonators.each(function (e, i) {
+        this.resonators.each(function (e) {
             e.set("energyTotal", e.get("energyTotal") - e.getMaxEnergy() * perc);
         });
     },
@@ -66,36 +66,41 @@ var Portal = Backbone.Model.extend({
     },
     getConfigHash: function () {
         var hashparts = [];
-        this.resonators.each(function (reso, i) {
+        this.resonators.each(function (reso) {
             hashparts.push(reso.get("level") + "," + reso.get("distanceToPortal") + "," + reso.get("energyTotal"));
-        })
+        });
         return hashparts.join(";") + "|" + this.get("shields").join(",");
     },
     saveConfig: function () {
         this.set("config", this.getConfigHash());
     },
-    countResos: function() {
-			return _.reduce(this.resonators.pluck("energyTotal"),function(c,e) {if (e>0) { c++} return c},0);
-		},
-	fill: function() {
-        this.resonators.each(function (e, i) {
+    countResos: function () {
+        return _.reduce(this.resonators.pluck("energyTotal"), function (c, e) {
+            if (e > 0) {
+                c++
+            }
+            return c
+        }, 0);
+    },
+    fill: function () {
+        this.resonators.each(function (e) {
             e.set("energyTotal", e.getMaxEnergy());
         });
-	},
-	recharge: function() {
-			  var charge = Math.round(1000 / this.countResos());
-        this.resonators.each(function (e, i) {
-		var energy = e.get("energyTotal");
-		var maxEnergy = e.getMaxEnergy();
-		if (energy >0) {
-			if ((energy+charge) > maxEnergy) {
-			    e.set("energyTotal", maxEnergy);
-			} else {
-				e.set("energyTotal",energy+charge);
-			}
-		}
+    },
+    recharge: function () {
+        var charge = Math.round(1000 / this.countResos());
+        this.resonators.each(function (e) {
+            var energy = e.get("energyTotal");
+            var maxEnergy = e.getMaxEnergy();
+            if (energy > 0) {
+                if ((energy + charge) > maxEnergy) {
+                    e.set("energyTotal", maxEnergy);
+                } else {
+                    e.set("energyTotal", energy + charge);
+                }
+            }
         });
-	},
+    },
     reset: function () {
         this.loadFromConfigHash(this.get("config"));
     }

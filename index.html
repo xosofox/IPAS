@@ -167,7 +167,7 @@ How the hell does Ingress really do it??? <a
     var crosshair = paper.circle(portalX, portalY, mInPx(42));
 
     border.mousemove(moveCrosshair);
-    function moveCrosshair (el, x, y) {
+    function moveCrosshair(el, x, y) {
         var e = this.node;
         if (typeof e.offsetX === "undefined" || typeof e.offsetY === "undefined") {
             var targetOffset = $(e).offset();
@@ -177,7 +177,8 @@ How the hell does Ingress really do it??? <a
         x = x - e.offsetX;
         y = y - e.offsetY;
         crosshair.attr({"cx": x, "cy": y});
-    };
+    }
+    ;
     $("#paper").click(function (e) {
         if (typeof e.offsetX === "undefined" || typeof e.offsetY === "undefined") {
             var targetOffset = $(e.currentTarget).offset();
@@ -237,9 +238,9 @@ How the hell does Ingress really do it??? <a
         })
 
         var psv = new PredictionSetupView({
-			model: prediction,
-	el: "#predictionsetup"
-	});
+            model: prediction,
+            el: "#predictionsetup"
+        });
 
         router = new AppRouter();
         Backbone.history.start();
