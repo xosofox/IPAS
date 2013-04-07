@@ -1,4 +1,15 @@
 var AttackInfoView = Backbone.View.extend({
+    events: {
+        "mouseover": "showPosition",
+        "mouseout": "hidePosition"
+    },
+    showPosition: function () {
+        playerView.model.set({x: this.model.get("x"), y: this.model.get("y")});
+        playerView.render();
+    },
+    hidePosition: function () {
+        playerView.hide();
+    },
     render: function () {
         var level = this.model.get("level");
         var html = '';
