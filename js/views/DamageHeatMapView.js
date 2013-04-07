@@ -1,6 +1,7 @@
 var DamageHeatMapView = Backbone.View.extend({
 	model: AttackSetup,	
 	collection: AttackCollection,	
+
     initialize: function () {
         _.bindAll(this, "render");
 		this.listenTo(this.model, 'change', this.render);
@@ -43,13 +44,16 @@ var DamageHeatMapView = Backbone.View.extend({
 			var y = at.get("y");
 			
 			max = Math.max(max, damageTotal);
-			min = Math.max(min, damageTotal);
+			min = Math.min(min, damageTotal);
             data.push({x: x, y: y, count: damageTotal}); 
+        });
+
+        this.collection.each(function(at,i) {
+            data[i].count -= min;
         });
 		
 		var dataSet = {
-			max: max,
-			min: min,
+			max: max-min,
 			data: data
 		};
 	 
