@@ -4,8 +4,11 @@ var ResonatorDetailList = Backbone.View.extend({
 	},
 	collection: ResonatorCollection,
 	events: {
-
+		"click #recharge": "portalrecharge"
 	},
+    	portalrecharge: function() {
+			portal.recharge();
+			},
 	render: function () {
 		var tr;
 		var me = this;
@@ -22,6 +25,7 @@ var ResonatorDetailList = Backbone.View.extend({
 			});
 			rdv.render();
 			tr.append(rdv.el);
-		})
+		});
+		this.$el.append('<input type="button" value="Recharge" id="recharge">');
 	}
 });

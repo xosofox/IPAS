@@ -8,7 +8,7 @@ var Portal = Backbone.Model.extend({
         shields: [0, 0, 0, 0]
     },
     initialize: function () {
-        _.bindAll(this, "reposition", "applyPreset", "saveConfig", "reset","recharge");
+        _.bindAll(this, "reposition", "applyPreset", "saveConfig", "reset","recharge","fill");
         this.set("resonators", new ResonatorCollection());
         this.resonators = this.get("resonators");
         //init 8 resos
@@ -45,7 +45,7 @@ var Portal = Backbone.Model.extend({
         } else {
             alert("Could not find preset " + presetId);
         }
-        this.recharge();
+        this.fill();
         this.saveConfig();
         this.decay();
     },
@@ -74,9 +74,26 @@ var Portal = Backbone.Model.extend({
     saveConfig: function () {
         this.set("config", this.getConfigHash());
     },
-	recharge: function() {
+    countResos: function() {
+			return _.reduce(this.resonators.pluck("energyTotal"),function(c,e) {if (e>0) { c++} return c},0);
+		},
+	fill: function() {
         this.resonators.each(function (e, i) {
             e.set("energyTotal", e.getMaxEnergy());
+        });
+	},
+	recharge: function() {
+			  var charge = Math.round(1000 / this.countResos());
+        this.resonators.each(function (e, i) {
+		var energy = e.get("energyTotal");
+		var maxEnergy = e.getMaxEnergy();
+		if (energy >0) {
+			if ((energy+charge) > maxEnergy) {
+			    e.set("energyTotal", maxEnergy);
+			} else {
+				e.set("energyTotal",energy+charge);
+			}
+		}
         });
 	},
     reset: function () {
