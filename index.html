@@ -17,6 +17,7 @@
     <script type="text/javascript" src="js/models/Attack.js"></script>
     <script type="text/javascript" src="js/models/AttackCollection.js"></script>
     <script type="text/javascript" src="js/models/AttackSetup.js"></script>
+    <script type="text/javascript" src="js/models/Prediction.js"></script>
     <script type="text/javascript" src="js/models/Portal.js"></script>
     <script type="text/javascript" src="js/models/Resonator.js"></script>
     <script type="text/javascript" src="js/models/ResonatorCollection.js"></script>
@@ -27,6 +28,7 @@
     <script type="text/javascript" src="js/views/AttackSetupView.js"></script>
     <script type="text/javascript" src="js/views/AttackSummaryView.js"></script>
     <script type="text/javascript" src="js/views/PortalInfoView.js"></script>
+    <script type="text/javascript" src="js/views/PredictionSetupView.js"></script>
     <script type="text/javascript" src="js/views/ResonatorDetailList.js"></script>
     <script type="text/javascript" src="js/views/ResonatorDetailView.js"></script>
     <script type="text/javascript" src="js/views/ResonatorView.js"></script>
@@ -111,8 +113,10 @@
 <div id="attackinfo" style="float: left">
     Attacks
     <div id="attacksetup"></div>
+    <div id="predictionsetup"></div>
     <div id="attacksummary"></div>
     <div id="attacklist"></div>
+    <div id="prediction"></div>
 </div>
 <div class="clearer"></div>
 How the hell does Ingress really do it??? <a
@@ -161,7 +165,9 @@ How the hell does Ingress really do it??? <a
     rim.attr("stroke", "#f3f");
 
     var crosshair = paper.circle(portalX, portalY, mInPx(42));
-    border.mousemove(function (el, x, y) {
+
+    border.mousemove(moveCrosshair);
+    function moveCrosshair (el, x, y) {
         var e = this.node;
         if (typeof e.offsetX === "undefined" || typeof e.offsetY === "undefined") {
             var targetOffset = $(e).offset();
@@ -171,7 +177,7 @@ How the hell does Ingress really do it??? <a
         x = x - e.offsetX;
         y = y - e.offsetY;
         crosshair.attr({"cx": x, "cy": y});
-    });
+    };
     $("#paper").click(function (e) {
         if (typeof e.offsetX === "undefined" || typeof e.offsetY === "undefined") {
             var targetOffset = $(e.currentTarget).offset();
@@ -189,6 +195,7 @@ How the hell does Ingress really do it??? <a
     var resonatorViews = [];
     var portalElements;
     var attacks = new AttackCollection();
+    var prediction = new Prediction();
     var attackSetup = new AttackSetup();
     var attackDamageView = new AttackDamageView({});
     var router;
@@ -228,6 +235,11 @@ How the hell does Ingress really do it??? <a
             collection: attacks,
             el: '#attacksummary'
         })
+
+        var psv = new PredictionSetupView({
+			model: prediction,
+	el: "#predictionsetup"
+	});
 
         router = new AppRouter();
         Backbone.history.start();

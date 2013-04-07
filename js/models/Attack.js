@@ -4,6 +4,7 @@ var Attack = Backbone.Model.extend({
 		y: 0,
 		level: 1,
 		damageTotal: 0,
+    		simulate: false,
         damagePerResonator: [],
 		energyPortal: 0,
 		energyPortalMax: 0
@@ -34,7 +35,6 @@ var Attack = Backbone.Model.extend({
 					damage = energy;
 					energy = 0
 				}
-				resoView.model.set("energyTotal", energy);
 			} else {
 				//no reso, no damage!
 				damage = 0;
@@ -50,7 +50,20 @@ var Attack = Backbone.Model.extend({
 			me.attributes.energyPortalMax += resoCapa;
 
 		});
+		if (!this.get("simulate")) {
+		this.doDamage();
+		}
         attackDamageView.setModel(this);
         attackDamageView.render();
-	}
+	},
+    doDamage:function() {
+			var dpr = this.get("damagePerResonator");
+		_.each(resonatorViews, function (resoView, i) {
+			var energy = resoView.model.get("energyTotal");
+			var damage = dpr[i].damage;
+			if ((energy >0) && (dpr[i].damage>0)) {
+				resoView.model.set("energyTotal", energy-damage);
+			}
+		});
+	     }
 });
