@@ -12,7 +12,8 @@ var PortalInfoView = Backbone.View.extend({
 		html += '<label for="decay">Decayed (<span id="decayDays">0</span> days)</label><br />';
 		html += '<input type="range" step="1" min="0" max="7" id="decay" class="decaySelector" value="0" /><br />';
 		html += '<label for="equidistant">All resos same distance: <input type="checkbox" id="equidistant" checked="checked"><br />';
-		html += 'You can drag & drop resos to change distance';
+		html += '<label for="lockresos">Lock reso positions: <input type="checkbox" id="lockresos"><br />';
+		html += 'You can drag & drop resos to change distance or lock them';
 
 		this.$el.html(html);
 		this.portallevel = $('#portallevel', this.$el);
@@ -21,7 +22,8 @@ var PortalInfoView = Backbone.View.extend({
 	events: {
 		"change .presetSelect": "preconfigure",
 		"change .decaySelector": "decay",
-		"change #equidistant": "switchEquidistant"
+		"change #equidistant": "switchEquidistant",
+		"change #lockresos": "switchLockresos"
 	},
 	preconfigure: function (e) {
 		var id = $(e.currentTarget).val();
@@ -34,6 +36,14 @@ var PortalInfoView = Backbone.View.extend({
 	},
 	switchEquidistant: function () {
 		EQUIDISTANT = !EQUIDISTANT;
+	},
+	switchLockresos: function (e) {
+		var lock = $(e.currentTarget).is(":checked");
+		if (lock) {
+			portalElements.toBack();
+		} else {
+			portalElements.toFront();
+		}
 	},
 	render: function () {
 		var level = this.model.get("level");

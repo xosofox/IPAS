@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>SVG Fiddle</title>
+    <script type="text/javascript" src="js/libs/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="js/libs/raphael-min.js"></script>
+</head>
+
+<body>
+
+<h1>SVG Fiddle</h1>
+
+<input type="text" id="svgpath" size="500" value="M30,30C10,20,300,308,250,38" />
+<div id="paper" style="background-color: #333; width: 500px; height: 500px; float: left"></div>
+<script type="text/javascript">
+
+    var width = 500;
+    var height = 500;
+
+    // Creates canvas
+    var paper = Raphael(document.getElementById("paper"), width, height);
+
+    var i=document.getElementById('svgpath');
+    var e;
+    $("#svgpath").keyup(function () {
+		    var path=i.value;
+		    if (path != "") {
+		    	if (typeof e != "undefined") {
+			e.remove();
+			}
+			e=paper.path(path).attr({fill:"red",stroke:"white"});
+			}
+			});
+</script>
+</body>
+</html>
