@@ -6,9 +6,8 @@ var PredictionSetupView = Backbone.View.extend({
         html += '<input type="checkbox" id="predictioncheck"><label for="predictioncheck">Predict damage</label>';
         html += '<br />';
         this.$el.html(html);
-        _.bindAll(this, "switchprediction", "predictDamage", "predictionPosition");
+        _.bindAll(this, "switchprediction", "predictDamage");
         var me = this;
-        border.mousemove(this.predictionPosition);
         border.mouseover(function () {
             if (me.model.get("state")) {
                 me.interval = setInterval(me.predictDamage, 200);
@@ -28,19 +27,9 @@ var PredictionSetupView = Backbone.View.extend({
         var predict = $(e.currentTarget).is(":checked");
         this.model.set("state", predict);
     },
-    predictionPosition: function (e, x, y) {
-        if (typeof e.offsetX === "undefined" || typeof e.offsetY === "undefined") {
-            var targetOffset = $(e.currentTarget).offset();
-            e.offsetX = e.pageX - targetOffset.left;
-            e.offsetY = e.pageY - targetOffset.top;
-        }
-        var x = e.offsetX;
-        var y = e.offsetY
-        this.model.set({x: x, y: y});
-    },
     predictDamage: function () {
-        var x = this.model.get("x");
-        var y = this.model.get("y");
+        var x = position.get("x");
+        var y = position.get("y");
         this.predictedAttack = new Attack({x: x, y: y, level: attackSetup.get("level"), simulate: true});
     }
 });
