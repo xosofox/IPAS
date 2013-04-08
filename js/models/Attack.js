@@ -13,10 +13,9 @@ var Attack = Backbone.Model.extend({
 
     initialize: function () {
         _.bindAll(this, "calculate", "attack");
-        //this.attack();
     },
     attack: function () {
-        this.calculate(true);
+        this.calculate();
     },
 
     calculate: function () {
@@ -58,6 +57,7 @@ var Attack = Backbone.Model.extend({
         if (!this.get("simulate")) {
             this.doDamage();
         }
+
         if (this.get("show")) {
             attackDamageView.setModel(this);
             attackDamageView.render();

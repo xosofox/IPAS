@@ -4,16 +4,23 @@ var DamageHeatMapView = Backbone.View.extend({
 
     initialize: function () {
         _.bindAll(this, "render");
-		this.listenTo(this.model, 'change', this.render);
+		this.listenTo(this.model, 'change', this.check);
     },
-	
+    check: function() {
+        if (this.model.get("heatmap")) {
+            console.log("check");
+            this.render();
+        } else {
+            this.$el.hide();
+        }
+    },
     render: function() {
-		this.$el.html("");
+		this.$el.html("").show();
 		this.collection.reset();
 		
 		for (var i = 0; i <= height; i += 9) {
 			for (var j = (i % 18 == 0) ? 0: 5; j <= width; j += 10) {
-				var attack = new Attack({x: j, y: i, level: this.model.get("level")});
+				var attack = new Attack({x: j, y: i, level: this.model.get("level"), simulate:true, show: false});
 				attack.calculate();
 				this.collection.add(attack);
 			}

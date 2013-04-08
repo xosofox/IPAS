@@ -30,6 +30,7 @@ var PredictionSetupView = Backbone.View.extend({
     predictDamage: function () {
         var x = position.get("x");
         var y = position.get("y");
-        this.predictedAttack = new Attack({x: x, y: y, level: attackSetup.get("level"), simulate: true});
+        this.predictedAttack = new Attack({x: x, y: y, level: attackSetup.get("level"), simulate: true });
+        this.predictedAttack.attack();
     }
 });

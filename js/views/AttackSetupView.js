@@ -16,6 +16,7 @@ var AttackSetupView = Backbone.View.extend({
         html += '</select> ';
         html += '<span id="dmggraph">-</span><br />';
         html += '<a id="formulasource" href="">... as seen here</a><br />';
+        html += '<input type="checkbox" id="heatmapcheck"><label for="heatmapcheck">Calculate Heatmap</label>';
 
         this.$el.html(html);
         var formula = this.model.get("formula");
@@ -26,13 +27,17 @@ var AttackSetupView = Backbone.View.extend({
     },
     events: {
         "change .bursterSelector": "attacklevel",
-        "change .formulaSelector": "attackformula"
+        "change .formulaSelector": "attackformula",
+        "change #heatmapcheck": "heatmap"
+    },
+    heatmap: function(e) {
+        var heat = $(e.currentTarget).is(":checked");
+        this.model.set("heatmap",heat);
     },
     attacklevel: function (e) {
         var level = $(e.currentTarget).val();
         this.model.set("level", level);
         $('#bursterlevel').val(level);
-        crosshair.attr("r", mInPx(burster_range[level - 1]));
         this.updateSparkline();
     },
     attackformula: function (e) {
