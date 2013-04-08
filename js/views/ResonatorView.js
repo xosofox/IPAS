@@ -2,8 +2,8 @@ var ResonatorView = Backbone.View.extend({
     model: Resonator,
     initialize: function (args) {
         this.raphaElement = paper.circle(portalX, portalY, RESO_RADIUS);
-        this.raphaElementTxt = paper.text(portalX, portalY, "1");
-        this.raphaElementTxt.drag(
+        this.raphaElementTxt = paper.text(portalX, portalY, "1").attr("pointer-events","none");
+        this.raphaElement.drag(
             function (dx, dy, x, y, e) {
                 var el = this.raphaElement;
                 //during drag, just update to latest target position

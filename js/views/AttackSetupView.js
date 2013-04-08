@@ -16,7 +16,7 @@ var AttackSetupView = Backbone.View.extend({
         html += '</select> ';
         html += '<span id="dmggraph">-</span><br />';
         html += '<a id="formulasource" href="">... as seen here</a><br />';
-        html += '<input type="checkbox" id="heatmapcheck"><label for="heatmapcheck">Calculate Heatmap</label>';
+        html += '<input type="checkbox" id="heatmapcheck"><label for="heatmapcheck">Show heatmap</label>';
 
         this.$el.html(html);
         var formula = this.model.get("formula");
