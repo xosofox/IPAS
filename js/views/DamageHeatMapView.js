@@ -1,14 +1,29 @@
 var DamageHeatMapView = Backbone.View.extend({
 	model: AttackSetup,	
 	collection: AttackCollection,	
+    heatmap: Object,
 
     initialize: function () {
         _.bindAll(this, "render");
-		this.listenTo(this.model, 'change', this.render);
+
+		this.$el.html('<span style="position:absolute; top: -20px; cursor: pointer" class="calculate">Calculate Heatmap</span>');
+
+		//creates and initializes the heatmap
+		var config = {
+			element: this.$el[0],
+			radius: 6,
+			gradient: { 0.35: "rgb(0,0,255)", 0.5: "rgb(0,255,0)", 0.6: "yellow", 0.7: "rgb(255,100,0)", 0.75: "rgb(255,0,0)", 1.0: "rgb(255,0,0)" },
+			opacity: 50
+			
+		};
+		
+		this.heatmap = h337.create(config);
+    },
+    events: {
+        "click .calculate": "render"
     },
 	
     render: function() {
-		this.$el.html("");
 		this.collection.reset();
 		
 		for (var i = 0; i <= height; i += 9) {
@@ -19,20 +34,6 @@ var DamageHeatMapView = Backbone.View.extend({
 			}
 		}
 
-		// heatmap configuration
-		var el = document.getElementById("damageheatmap");
-		var el2 = this.$el;
-		var config = {
-			element: el,
-			radius: 6,
-			gradient: { 0.35: "rgb(0,0,255)", 0.5: "rgb(0,255,0)", 0.6: "yellow", 0.7: "rgb(255,100,0)", 0.75: "rgb(255,0,0)", 1.0: "rgb(255,0,0)" },
-			opacity: 50
-			
-		};
-		
-		//creates and initializes the heatmap
-		var heatmap = h337.create(config);
-	 
 		// let's get some data
 		var data = [];
 		var max = 0;
@@ -57,7 +58,7 @@ var DamageHeatMapView = Backbone.View.extend({
 			data: data
 		};
 	 
-		heatmap.store.setDataSet(dataSet);
+		this.heatmap.store.setDataSet(dataSet);
 	
     }
 });
