@@ -47,6 +47,11 @@ var ResonatorView = Backbone.View.extend({
     },
 
     render: function () {
+        if (this.model.get("highlight")) {
+            this.raphaElement.attr("r",RESO_RADIUS*2);
+        } else {
+            this.raphaElement.attr("r",RESO_RADIUS);
+        }
         if (this.model.get("energyTotal") <= 0) {
             this.raphaElement.hide();
             this.raphaElementTxt.hide();

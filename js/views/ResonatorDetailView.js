@@ -1,6 +1,6 @@
 var ResonatorDetailView = Backbone.View.extend({
     tagName: "td",
-    className: "resoInfo",
+    className: "resoInfoCell",
     model: Resonator,
     position: "N",
     initialize: function (args) {
@@ -10,7 +10,9 @@ var ResonatorDetailView = Backbone.View.extend({
     },
     events: {
         "click .arrow-up": "incLevel",
-        "click .arrow-down": "decLevel"
+        "click .arrow-down": "decLevel",
+        "mouseover .resoInfo": "highlight",
+        "mouseout .resoInfo": "unhighlight"
     },
     incLevel: function () {
         var level = this.model.get("level");
@@ -25,6 +27,12 @@ var ResonatorDetailView = Backbone.View.extend({
             this.model.set("level",level-1);
         }
         portal.fill();
+    },
+    highlight: function (e) {
+        this.model.set("highlight",true)
+    },
+    unhighlight: function(e) {
+        this.model.set("highlight",false);
     },
     render: function () {
         var level = this.model.get("level");
@@ -41,7 +49,7 @@ var ResonatorDetailView = Backbone.View.extend({
 });
 
 var ResonatorDetailViewTemplate = '\
-        <div style="position: relative; height: 30px">\
+        <div class="resoInfo" style="position: relative; height: 30px; margin: 2px">\
             <div style="position: absolute; left:0 ; top:0"><%- level %></div>\
             <div style="position: absolute; left: 10px; width: 50px; border: 1px solid gray">\
                 <span style="width: <%- perc %>%; background-color: <%- levelcolor %>; display: block" >&nbsp;</span>\

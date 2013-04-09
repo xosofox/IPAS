@@ -6,6 +6,8 @@ var AttackInfoView = Backbone.View.extend({
     showPosition: function () {
         playerView.model.set({x: this.model.get("x"), y: this.model.get("y")});
         playerView.render();
+        attackDamageView.setModel(this.model);
+        attackDamageView.render();
     },
     hidePosition: function () {
         playerView.hide();

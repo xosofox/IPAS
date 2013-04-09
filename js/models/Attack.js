@@ -20,7 +20,8 @@ var Attack = Backbone.Model.extend({
 
     calculate: function () {
         var me = this;
-        var dpr = this.get("damagePerResonator");
+        var dpr = [];
+        this.set("damagePerResonator",dpr);
         var formula = attackSetup.get("formula");
         _.each(resonatorViews, function (resoView, i) {
             var level = me.get("level");
