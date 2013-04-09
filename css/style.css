@@ -17,3 +17,21 @@ a {
 li.old {
     display: none;
 }
+
+td.resoInfo {
+    width: 100px;
+}
+
+.arrow-up {
+    border-color: transparent transparent gray !important;
+    border-style: solid;
+    border-width: 0 8px 8px 8px;
+    margin-bottom: 4px;
+}
+
+.arrow-down{
+    border-color: gray transparent transparent;
+    border-style: solid;
+    border-width: 8px 8px 8px;
+}
+
