@@ -24,6 +24,8 @@
     <script type="text/javascript" src="js/models/Position.js"></script>
     <script type="text/javascript" src="js/models/Resonator.js"></script>
     <script type="text/javascript" src="js/models/ResonatorCollection.js"></script>
+    <script type="text/javascript" src="js/models/Shield.js"></script>
+    <script type="text/javascript" src="js/models/ShieldCollection.js"></script>
 
     <script type="text/javascript" src="js/views/AttackDamageView.js"></script>
     <script type="text/javascript" src="js/views/AttackInfoView.js"></script>
@@ -38,6 +40,8 @@
     <script type="text/javascript" src="js/views/ResonatorDetailList.js"></script>
     <script type="text/javascript" src="js/views/ResonatorDetailView.js"></script>
     <script type="text/javascript" src="js/views/ResonatorView.js"></script>
+    <script type="text/javascript" src="js/views/ShieldList.js"></script>
+    <script type="text/javascript" src="js/views/ShieldView.js"></script>
 
     <script type="text/javascript" src="js/router/AppRouter.js"></script>
 
@@ -117,10 +121,11 @@
         <table width="100%">
             <tbody id="resonatorlist"></tbody>
         </table>
+        Shields
         <table width="100%">
             <tbody id="shieldlist"></tbody>
         </table>
-
+        Click shield to change
     </div>
 </div>
 
@@ -234,6 +239,10 @@ How the hell does Ingress really do it??? <a
             el: "#resonatorlist",
             collection: resonators
         });
+        var shieldlist = new ShieldList({
+            el: "#shieldlist",
+            collection: portal.get("shields")
+        })
 
         var pinfo = new PortalInfoView({
             model: portal,

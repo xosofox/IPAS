@@ -32,6 +32,28 @@ var burster_damage = [150, 300, 500, 900, 1200, 1500, 1800, 2700];
 var burster_range = [42, 48, 58, 72, 90, 112, 138, 168];
 var level_color = ["#fece5a", "#ffa630", "#ff7315", "#e40000", "#fd2992", "#eb26cd", "#c124e0", "#9627f4"];
 
+var SHIELD_TYPES=["-","c","r","v"];
+var SHIELD_TITLE = {
+    "-": "none",
+    c: "common",
+    r: "rare",
+    v: "very rare"
+};
+
+var SHIELD_MITIGATION = {
+    "-": 0,
+    c: 6,
+    r: 8,
+    v: 10
+}
+
+var SHIELD_COLOR = {
+    "-": "white",
+    c: "pink",
+    r: "blue",
+    v: "purple"
+}
+
 var DAMAGE_FUNCTIONS = {
     "linear": {
         title: "Linear",

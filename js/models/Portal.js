@@ -1,20 +1,17 @@
 var Portal = Backbone.Model.extend({
     resonators: {},
-    shields: [],
+    shields: {},
     level: {},
     defaults: {
         decayDays: 0,
         level: 1,
-        shields: [0, 0, 0, 0]
     },
     initialize: function () {
         _.bindAll(this, "reposition", "applyPreset", "saveConfig", "reset", "recharge", "fill");
         this.set("resonators", new ResonatorCollection());
+        this.set("shields", new ShieldCollection());
         this.resonators = this.get("resonators");
         //init 8 resos
-        for (var i = 0; i < 8; i++) {
-            this.resonators.add({});
-        }
         this.listenTo(this.resonators, "add change", this.reposition);
         this.saveConfig();
     },
@@ -69,7 +66,7 @@ var Portal = Backbone.Model.extend({
         this.resonators.each(function (reso) {
             hashparts.push(reso.get("level") + "," + reso.get("distanceToPortal") + "," + reso.get("energyTotal"));
         });
-        return hashparts.join(";") + "|" + this.get("shields").join(",");
+        return hashparts.join(";") + "|" + this.get("shields").getHash();
     },
     saveConfig: function () {
         this.set("config", this.getConfigHash());
