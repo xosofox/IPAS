@@ -5,6 +5,7 @@ var Portal = Backbone.Model.extend({
     defaults: {
         decayDays: 0,
         level: 1,
+        rechargeXMused: -1
     },
     initialize: function () {
         _.bindAll(this, "reposition", "applyPreset", "saveConfig", "reset", "recharge", "fill");
@@ -42,9 +43,6 @@ var Portal = Backbone.Model.extend({
         } else {
             alert("Could not find preset " + presetId);
         }
-        this.fill();
-        this.saveConfig();
-        this.decay();
     },
     loadFromConfigHash: function (confighash) {
         var parts = confighash.split("|");
@@ -84,19 +82,29 @@ var Portal = Backbone.Model.extend({
             e.set("energyTotal", e.getMaxEnergy());
         });
     },
+    commit: function () {
+        this.fill();
+        this.saveConfig();
+        this.decay();
+    },
     recharge: function () {
-        var charge = Math.round(1000 / this.countResos());
-        this.resonators.each(function (e) {
-            var energy = e.get("energyTotal");
-            var maxEnergy = e.getMaxEnergy();
-            if (energy > 0) {
-                if ((energy + charge) > maxEnergy) {
-                    e.set("energyTotal", maxEnergy);
-                } else {
-                    e.set("energyTotal", energy + charge);
-                }
+        var resosInNeed =[];
+        this.resonators.each(function (reso,i) {
+            if (reso.needsEnergy()) {
+                resosInNeed.push(i);
             }
         });
+        console.log(resosInNeed);
+        var unused=0;
+        if (resosInNeed.length>0) {
+            var charge=Math.round(1000/resosInNeed.length);
+            _.each(resosInNeed, function (i) {
+                unused+=this.resonators.at(i).charge(charge);
+            })
+        } else {
+            unused=1000;
+        }
+        this.set("rechargeXMused",1000-unused);
     },
     reset: function () {
         this.loadFromConfigHash(this.get("config"));

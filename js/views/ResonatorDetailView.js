@@ -19,14 +19,14 @@ var ResonatorDetailView = Backbone.View.extend({
         if (level<8) {
             this.model.set("level",level+1);
         }
-        portal.fill();
+        portal.commit();
     },
     decLevel: function () {
         var level = this.model.get("level");
         if (level>1) {
             this.model.set("level",level-1);
         }
-        portal.fill();
+        portal.commit();
     },
     highlight: function (e) {
         this.model.set("highlight",true)
