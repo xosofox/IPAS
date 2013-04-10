@@ -11,8 +11,6 @@ var ResonatorDetailList = Backbone.View.extend({
         portal.recharge();
     },
     showRechargeXM: function() {
-        console.log("recharge render");
-        console.log(portal.get("rechargeXMused"));
         $('#rechargeXMused').text(portal.get("rechargeXMused")+" XM used");
     },
     render: function () {

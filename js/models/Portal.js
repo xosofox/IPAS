@@ -94,7 +94,6 @@ var Portal = Backbone.Model.extend({
                 resosInNeed.push(i);
             }
         });
-        console.log(resosInNeed);
         var unused=0;
         if (resosInNeed.length>0) {
             var charge=Math.round(1000/resosInNeed.length);
