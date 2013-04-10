@@ -8,10 +8,11 @@ var Portal = Backbone.Model.extend({
         rechargeXMused: -1
     },
     initialize: function () {
-        _.bindAll(this, "reposition", "applyPreset", "saveConfig", "reset", "recharge", "fill");
+        _.bindAll(this, "reposition", "applyPreset", "saveConfig", "reset", "recharge", "fill","applyShields");
         this.set("resonators", new ResonatorCollection());
         this.set("shields", new ShieldCollection());
         this.resonators = this.get("resonators");
+        this.shields = this.get("shields");
         //init 8 resos
         this.listenTo(this.resonators, "add change", this.reposition);
         this.saveConfig();
@@ -43,6 +44,7 @@ var Portal = Backbone.Model.extend({
         } else {
             alert("Could not find preset " + presetId);
         }
+        this.commit();
     },
     loadFromConfigHash: function (confighash) {
         var parts = confighash.split("|");
@@ -106,6 +108,10 @@ var Portal = Backbone.Model.extend({
             unused = 1000;
         }
         this.set("rechargeXMused", 1000 - unused);
+    },
+    applyShields: function(damage) {
+        //reduce damage due to shields
+        return damage * (100-this.shields.totalMitigation()) / 100;
     },
     reset: function () {
         this.loadFromConfigHash(this.get("config"));

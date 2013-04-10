@@ -11,7 +11,7 @@ var ShieldList = Backbone.View.extend({
         //render in same order as IITC
         this.collection.each(function (shield) {
             var sv = new ShieldView({
-                model: shield,
+                model: shield
             });
             sv.render();
             tr.append(sv.el);
