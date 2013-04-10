@@ -79,7 +79,9 @@ var Portal = Backbone.Model.extend({
     },
     fill: function () {
         this.resonators.each(function (e) {
-            e.set("energyTotal", e.getMaxEnergy());
+            if (e.get("energyTotal") > 0) {
+                e.set("energyTotal", e.getMaxEnergy());
+            }
         });
     },
     commit: function () {
@@ -88,22 +90,22 @@ var Portal = Backbone.Model.extend({
         this.decay();
     },
     recharge: function () {
-        var resosInNeed =[];
-        this.resonators.each(function (reso,i) {
+        var resosInNeed = [];
+        this.resonators.each(function (reso, i) {
             if (reso.needsEnergy()) {
                 resosInNeed.push(i);
             }
         });
-        var unused=0;
-        if (resosInNeed.length>0) {
-            var charge=Math.round(1000/resosInNeed.length);
+        var unused = 0;
+        if (resosInNeed.length > 0) {
+            var charge = Math.round(1000 / resosInNeed.length);
             _.each(resosInNeed, function (i) {
-                unused+=this.resonators.at(i).charge(charge);
+                unused += this.resonators.at(i).charge(charge);
             })
         } else {
-            unused=1000;
+            unused = 1000;
         }
-        this.set("rechargeXMused",1000-unused);
+        this.set("rechargeXMused", 1000 - unused);
     },
     reset: function () {
         this.loadFromConfigHash(this.get("config"));

@@ -15,7 +15,7 @@ var AttackInfoView = Backbone.View.extend({
     render: function () {
         var level = this.model.get("level");
         var html = '';
-        html += ('<span style="color: ' + level_color[level - 1] + '">L' + level + '</span> ');
+        html += ('<span style="color: ' + level_color[level] + '">L' + level + '</span> ');
         var damageTotal = this.model.get("damageTotal");
         var energyPortal = this.model.get("energyPortal");
         var energyPortalMax = this.model.get("energyPortalMax");

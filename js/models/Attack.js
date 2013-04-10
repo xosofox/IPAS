@@ -45,7 +45,7 @@ var Attack = Backbone.Model.extend({
                 damage = 0;
             }
 
-            var resoCapa = reso_capacity[resoView.model.get("level") - 1];
+            var resoCapa = reso_capacity[resoView.model.get("level")];
             dpr[i] = {};
             dpr[i].damage = damage;
             dpr[i].percent = damage / resoCapa;

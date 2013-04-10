@@ -23,7 +23,14 @@ var ResonatorDetailView = Backbone.View.extend({
     },
     decLevel: function () {
         var level = this.model.get("level");
-        if (level>1) {
+        if (level<=0) {
+            return false;
+        }
+
+        if (level==1) {
+            this.model.set("energyTotal",0);
+            this.model.set("level",0);
+        } else {
             this.model.set("level",level-1);
         }
         portal.commit();
@@ -42,7 +49,7 @@ var ResonatorDetailView = Backbone.View.extend({
         }
         var data = this.model.toJSON();
         data.perc=perc;
-        data.levelcolor=level_color[level-1];
+        data.levelcolor=level_color[level];
         this.$el.html(this.template(data));
         return this;
     }

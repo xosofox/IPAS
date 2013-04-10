@@ -47,6 +47,6 @@ var PortalInfoView = Backbone.View.extend({
     },
     render: function () {
         var level = this.model.get("level");
-        this.portallevel.text(level).css("color", level_color[level - 1]);
+        this.portallevel.text(level).css("color", level_color[level]);
     }
 });

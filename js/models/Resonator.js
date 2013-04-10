@@ -5,7 +5,7 @@ var Resonator = Backbone.Model.extend({
 		level: 1
 	},
 	getMaxEnergy: function () {
-		return reso_capacity[this.get("level") - 1];
+		return reso_capacity[this.get("level")];
 	},
 	getPercentage: function () {
 		return Math.round(1000 * this.get("energyTotal") / this.getMaxEnergy()) / 10;
