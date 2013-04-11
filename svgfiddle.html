@@ -23,15 +23,17 @@
 
     var i=document.getElementById('svgpath');
     var e;
-    $("#svgpath").keyup(function () {
-		    var path=i.value;
-		    if (path != "") {
-		    	if (typeof e != "undefined") {
-			e.remove();
+    $("#svgpath").keyup(render);
+	function render () {
+		var path=i.value;
+		if (path != "") {
+			if (typeof e != "undefined") {
+				e.remove();
 			}
 			e=paper.path(path).attr({fill:"red",stroke:"white"});
-			}
-			});
+		}
+	};
+	render();
 </script>
 </body>
 </html>
