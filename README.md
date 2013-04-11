@@ -7,14 +7,6 @@ This simulator lets you plan an attack on an enemy portal. It tries to simulate 
 
 As there are some game mechanisms not fully analysed yet, you can switch between different calculation methods regarding shield influence and damage reduction due to distance.
 
-Currently working:
+You can use it online on http://ipas.graphracer.com
 
-- rendering of the resos in level's color,
-- reso indicators on the left
-- dragndrop resos
-- select preset configurations
-- select days of decay
-- click to create an attack
-- calculate damage to the resonators
-- show damage result details
-- show damage percentage on each reso (a little bit like the Ingress app, you know...)
+Also check out the <a href="http://iitc.jonatkins.com">IITC</a> integration to simulate an attack on actual Ingress portals
