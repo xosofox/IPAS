@@ -9,7 +9,7 @@ var Portal = Backbone.Model.extend({
         totalRechargeXMused: 0
     },
     initialize: function () {
-        _.bindAll(this, "reposition", "applyPreset", "saveConfig", "reset", "recharge", "fill","applyShields");
+        _.bindAll(this, "reposition", "applyPreset", "saveConfig", "reset", "recharge", "fill", "applyShields");
         this.set("resonators", new ResonatorCollection());
         this.set("shields", new ShieldCollection());
         this.resonators = this.get("resonators");
@@ -108,17 +108,18 @@ var Portal = Backbone.Model.extend({
         } else {
             unused = 1000;
         }
-        var used=1000-unused;
+        var used = 1000 - unused;
         this.set("rechargeXMused", used);
-        var t=this.get("totalRechargeXMused");
-        t+=used;
-        var t=this.set("totalRechargeXMused",t);
+        var t = this.get("totalRechargeXMused");
+        t += used;
+        var t = this.set("totalRechargeXMused", t);
     },
-    applyShields: function(damage) {
+    applyShields: function (damage) {
         //reduce damage due to shields
-        return damage * (100-this.shields.totalMitigation()) / 100;
+        return damage * (100 - this.shields.totalMitigation()) / 100;
     },
     reset: function () {
+        this.set({"rechargeXMused": 0, "totalRechargeXMused": 0});
         this.loadFromConfigHash(this.get("config"));
     }
 });

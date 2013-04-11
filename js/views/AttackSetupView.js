@@ -30,9 +30,9 @@ var AttackSetupView = Backbone.View.extend({
         "change .formulaSelector": "attackformula",
         "change #heatmapcheck": "heatmap"
     },
-    heatmap: function(e) {
+    heatmap: function (e) {
         var heat = $(e.currentTarget).is(":checked");
-        this.model.set("heatmap",heat);
+        this.model.set("heatmap", heat);
     },
     attacklevel: function (e) {
         var level = $(e.currentTarget).val();

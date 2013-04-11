@@ -19,7 +19,7 @@ var AttackSummaryView = Backbone.View.extend({
         for (var i = 0; i < 8; i++) {
             var b = burstercount[i];
             if (b > 0) {
-                htmls.push(b + 'x <span style="color:' + level_color[i+1] + '">L' + (i + 1) + '</span>');
+                htmls.push(b + 'x <span style="color:' + level_color[i + 1] + '">L' + (i + 1) + '</span>');
             }
         }
         this.$el.html(htmls.join(", ") + ' <span style="cursor: pointer" class="reset">Reset</span>');

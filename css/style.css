@@ -6,7 +6,7 @@ body {
 }
 
 a {
-	color: #999;
+    color: #999;
 }
 
 .clearer {
@@ -29,9 +29,8 @@ td.resoInfoCell {
     margin-bottom: 4px;
 }
 
-.arrow-down{
+.arrow-down {
     border-color: gray transparent transparent;
     border-style: solid;
     border-width: 8px 8px 8px;
 }
-

@@ -9,7 +9,7 @@
     <script type="text/javascript" src="js/libs/raphael-min.js"></script>
     <script type="text/javascript" src="js/libs/html5slider.js"></script>
     <script type="text/javascript" src="js/libs/jquery.sparkline.min.js"></script>
-	<script type="text/javascript" src="js/libs/heatmap.js"></script>
+    <script type="text/javascript" src="js/libs/heatmap.js"></script>
 
     <script type="text/javascript" src="js/presets.js"></script>
     <script type="text/javascript" src="js/settings.js"></script>
@@ -30,7 +30,7 @@
     <script type="text/javascript" src="js/views/AttackDamageView.js"></script>
     <script type="text/javascript" src="js/views/AttackInfoView.js"></script>
     <script type="text/javascript" src="js/views/AttackListView.js"></script>
-	<script type="text/javascript" src="js/views/DamageHeatMapView.js"></script>
+    <script type="text/javascript" src="js/views/DamageHeatMapView.js"></script>
     <script type="text/javascript" src="js/views/AttackSetupView.js"></script>
     <script type="text/javascript" src="js/views/AttackSummaryView.js"></script>
     <script type="text/javascript" src="js/views/BursterRangeView.js"></script>
@@ -130,8 +130,9 @@
 </div>
 
 <div style="width: 500px; height: 500px; float: left; background-color: #333">
-	<div id="damageheatmap" style="background-color: #999; width: 500px; height: 500px; position: absolute; display: none"></div>
-	<div id="paper" style="width: 500px; height: 500px; position: absolute; z-index: 100000000;"></div>
+    <div id="damageheatmap"
+         style="background-color: #999; width: 500px; height: 500px; position: absolute; display: none"></div>
+    <div id="paper" style="width: 500px; height: 500px; position: absolute; z-index: 100000000;"></div>
 </div>
 
 <div id="attackinfo" style="float: left">
@@ -149,7 +150,8 @@ How the hell does Ingress really do it??? <a
         href="https://github.com/Xosofox/IPAS/issues">Bug? Feature request? Check here</a><br />
 <span>V 0.9.9 - Resistance FTW! Made by GraphRacer <a href="http://github.com/xosofox/IPAS">GitHub</a></span> <a
         href="http://profiles.google.com/xosofox">G+</a> <a href="http://twitter.com/xosofox">Twitter</a>
-<g:plusone href="http://ipas.graphracer.com" size="small"></g:plusone> - <span style="color: #e00">Funny Google gave me my +1 back after resetting it to 0</span>
+<g:plusone href="http://ipas.graphracer.com" size="small"></g:plusone>
+- <span style="color: #e00">Funny Google gave me my +1 back after resetting it to 0</span>
 <script type="text/javascript">
     (function () {
         var po = document.createElement('script');
@@ -198,8 +200,8 @@ How the hell does Ingress really do it??? <a
         }
         var x = e.offsetX;
         var y = e.offsetY;
-		var attack = new Attack({x: x, y: y, level: attackSetup.get("level")});
-		attack.attack();
+        var attack = new Attack({x: x, y: y, level: attackSetup.get("level")});
+        attack.attack();
         attacks.add(attack);
         e.preventDefault();
     });
@@ -211,7 +213,7 @@ How the hell does Ingress really do it??? <a
     var portalElements;
     var attacks = new AttackCollection();
     var prediction = new Prediction();
-	var mockAttacks = new AttackCollection();
+    var mockAttacks = new AttackCollection();
     var attackSetup = new AttackSetup();
     var attackDamageView = new AttackDamageView({});
     var player = new Player();
@@ -220,7 +222,7 @@ How the hell does Ingress really do it??? <a
     });
     var router;
 
-	var damageHeatMapView;
+    var damageHeatMapView;
     var crosshair;
 
     $(document).ready(function () {
@@ -258,9 +260,9 @@ How the hell does Ingress really do it??? <a
             collection: attacks,
             el: '#attacklist'
         });
-		
+
         damageHeatMapView = new DamageHeatMapView({
-			model: attackSetup,
+            model: attackSetup,
             collection: mockAttacks,
             el: '#damageheatmap'
         });
@@ -281,7 +283,7 @@ How the hell does Ingress really do it??? <a
 
         router = new AppRouter();
         Backbone.history.start();
-		
+
     });
     border.toFront();
 
