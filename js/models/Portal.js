@@ -60,6 +60,10 @@ var Portal = Backbone.Model.extend({
                 energyTotal: parseInt(values[2], 10)
             });
         });
+        var shieldVals = shieldhash.split(",");
+        _.each(shieldVals, function (short,i) {
+            this.shields.at(i).set("short",short);
+        },this);
         this.saveConfig();
     },
     getConfigHash: function () {
