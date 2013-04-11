@@ -49,9 +49,9 @@ var SHIELD_MITIGATION = {
 
 var SHIELD_COLOR = {
     "-": "white",
-    c: "pink",
-    r: "blue",
-    v: "purple"
+    c: "#84FBBD",
+    r: "#AD8EFF",
+    v: "#F78AF7"
 }
 
 var DAMAGE_FUNCTIONS = {

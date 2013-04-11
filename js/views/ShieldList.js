@@ -17,5 +17,6 @@ var ShieldList = Backbone.View.extend({
             tr.append(sv.el);
         });
         this.$el.html(tr);
+        $('#totalMitigation').text(this.collection.totalMitigation());
     }
 });

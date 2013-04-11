@@ -107,14 +107,10 @@
     }
 </script>
 
-<div id="setup" style="float: left; width: 200px">
+<div id="setup" style="float: left; width: 300px">
     Portal Info<br />
 
     <div id="portalinfo"></div>
-    <a style="cursor: pointer" onclick="router.navigate(portal.getConfigHash(), {trigger: true, replace: true});">Portal
-        Status Permalink</a><br />
-    <a href="iitc.html">IITC Integration Information</a>
-    <br />
     Resonator Info<br />
 
     <div style="position: relative">
@@ -125,8 +121,12 @@
         <table width="100%">
             <tbody id="shieldlist"></tbody>
         </table>
-        Click shield to change
+        Click shield to change. Total mitigation: <span id="totalMitigation">0</span>
     </div>
+    <a style="cursor: pointer" onclick="router.navigate(portal.getConfigHash(), {trigger: true, replace: true});">Portal
+        Status Permalink</a><br />
+    <a href="iitc.html">IITC Integration Information</a>
+    <br />
 </div>
 
 <div style="width: 500px; height: 500px; float: left; background-color: #333">

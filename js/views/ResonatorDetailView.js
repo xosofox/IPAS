@@ -50,21 +50,27 @@ var ResonatorDetailView = Backbone.View.extend({
         var data = this.model.toJSON();
         data.perc=perc;
         data.levelcolor=level_color[level];
+        if (this.model.get("highlight")) {
+            data.highlightclass="highlight";
+        } else {
+            data.highlightclass="";
+        }
         this.$el.html(this.template(data));
         return this;
     }
 });
 
 var ResonatorDetailViewTemplate = '\
-        <div class="resoInfo" style="position: relative; height: 30px; margin: 2px">\
-            <div style="position: absolute; left:0 ; top:0"><%- level %></div>\
-            <div style="position: absolute; left: 10px; width: 50px; border: 1px solid gray">\
+        <div class="resoInfo <%- highlightclass  %>" style="position: relative; height: 30px; margin: 2px">\
+            <div style="position: absolute; left:27px ; top:0; z-index: 20; color: <% if (level <3) { %>#000000<% } else { %>white<% } %>"><%- level %></div>\
+            <div style="position: absolute; left: 0px; width: 60px; border: 1px solid gray">\
                 <span style="width: <%- perc %>%; background-color: <%- levelcolor %>; display: block" >&nbsp;</span>\
             </div>\
             <div style="position: absolute; left: 70px">\
-                <div class="arrow-up"></div>\
-                <div class="arrow-down"></div>\
+                <div class="arrow-up" title="Level up"></div>\
+                <div class="arrow-down" title="Level down"></div>\
             </div>\
+            <div style="position: absolute; left:95px" class="distance"><%- distanceToPortal %>m</div>\
         </div>\
         ';
 

@@ -29,6 +29,7 @@ var ResonatorView = Backbone.View.extend({
                         } else {
                             me.model.set("distanceToPortal", d);
                         }
+                        portal.commit();
                     }
                 }, 100);
             },

@@ -5,7 +5,8 @@ var Portal = Backbone.Model.extend({
     defaults: {
         decayDays: 0,
         level: 1,
-        rechargeXMused: -1
+        rechargeXMused: -1,
+        totalRechargeXMused: 0
     },
     initialize: function () {
         _.bindAll(this, "reposition", "applyPreset", "saveConfig", "reset", "recharge", "fill","applyShields");
@@ -107,7 +108,11 @@ var Portal = Backbone.Model.extend({
         } else {
             unused = 1000;
         }
-        this.set("rechargeXMused", 1000 - unused);
+        var used=1000-unused;
+        this.set("rechargeXMused", used);
+        var t=this.get("totalRechargeXMused");
+        t+=used;
+        var t=this.set("totalRechargeXMused",t);
     },
     applyShields: function(damage) {
         //reduce damage due to shields

@@ -23,7 +23,7 @@ var ShieldView = Backbone.View.extend({
 });
 
 var ShieldTemplate = '\
-<td align="center" style="height: 40px; width: 40px; border: 1px solid white">\
+<td align="center" style="height: 60px; width: 60px; border: 1px solid white">\
         <span style="font-size: 8pt; color: <%- color %>"><%- title %></span>\
 </td>\
         ';
