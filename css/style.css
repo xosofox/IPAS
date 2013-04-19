@@ -34,3 +34,8 @@ td.resoInfoCell {
     border-style: solid;
     border-width: 8px 8px 8px;
 }
+
+select {
+    background-color: #ccc;
+    border: 0px;
+}

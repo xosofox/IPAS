@@ -64,13 +64,15 @@
 <h1>IPAS - Ingress Portal Attack Simulator</h1>
 
 <div style="width: 45%; float: left; padding: 2px;">
-    Simulate an Attack!<br />Select a configuration, drag & drop the resos, then click to attack.<br />
-    Work in progress: shields<br />
-    Yet to come: bug/browser fixes, UI fixes, ...<br />
+    Simulate an Attack!<br />Select a configuration, drag & drop the resos or use the arrows, then click to attack.<br />
+    <br />
+    <b>Work in progress</b>: Renew the UI - switch between config & attack mode to avoid strange behaviours<br />
+    <b>Yet to come</b>: Validate formulas, adjust to upcoming game changes, predict XM use...<br />
 </div>
 <div style="width: 45%; float: left; margin-left: 10px;padding: 2px;">
     Latest changes
     <ul>
+        <li>13-04-19 1.0.0: Shields implemented, some minor UI changes</li>
         <li>13-04-09 0.9.9: Set individual reso levels</li>
         <li>13-04-08 0.9.8: HEATMAP by <a href="https://github.com/eggers">eggers</a> integrated</li>
         <li class="old">13-04-08 0.9.7: Hover over attack list to see logged postion</li>
@@ -111,8 +113,6 @@
     Portal Info<br />
 
     <div id="portalinfo"></div>
-    Resonator Info<br />
-
     <div style="position: relative">
         <table width="100%">
             <tbody id="resonatorlist"></tbody>
@@ -124,8 +124,7 @@
         Click shield to change. Total mitigation: <span id="totalMitigation">0</span>
     </div>
     <a style="cursor: pointer" onclick="router.navigate(portal.getConfigHash(), {trigger: true, replace: true});">Portal
-        Status Permalink</a><br />
-    <a href="iitc.html">IITC Integration Information</a>
+        Configuration Permalink</a><br />
     <br />
 </div>
 
@@ -145,6 +144,9 @@
 </div>
 
 <div class="clearer"></div>
+<br />
+<a href="iitc.html">IITC Integration Information</a>
+<br />
 How the hell does Ingress really do it??? <a
         href="https://plus.google.com/communities/115073414859905315934">Discuss</a><br /><a
         href="https://github.com/Xosofox/IPAS/issues">Bug? Feature request? Check here</a><br />
@@ -193,13 +195,17 @@ How the hell does Ingress really do it??? <a
 
     //to be refactored
     $("#paper").click(function (e) {
-        if (typeof e.offsetX === "undefined" || typeof e.offsetY === "undefined") {
+        //if (typeof e.offsetX === "undefined" || typeof e.offsetY === "undefined") {
             var targetOffset = $(e.currentTarget).offset();
             e.offsetX = e.pageX - targetOffset.left;
             e.offsetY = e.pageY - targetOffset.top;
-        }
+        //}
         var x = e.offsetX;
         var y = e.offsetY;
+        console.log(e);
+
+        console.log(x,y);
+        console.log(e.currentTarget);
         var attack = new Attack({x: x, y: y, level: attackSetup.get("level")});
         attack.attack();
         attacks.add(attack);

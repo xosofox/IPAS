@@ -3,7 +3,7 @@ var PredictionSetupView = Backbone.View.extend({
     initialize: function () {
         //this.listenTo(this.model, "change", this.render)
         var html = "";
-        html += '<input type="checkbox" id="predictioncheck"><label for="predictioncheck">Predict damage</label>';
+        html += '<input type="checkbox" id="predictioncheck"><label for="predictioncheck">Predict damage % while hovering</label>';
         html += '<br />';
         this.$el.html(html);
         _.bindAll(this, "switchprediction", "predictDamage");
