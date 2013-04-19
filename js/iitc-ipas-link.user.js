@@ -1,7 +1,7 @@
 // ==UserScript==
 // @id             iitc-plugin-ipas-link@graphracer
 // @name           IITC Plugin: simulate an attack on portal
-// @version        0.2.1.20130408.100000
+// @version        0.3.0.20130420.000000
 // @namespace      https://github.com/xosofox/IPAS
 // @updateURL      http://ipas.graphracer.com/js/iitc-ipas-link.meta.js
 // @downloadURL    http://ipas.graphracer.com/js/iitc-ipas-link.user.js
@@ -31,7 +31,6 @@ function wrapper() {
         $('.linkdetails').append('<aside style="text-align: center; display: block"><a href="http://ipas.graphracer.com/index.html#' + window.plugin.ipasLink.getHash(d.portalDetails) + '" target="ipaswindow">simulate attack with IPAS</a></aside>');
     }
 
-
     window.plugin.ipasLink.getHash = function (d) {
         var hashParts = [];
         $.each(d.resonatorArray.resonators, function (ind, reso) {
@@ -41,7 +40,21 @@ function wrapper() {
                 hashParts.push("1,20,0");
             }
         });
-        return hashParts.join(";") + "|" + "r,c,0,v";
+        var resos = hashParts.join(";");
+
+        hashParts = [];
+        $.each(d.portalV2.linkedModArray, function (ind, mod) {
+            //shields only, so far...
+            var s = "0";
+            if (mod) {
+                if (mod.type === "RES_SHIELD") {
+                    s = mod.rarity.charAt(0).toLowerCase();
+                }
+            }
+            hashParts.push(s);
+        });
+        var shields = hashParts.join(",");
+        return resos + "|" + shields;
     }
 
     var setup = function () {
