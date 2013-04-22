@@ -1,0 +1,257 @@
+<html>
+<head>
+    <title>Damage data analysis</title>
+    <script type="text/javascript" src="js/libs/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="js/libs/underscore-min.js"></script>
+    <script type="text/javascript" src="js/libs/backbone-min.js"></script>
+    <script type="text/javascript" src="js/libs/highcharts.js"></script>
+    <script type="text/javascript" src="js/analysis/attacks_clean.js"></script>
+    <script type="text/javascript" src="js/settings.js"></script>
+
+
+    <script type="text/javascript">
+        var Hit = Backbone.Model.extend({
+            defaults: {
+                level: 0,
+                critical_hit: false,
+                distance: 40,
+                target_destroyed: false,
+                damage: 0,
+                energy: 3000,
+                portal_mitigation: []
+            }
+        })
+
+        var HitCollection = Backbone.Collection.extend({
+            model: Hit
+        });
+
+
+    </script>
+</head>
+
+<!--
+{
+    "burster_level": 7,
+    "hits": [
+      {
+        "level": 3,
+        "critical_hit": false,
+        "distance": 11.84386541006067,
+        "target_destroyed": false,
+        "damage": 1743,
+        "energy": 2000,
+        "portal_mitigation": [
+          null,
+          null,
+          null,
+          null
+        ]
+      },
+      {
+        "level": 4,
+        "critical_hit": false,
+        "distance": 12.384402668462617,
+        "target_destroyed": false,
+        "damage": 1549,
+        "energy": 2500,
+        "portal_mitigation": [
+          null,
+          null,
+          null,
+          null
+        ]
+      },
+
+      -->
+<body>
+    This data is courtesy of the Copenhagen Resistance. <cite>A lot of Enlightened Portals were hurt collecting this
+    data!!!</cite>
+
+    <h3>Attacks</h3>
+    L1:
+    <div id="l1"></div>
+    <br>
+    L2:
+    <div id="l2"></div>
+    <br>
+    L3:
+    <div id="l3"></div>
+    <br>
+    L4:
+    <div id="l4"></div>
+    <br>
+    L5:
+    <div id="l5"></div>
+    <br>
+    L6:
+    <div id="l6"></div>
+    <br>
+    L7:
+    <div id="l7"></div>
+    <br>
+    L8:
+    <div id="l8"></div>
+    <br>
+    <script type="text/javascript">
+        var damageData = [
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            []
+        ];
+
+        //init corridor limits
+        var rangeMin = [];
+        var rangeMax = [];
+        for (var l = 0; l < 8; l++) {
+            rangeMin[l] = [];
+            rangeMax[l] = [];
+            for (var circle = 0; circle < 6; circle++) {
+                rangeMin[l][circle] = 9999999;
+                rangeMax[l][circle] = 0;
+            }
+        }
+
+        var hc = new HitCollection();
+        _.each(ATTACKS, function (a, i) {
+            if (i > 1180) {
+                return false;
+            }
+
+            var l = a.burster_level;
+            hc.reset(a.hits);
+            hc.each(function (h, i) {
+                //skip destroy
+                if (h.get("target_destroyed")) return true;
+
+                //skip shielded portals
+                var shields = h.get("portal_mitigation");
+                for (var i = 0; i < 4; i++) {
+                    if (shields[i] !== null) {
+                        return true;
+                    }
+                }
+
+                //var x = Math.floor(h.get("distance"));
+                var x = h.get("distance");
+                var y = h.get("damage");
+
+                //normalize critical to half
+                if (h.get("critical_hit")) y /= 2;
+
+                var step = burster_steps[l - 1];
+                var circle = Math.floor(x / step);
+
+                //linearize
+                //y = y * Math.pow(2,circle);
+
+                var step = burster_steps[l - 1];
+                var circle = Math.floor(x / step);
+
+                if (rangeMin[l - 1][circle] > y) {
+                    rangeMin[l - 1][circle] = y;
+                }
+
+                if (rangeMax[l - 1][circle] < y) {
+                    rangeMax[l - 1][circle] = y;
+                }
+                damageData[l - 1].push([x, y]);
+            })
+        })
+
+        //ssergnis formula
+        _.each(damageData, function (d, i) {
+            //if (i != 6) return true;
+
+            var ssergni = [];
+            var mins = [];
+            var maxs = [];
+
+            for (var dist = 0; dist < burster_range[i]; dist++) {
+                var xmpAvgDmg = [
+                    226,
+                    376,
+                    676,
+                    1070,
+                    1500,
+                    2100,
+                    3000,
+                    4500
+                ];
+                var damage = xmpAvgDmg[i] * Math.pow(.5, dist / (burster_range[i] / 5));
+                damage = damage < 0 ? 0 : damage;
+                ssergni.push([dist, damage]);
+
+                mins.push([dist, rangeMin[i][Math.floor(dist / burster_steps[i])]]);
+                maxs.push([dist, rangeMax[i][Math.floor(dist / burster_steps[i])]]);
+            }
+
+            $('#l' + (i + 1)).highcharts({
+                chart: {
+                    type: 'scatter',
+                    marginRight: 130,
+                    marginBottom: 25,
+                    height: 700
+                },
+                title: {
+                    text: 'Damage vs Distance - L' + (i + 1) + ' Burster',
+                    x: -20 //center
+                },
+                xAxis: {
+                    title: { text: "Distance"}
+                },
+                yAxis: {
+                    title: {
+                        text: 'Damage'
+                    },
+                    plotLines: [
+                        {
+                            value: 0,
+                            width: 1,
+                            color: '#808080'
+                        }
+                    ]
+                },
+                tooltip: {
+                    valueSuffix: 'XM'
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'top',
+                    x: -10,
+                    y: 100,
+                    borderWidth: 0
+                },
+                series: [
+                    {
+                        name: 'Recorded Damage',
+                        color: 'blue',
+                        data: d
+                        /* },
+                         {
+                         name: "SSergni",
+                         data: ssergni  */
+                    },
+                    {
+                        name: 'Min per range',
+                        color: 'red',
+                        data: mins
+                    },
+                    {
+                        name: 'Max per range',
+                        color: 'red',
+                        data: maxs
+                    }
+                ]
+            });
+        })
+
+    </script>
+</body>
+</html>

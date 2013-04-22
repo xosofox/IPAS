@@ -64,7 +64,8 @@
 <h1>IPAS - Ingress Portal Attack Simulator</h1>
 
 <div style="width: 45%; float: left; padding: 2px;">
-    Simulate an Attack!<br />Select a configuration, drag & drop the resos or use the arrows, then click to attack.<br />
+    Simulate an Attack!<br />Select a configuration, drag & drop the resos or use the arrows, then click to
+    attack.<br />
     <br />
     <b>Work in progress</b>: Renew the UI - switch between config & attack mode to avoid strange behaviours<br />
     <b>Yet to come</b>: Validate formulas, adjust to upcoming game changes, predict XM use...<br />
@@ -196,16 +197,13 @@ How the hell does Ingress really do it??? <a
     //to be refactored
     $("#paper").click(function (e) {
         //if (typeof e.offsetX === "undefined" || typeof e.offsetY === "undefined") {
-            var targetOffset = $(e.currentTarget).offset();
-            e.offsetX = e.pageX - targetOffset.left;
-            e.offsetY = e.pageY - targetOffset.top;
+        var targetOffset = $(e.currentTarget).offset();
+        e.offsetX = e.pageX - targetOffset.left;
+        e.offsetY = e.pageY - targetOffset.top;
         //}
         var x = e.offsetX;
         var y = e.offsetY;
-        console.log(e);
 
-        console.log(x,y);
-        console.log(e.currentTarget);
         var attack = new Attack({x: x, y: y, level: attackSetup.get("level")});
         attack.attack();
         attacks.add(attack);
