@@ -84,6 +84,37 @@
             [],
             []
         ];
+        
+    var damageCount = [
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            []
+            ];
+    var damageTotal = [
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            []
+            ];
+    var damageAvg = [
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            []
+            ];
 
         var hc = new HitCollection();
         _.each(ATTACKS, function (a, i) {
@@ -108,10 +139,25 @@
                 y = y * Math.pow(2,circle);
 
                 damageData[l - 1].push([totMit, y]);
+                if (typeof damageCount[l-1][totMit] === "undefined")
+                        damageCount[l-1][totMit] =0;
+
+                if (typeof damageTotal[l-1][totMit] === "undefined")
+                        damageTotal[l-1][totMit] =0;
+                damageCount[l - 1][totMit]++;
+                damageTotal[l - 1][totMit]+=y;
             })
         });
 
         _.each(damageData, function (d, i) {
+
+                        _.each(damageCount[i],function(c,m) {
+                damageAvg[i].push([m+.2,damageTotal[i][m] / damageCount[i][m]]);
+                                });
+                        console.log(i);
+                        console.log(damageAvg[i]);
+
+
             $('#l' + (i + 1)).highcharts({
                 chart: {
                     type: 'scatter',
@@ -154,8 +200,13 @@
                         name: 'Recorded Damage',
                         color: 'blue',
                         data: d
-                    }
-                ]
+                    },
+                        {
+name: "Average",
+      color: "green",
+      data: damageAvg[i]
+                        }
+            ]
             });
         })
 
