@@ -15,8 +15,8 @@ var ShieldView = Backbone.View.extend({
     },
     render: function () {
         var data = this.model.toJSON;
-        data.title = SHIELD_TITLE[this.model.get("short")];
-        data.color = SHIELD_COLOR[this.model.get("short")];
+        data.title = SHIELD_TITLE[this.model.get("shortType")];
+        data.color = SHIELD_COLOR[this.model.get("shortType")];
         this.$el.html(this.template(data));
         return this;
     }

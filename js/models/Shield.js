@@ -1,23 +1,23 @@
 var Shield = Backbone.Model.extend({
 	defaults: {
-        short: "-",
+        shortType: "-",
         mitigation: 0
     },
-    initialize: function(short) {
-        if (typeof short !== "undefined") {
-            short="-";
+    initialize: function(shortType) {
+        if (typeof shortType !== "undefined") {
+            shortType="-";
         }
-        this.setType(short);
+        this.setType(shortType);
     },
     cycle: function() {
-        var i=_.indexOf(SHIELD_TYPES,this.get("short"));
+        var i=_.indexOf(SHIELD_TYPES,this.get("shortType"));
         i++;
         i=i%4;
         this.setType(SHIELD_TYPES[i]);
     },
-    setType: function(short) {
-        this.set("short",short);
-        this.set("mitigation",SHIELD_MITIGATION[short]);
+    setType: function(shortType) {
+        this.set("shortType",shortType);
+        this.set("mitigation",SHIELD_MITIGATION[shortType]);
     }
 });
 

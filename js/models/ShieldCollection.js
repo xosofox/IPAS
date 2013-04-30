@@ -19,5 +19,5 @@ var ShieldCollection = Backbone.Collection.extend({
         return totMit;
     },
     getHash: function() {
-        return this.pluck("short").join(",");
+        return this.pluck("shortType").join(",");
     }});

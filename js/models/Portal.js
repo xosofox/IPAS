@@ -61,10 +61,10 @@ var Portal = Backbone.Model.extend({
             });
         });
         var shieldVals = shieldhash.split(",");
-        _.each(shieldVals, function (short,i) {
+        _.each(shieldVals, function (shortType,i) {
             //convert 0 to -
-            short = (short === "0") ? "-" : short;
-            this.shields.at(i).setType(short);
+            shortType = (shortType === "0") ? "-" : shortType;
+            this.shields.at(i).setType(shortType);
         },this);
         this.saveConfig();
     },
