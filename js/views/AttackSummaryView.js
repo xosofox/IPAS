@@ -1,11 +1,12 @@
 var AttackSummaryView = Backbone.View.extend({
     initialize: function () {
         _.bindAll(this, "render");
-        this.listenTo(this.collection, "add change reset", this.render);
+        this.listenTo(this.collection, "add change remove reset", this.render);
         this.render();
     },
     events: {
-        "click .reset": "reset"
+        "click .reset": "reset",
+        "click .undo": "undo"
     },
     render: function () {
         var burstercount = [];
@@ -22,10 +23,16 @@ var AttackSummaryView = Backbone.View.extend({
                 htmls.push(b + 'x <span style="color:' + level_color[i + 1] + '">L' + (i + 1) + '</span>');
             }
         }
-        this.$el.html(htmls.join(", ") + ' <span style="cursor: pointer" class="reset">Reset</span>');
+        var resetSpan = ' <span style="cursor: pointer" class="reset">Reset</span>';
+        var undoSpan = ' <span style="cursor: pointer" class="undo">Undo</span>';
+        this.$el.html(htmls.join(", ") + resetSpan + " - " + undoSpan);
     },
     reset: function () {
         this.collection.reset();
         portal.reset();
+    },
+    undo: function () {
+        if(this.collection.length > 0)
+            this.collection.pop();
     }
 });

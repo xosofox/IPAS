@@ -5,7 +5,7 @@ var DamageHeatMapView = Backbone.View.extend({
     initialize: function () {
         _.bindAll(this, "render", "createDataset");
         this.listenTo(this.model, 'change', this.check);
-        this.listenTo(attacks, 'add', this.check);
+        this.listenTo(attacks, 'add remove', this.check);
     },
     check: function (a) {
         if (this.model.get("heatmap")) {
