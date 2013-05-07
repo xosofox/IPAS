@@ -1,7 +1,8 @@
 var AttackInfoView = Backbone.View.extend({
     events: {
         "mouseover": "showPosition",
-        "mouseout": "hidePosition"
+        "mouseout": "hidePosition",
+        "click .undo": "undoAttack"
     },
     showPosition: function () {
         playerView.model.set({x: this.model.get("x"), y: this.model.get("y")});
@@ -21,7 +22,15 @@ var AttackInfoView = Backbone.View.extend({
         var energyPortalMax = this.model.get("energyPortalMax");
         var percentage = Math.round(energyPortal / energyPortalMax * 1000) / 10;
         html += 'Dmg: ' + Math.round(damageTotal / 1000 * 10) / 10 + 'K, Portal: ' + Math.round(energyPortal / 1000 * 10) / 10 + 'K/' + energyPortalMax / 1000 + 'K (' + percentage + '%)';
+        if(this.model.collection.indexOf(this.model) == this.model.collection.length-1)
+            html += '&nbsp;-&nbsp;<span style="cursor: pointer" class="undo">undo</span>';
         this.$el.html(html);
         return this;
+    },
+    undoAttack: function() {
+        if(this.model.collection.indexOf(this.model) == this.model.collection.length-1) {
+            this.model.collection.pop();
+            playerView.hide();
+        }
     }
 });
