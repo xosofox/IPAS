@@ -75,5 +75,13 @@ var Attack = Backbone.Model.extend({
                 resoView.model.set("energyTotal", energy - damage);
             }
         });
+    },
+    undoDamage: function () {
+        var dpr = this.get("damagePerResonator");
+        _.each(resonatorViews, function (resoView, i) {
+            var energy = resoView.model.get("energyTotal");
+            var damage = dpr[i].damage;
+            resoView.model.set("energyTotal", energy + damage);
+        });
     }
 });
