@@ -23,8 +23,8 @@ var AttackSummaryView = Backbone.View.extend({
             }
         }
         this.$el.html(htmls.join(", ") + ' <span style="cursor: pointer" class="reset">Reset</span>');
-	if (htmls.length>0) {
-            this.$el.append('<br />Firing Cost: <span id="bursterCostXM">'+this.collection.bursterCost()+' XM</span>');
+        if (htmls.length > 0) {
+            this.$el.append('<br />Firing Cost: <span id="bursterCostXM">' + this.collection.bursterCost() + ' XM</span>');
         }
     },
     reset: function () {
