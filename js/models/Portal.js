@@ -120,6 +120,20 @@ var Portal = Backbone.Model.extend({
         t += used;
         var t = this.set("totalRechargeXMused", t);
     },
+    deployCost: function() {
+        var xm=0;
+        this.resonators.each(function(reso,i) {
+            var l=reso.get("level");
+            if (l>=1) {
+                xm+=reso_deploy_cost[l-1];
+            }
+        });
+
+        this.shields.each(function(shield,i) {
+            xm+=shield_deploy_cost[shield.get("shortType")];
+        });
+        return xm;
+    },
     applyShields: function (damage) {
         //reduce damage due to shields
         return damage * (100 - this.shields.totalMitigation()) / 100;

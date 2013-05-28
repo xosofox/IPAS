@@ -33,6 +33,15 @@ var burster_base_damage = [136, 224, 408, 630, 855, 1072, 1350, 1755];
 var burster_range = [42, 48, 58, 72, 90, 112, 138, 168];
 var burster_steps = [8, 9, 11, 14, 18, 22, 27, 33];
 var level_color = ['#000', "#fece5a", "#ffa630", "#ff7315", "#e40000", "#fd2992", "#eb26cd", "#c124e0", "#9627f4"];
+var burster_cost =  [ 50, 100, 150, 200, 250, 300, 350, 400 ];
+var reso_deploy_cost = [ 50, 100, 150, 200, 250, 300, 350, 400 ];
+var shield_deploy_cost = {
+	"-": 0,
+	"c": 400,
+	"r": 800,
+	"v": 1000
+};
+
 
 var SHIELD_TYPES = ["-", "c", "r", "v"];
 var SHIELD_TITLE = {
