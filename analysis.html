@@ -126,7 +126,9 @@
                 var circle = Math.floor(x / step);
 
                 //linearize
-                //y = y * Math.pow(2,circle);
+				if (document.location.hash.replace("#","")=="linearize") {
+					y = y * Math.pow(2,circle);
+				}
 
                 var step = burster_steps[l - 1];
                 var circle = Math.floor(x / step);

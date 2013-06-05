@@ -20,6 +20,7 @@ function wrapper() {
 // PLUGIN START ////////////////////////////////////////////////////////
 
 // use own namespace for plugin
+<<<<<<< Updated upstream
     window.plugin.ipasLink = function () {
     };
 
@@ -60,6 +61,31 @@ function wrapper() {
     var setup = function () {
         window.plugin.ipasLink.setupCallback();
     }
+=======
+window.plugin.ipasLink = function() {};
+
+window.plugin.ipasLink.setupCallback = function() {
+      addHook('portalDetailsUpdated', window.plugin.ipasLink.addLink);
+}
+
+window.plugin.ipasLink.addLink = function(d) {
+    $('.linkdetails').append('<aside style="text-align: center; display: block"><a href="http://ipas.graphracer.com/index.html#' + window.plugin.ipasLink.getHash(d.portalDetails) + '" target="ipaswindow">simulate attack with IPAS</a></aside>');
+}
+
+window.plugin.ipasLink.getHash = function(d) {
+    console.log(d);
+    var hashParts=[];
+    $.each(d.resonatorArray.resonators, function(ind, reso) {
+        hashParts.push(reso.level + "," + reso.distanceToPortal + "," + reso.energyTotal);
+    });
+    console.log(d);
+    return hashParts.join(";")+"|" + "r,c,0,v";
+}
+
+var setup =  function() {
+  window.plugin.ipasLink.setupCallback();
+}
+>>>>>>> Stashed changes
 
 // PLUGIN END //////////////////////////////////////////////////////////
 
