@@ -25,8 +25,8 @@
     <script type="text/javascript" src="js/models/Position.js"></script>
     <script type="text/javascript" src="js/models/Resonator.js"></script>
     <script type="text/javascript" src="js/models/ResonatorCollection.js"></script>
-    <script type="text/javascript" src="js/models/Shield.js"></script>
-    <script type="text/javascript" src="js/models/ShieldCollection.js"></script>
+    <script type="text/javascript" src="js/models/Mod.js"></script>
+    <script type="text/javascript" src="js/models/ModCollection.js"></script>
 
     <script type="text/javascript" src="js/views/AttackDamageView.js"></script>
     <script type="text/javascript" src="js/views/AttackInfoView.js"></script>
@@ -41,8 +41,8 @@
     <script type="text/javascript" src="js/views/ResonatorDetailList.js"></script>
     <script type="text/javascript" src="js/views/ResonatorDetailView.js"></script>
     <script type="text/javascript" src="js/views/ResonatorView.js"></script>
-    <script type="text/javascript" src="js/views/ShieldList.js"></script>
-    <script type="text/javascript" src="js/views/ShieldView.js"></script>
+    <script type="text/javascript" src="js/views/ModList.js"></script>
+    <script type="text/javascript" src="js/views/ModView.js"></script>
     -->
     <script type="text/javascript" src="js/ipas.min.js"></script>
 
@@ -77,8 +77,9 @@
 <div style="width: 45%; float: left; margin-left: 10px;padding: 2px;">
     Latest changes
     <ul>
+        <li>13-06-07 1.0.3: Include new shields, prepare for other mods</li>
         <li>13-05-28 1.0.2: Show XM cost for deploying the current portal config as well as for firing XMPs</li>
-        <li>13-04-23 1.0.1: Add new formula / fix bug not taking shield config into account when coming from IITC</li>
+        <li class="old">13-04-23 1.0.1: Add new formula / fix bug not taking shield config into account when coming from IITC</li>
         <li class="old">13-04-19 1.0.0: Shields implemented, some minor UI changes</li>
         <li class="old">13-04-09 0.9.9: Set individual reso levels</li>
         <li class="old">13-04-08 0.9.8: HEATMAP by <a href="https://github.com/eggers">eggers</a> integrated</li>
@@ -124,11 +125,11 @@
         <table width="100%">
             <tbody id="resonatorlist"></tbody>
         </table>
-        Shields
+        Mods
         <table width="100%">
-            <tbody id="shieldlist"></tbody>
+            <tbody id="modlist"></tbody>
         </table>
-        Click shield to change. Total mitigation: <span id="totalMitigation">0</span>
+        Click mod to change. Total mitigation: <span id="totalMitigation">0</span>
     </div>
     <a style="cursor: pointer" onclick="router.navigate(portal.getConfigHash(), {trigger: true, replace: true});">Portal
         Configuration Permalink</a><br />
@@ -250,9 +251,9 @@ News about IPAS and updates on my findings of the mechanics in the <a
             el: "#resonatorlist",
             collection: resonators
         });
-        var shieldlist = new ShieldList({
-            el: "#shieldlist",
-            collection: portal.get("shields")
+        var modlist = new ModList({
+            el: "#modlist",
+            collection: portal.get("mods")
         })
 
         var pinfo = new PortalInfoView({

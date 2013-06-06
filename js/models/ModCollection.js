@@ -1,5 +1,5 @@
-var ShieldCollection = Backbone.Collection.extend({
-	model: Shield,
+var ModCollection = Backbone.Collection.extend({
+	model: Mod,
     initialize: function() {
         _.bindAll(this,"mitigations","totalMitigation");
         //add 4 slots
@@ -16,6 +16,8 @@ var ShieldCollection = Backbone.Collection.extend({
         for (var i=0; i<4; i++) {
             totMit+=mits[i];
         }
+        if (totMit>95)
+            totMit=95;
         return totMit;
     },
     getHash: function() {

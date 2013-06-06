@@ -2,7 +2,7 @@ var ResonatorDetailList = Backbone.View.extend({
     initialize: function () {
         this.render();
         this.listenTo(portal,"change:rechargeXMused change:totalRechargeXMused",this.showRechargeXM)
-        this.listenTo(portal.shields,"change",this.showDeployCost)
+        this.listenTo(portal.mods,"change",this.showDeployCost)
         this.listenTo(portal.resonators,"change",this.showDeployCost)
     },
     collection: ResonatorCollection,

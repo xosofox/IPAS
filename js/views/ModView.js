@@ -1,10 +1,10 @@
-var ShieldView = Backbone.View.extend({
+var ModView = Backbone.View.extend({
     tagName: "td",
-    className: "shieldInfoCell",
-    model: Shield,
+    className: "modInfoCell",
+    model: Mod,
     initialize: function (args) {
         //this.listenTo(this.model, "change", this.render);
-        this.template=_.template(ShieldTemplate);
+        this.template=_.template(ModTemplate);
         //_bindAll(this,"incLevel","decLevel"
     },
     events: {
@@ -15,14 +15,14 @@ var ShieldView = Backbone.View.extend({
     },
     render: function () {
         var data = this.model.toJSON;
-        data.title = SHIELD_TITLE[this.model.get("shortType")];
-        data.color = SHIELD_COLOR[this.model.get("shortType")];
+        data.title = MOD_TITLE[this.model.get("shortType")];
+    data.color = MOD_COLOR[this.model.get("shortType")];
         this.$el.html(this.template(data));
         return this;
     }
 });
 
-var ShieldTemplate = '\
+var ModTemplate = '\
 <td align="center" style="height: 60px; width: 60px; border: 1px solid white">\
         <span style="font-size: 8pt; color: <%- color %>"><%- title %></span>\
 </td>\

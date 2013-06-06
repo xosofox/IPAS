@@ -1,4 +1,4 @@
-var Shield = Backbone.Model.extend({
+var Mod = Backbone.Model.extend({
 	defaults: {
         shortType: "-",
         mitigation: 0
@@ -10,14 +10,18 @@ var Shield = Backbone.Model.extend({
         this.setType(shortType);
     },
     cycle: function() {
-        var i=_.indexOf(SHIELD_TYPES,this.get("shortType"));
+        var i=_.indexOf(MOD_TYPES,this.get("shortType"));
         i++;
-        i=i%4;
-        this.setType(SHIELD_TYPES[i]);
+        i=i%MOD_TYPES.length;
+        this.setType(MOD_TYPES[i]);
     },
     setType: function(shortType) {
         this.set("shortType",shortType);
-        this.set("mitigation",SHIELD_MITIGATION[shortType]);
+        this.set("mitigation",MOD_MITIGATION[shortType]);
+    },
+    getDeployCost: function() {
+        return mod_deploy_cost[this.get("shortType")];
     }
+
 });
 

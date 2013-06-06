@@ -1,6 +1,6 @@
 var Portal = Backbone.Model.extend({
     resonators: {},
-    shields: {},
+    mods: {},
     level: {},
     defaults: {
         decayDays: 0,
@@ -9,11 +9,11 @@ var Portal = Backbone.Model.extend({
         totalRechargeXMused: 0
     },
     initialize: function () {
-        _.bindAll(this, "reposition", "applyPreset", "saveConfig", "reset", "recharge", "fill", "applyShields");
+        _.bindAll(this, "reposition", "applyPreset", "saveConfig", "reset", "recharge", "fill", "applyMods");
         this.set("resonators", new ResonatorCollection());
-        this.set("shields", new ShieldCollection());
+        this.set("mods", new ModCollection());
         this.resonators = this.get("resonators");
-        this.shields = this.get("shields");
+        this.mods = this.get("mods");
         //init 8 resos
         this.listenTo(this.resonators, "add change", this.reposition);
         this.saveConfig();
@@ -50,7 +50,7 @@ var Portal = Backbone.Model.extend({
     loadFromConfigHash: function (confighash) {
         var parts = confighash.split("|");
         var resohash = parts[0];
-        var shieldhash = parts[1];
+        var modhash = parts[1];
         var resoVals = resohash.split(";");
         _.each(resoVals, function (resoval, i) {
             var values = resoval.split(",");
@@ -60,11 +60,11 @@ var Portal = Backbone.Model.extend({
                 energyTotal: parseInt(values[2], 10)
             });
         });
-        var shieldVals = shieldhash.split(",");
-        _.each(shieldVals, function (shortType,i) {
+        var modVals = modhash.split(",");
+        _.each(modVals, function (shortType,i) {
             //convert 0 to -
             shortType = (shortType === "0") ? "-" : shortType;
-            this.shields.at(i).setType(shortType);
+            this.mods.at(i).setType(shortType);
         },this);
         this.saveConfig();
     },
@@ -73,7 +73,7 @@ var Portal = Backbone.Model.extend({
         this.resonators.each(function (reso) {
             hashparts.push(reso.get("level") + "," + reso.get("distanceToPortal") + "," + reso.get("energyTotal"));
         });
-        return hashparts.join(";") + "|" + this.get("shields").getHash();
+        return hashparts.join(";") + "|" + this.get("mods").getHash();
     },
     saveConfig: function () {
         this.set("config", this.getConfigHash());
@@ -129,14 +129,14 @@ var Portal = Backbone.Model.extend({
             }
         });
 
-        this.shields.each(function(shield,i) {
-            xm+=shield_deploy_cost[shield.get("shortType")];
+        this.mods.each(function(mod,i) {
+            xm+=mod.getDeployCost();
         });
         return xm;
     },
-    applyShields: function (damage) {
-        //reduce damage due to shields
-        return damage * (100 - this.shields.totalMitigation()) / 100;
+    applyMods: function (damage) {
+        //reduce damage due to mods
+        return damage * (100 - this.mods.totalMitigation()) / 100;
     },
     reset: function () {
         this.set({"rechargeXMused": 0, "totalRechargeXMused": 0});

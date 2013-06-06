@@ -36,34 +36,50 @@ var level_color = ['#000', "#fece5a", "#ffa630", "#ff7315", "#e40000", "#fd2992"
 var burster_cost = [ 50, 100, 150, 200, 250, 300, 350, 400 ];
 //"xmpFiringCostByLevel": [ 10, 20, 70, 140, 250, 360, 490, 640 ],  http://www.reddit.com/r/Ingress/comments/1f7byk/spotted_heatsink_force_amplifier_portal_turret/
 var reso_deploy_cost = [ 50, 100, 150, 200, 250, 300, 350, 400 ];
-var shield_deploy_cost = {
+var mod_deploy_cost = {
     "-": 0,
-    "c": 400,
-    "r": 800,
-    "v": 1000
+    "cs6": 400,
+    "rs8": 800,
+    "vrs10": 1000,
+    "cs10": 400,
+    "rs20": 800,
+    "vrs30": 1000,
+    "t": 0
 };
 
 
-var SHIELD_TYPES = ["-", "c", "r", "v"];
-var SHIELD_TITLE = {
+var MOD_TYPES = ["-", "cs6", "rs8", "vrs10","cs10","rs20","vrs30","t"];
+var MOD_TITLE = {
     "-": "none",
-    c: "common",
-    r: "rare",
-    v: "very rare"
+    cs6: "common shield (+6)",
+    rs8: "rare shield (+8)",
+    vrs10: "very rare shield (+10)",
+    cs10: "common shield (+10)",
+    rs20: "rare shield (+20)",
+    vrs30: "very rare shield (+30)",
+    t: "turret"
 };
 
-var SHIELD_MITIGATION = {
+var MOD_MITIGATION = {
     "-": 0,
-    c: 6,
-    r: 8,
-    v: 10
+    cs6: 6,
+    rs8: 8,
+    vrs10: 10,
+    cs10: 10,
+    rs20: 20,
+    vrs30: 30,
+    t: 0
 }
 
-var SHIELD_COLOR = {
+var MOD_COLOR = {
     "-": "white",
-    c: "#84FBBD",
-    r: "#AD8EFF",
-    v: "#F78AF7"
+    cs6: "#84FBBD",
+    rs8: "#AD8EFF",
+    vrs10: "#F78AF7",
+    cs10: "#84FBBD",
+    rs20: "#AD8EFF",
+    vrs30: "#F78AF7",
+    t: "#fff"
 }
 
 var DAMAGE_FUNCTIONS = {

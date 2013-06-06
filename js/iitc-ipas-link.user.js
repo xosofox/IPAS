@@ -1,7 +1,7 @@
 // ==UserScript==
 // @id             iitc-plugin-ipas-link@graphracer
 // @name           IITC Plugin: simulate an attack on portal
-// @version        0.3.0.20130420.000000
+// @version        0.4.0.20130607.000000
 // @namespace      https://github.com/xosofox/IPAS
 // @updateURL      http://ipas.graphracer.com/js/iitc-ipas-link.meta.js
 // @downloadURL    http://ipas.graphracer.com/js/iitc-ipas-link.user.js
@@ -20,7 +20,6 @@ function wrapper() {
 // PLUGIN START ////////////////////////////////////////////////////////
 
 // use own namespace for plugin
-<<<<<<< Updated upstream
     window.plugin.ipasLink = function () {
     };
 
@@ -46,10 +45,19 @@ function wrapper() {
         hashParts = [];
         $.each(d.portalV2.linkedModArray, function (ind, mod) {
             //shields only, so far...
+            var modCodes={
+                c: "cs",
+                r: "rs",
+                v: "vrs"
+            };
+
             var s = "0";
             if (mod) {
                 if (mod.type === "RES_SHIELD") {
                     s = mod.rarity.charAt(0).toLowerCase();
+                    console.log(mod);
+                    s=modCodes[s];
+                    s = s + mod.stats.MITIGATION;
                 }
             }
             hashParts.push(s);
@@ -61,31 +69,6 @@ function wrapper() {
     var setup = function () {
         window.plugin.ipasLink.setupCallback();
     }
-=======
-window.plugin.ipasLink = function() {};
-
-window.plugin.ipasLink.setupCallback = function() {
-      addHook('portalDetailsUpdated', window.plugin.ipasLink.addLink);
-}
-
-window.plugin.ipasLink.addLink = function(d) {
-    $('.linkdetails').append('<aside style="text-align: center; display: block"><a href="http://ipas.graphracer.com/index.html#' + window.plugin.ipasLink.getHash(d.portalDetails) + '" target="ipaswindow">simulate attack with IPAS</a></aside>');
-}
-
-window.plugin.ipasLink.getHash = function(d) {
-    console.log(d);
-    var hashParts=[];
-    $.each(d.resonatorArray.resonators, function(ind, reso) {
-        hashParts.push(reso.level + "," + reso.distanceToPortal + "," + reso.energyTotal);
-    });
-    console.log(d);
-    return hashParts.join(";")+"|" + "r,c,0,v";
-}
-
-var setup =  function() {
-  window.plugin.ipasLink.setupCallback();
-}
->>>>>>> Stashed changes
 
 // PLUGIN END //////////////////////////////////////////////////////////
 
