@@ -51,6 +51,12 @@ var Portal = Backbone.Model.extend({
         var parts = confighash.split("|");
         var resohash = parts[0];
         var modhash = parts[1];
+
+        var oldTypes={
+            "c":"cs10",
+            "r":"rs20",
+            "v":"vrs30"
+        };
         var resoVals = resohash.split(";");
         _.each(resoVals, function (resoval, i) {
             var values = resoval.split(",");
@@ -64,6 +70,10 @@ var Portal = Backbone.Model.extend({
         _.each(modVals, function (shortType,i) {
             //convert 0 to -
             shortType = (shortType === "0") ? "-" : shortType;
+            //BC break - convert c,r,v to new shields
+            if (shortType in oldTypes) {
+                shortType=oldTypes[shortType];
+            }
             this.mods.at(i).setType(shortType);
         },this);
         this.saveConfig();
