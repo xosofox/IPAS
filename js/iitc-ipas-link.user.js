@@ -54,7 +54,6 @@ window.plugin.ipasLink.getHash = function (d) {
         if (mod) {
             if (mod.type === "RES_SHIELD") {
                 s = mod.rarity.charAt(0).toLowerCase();
-                console.log(mod);
                 s=modCodes[s];
                 s = s + mod.stats.MITIGATION;
             }
