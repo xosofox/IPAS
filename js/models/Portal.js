@@ -17,14 +17,14 @@ var Portal = Backbone.Model.extend({
         this.resonators = this.get("resonators");
         this.mods = this.get("mods");
         this.links=this.get("links");
-        //init 8 resos
         this.listenTo(this.resonators, "add change", this.reposition);
         this.saveConfig();
     },
     reposition: function () {
         var level = 0;
-        _.each(this.resonators.pluck("level"), function (l) {
-            level += l;
+        var resos = this.resonators.filter(function(r) { return r.get("energyTotal")>0;});
+        _.each(resos, function (r) {
+            level += r.get("level");
         });
         level = level / 8;
         this.set("exactlevel", level);
@@ -86,7 +86,7 @@ var Portal = Backbone.Model.extend({
         },this);
 
         var linkVals = linkhash.split(",");
-        console.log(linkVals);
+        this.links.reset();
         _.each(linkVals, function (distance,i) {
             this.links.add(new Link(distance));
         },this);
@@ -157,6 +157,15 @@ var Portal = Backbone.Model.extend({
             xm+=mod.getDeployCost();
         });
         return xm;
+    },
+    totalMitigation: function() {
+        var totMit=0;
+        var modMit = this.mods.modMitigation();
+        var linkMit = this.links.linkMitigation();
+
+        totMit=modMit + linkMit;
+        if (totMit>95) totMit = 95;
+        return totMit;
     },
     applyMitigation: function (damage) {
         //reduce damage due to mods and links

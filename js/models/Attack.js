@@ -32,7 +32,7 @@ var Attack = Backbone.Model.extend({
             var maxDamage = burster_damage[level - 1];
             var damage = DAMAGE_FUNCTIONS[formula].func(distanceM, maxRange, maxDamage, level);
 
-            damage = portal.applyMods(damage);
+            damage = portal.applyMitigation(damage);
 
             energy = resoView.model.get("energyTotal");
             if (energy > 0) {
