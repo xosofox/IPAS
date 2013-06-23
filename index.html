@@ -45,6 +45,7 @@
     <script type="text/javascript" src="js/views/ModList.js"></script>
     <script type="text/javascript" src="js/views/ModView.js"></script>
     <script type="text/javascript" src="js/views/LinkInfoView.js"></script>
+    <script type="text/javascript" src="js/views/PortalStatsView.js"></script>
     <!--
     <script type="text/javascript" src="js/ipas.min.js"></script>
     -->
@@ -137,9 +138,10 @@
         </table>
         Mod mitigation: <span id="modMitigation">0</span><br />
         <br />
+
         <div id="linkInfo"></div>
-        Total mitigation: <span id="totalMitigation">0</span>
     </div>
+    <div id="portalstats"></div>
     <a style="cursor: pointer" onclick="router.navigate(portal.getConfigHash(), {trigger: true, replace: true});">Portal
         Configuration Permalink</a><br />
     <br />
@@ -265,12 +267,17 @@ it<br /><a
         var modlist = new ModList({
             el: "#modlist",
             collection: portal.get("mods")
-        })
+        });
 
         var linklist = new LinkInfoView({
             el: '#linkInfo',
             collection: portal.get("links")
-        })
+        });
+
+        var portalstats = new PortalStatsView({
+            el: '#portalstats',
+            model: portal
+        });
 
         var pinfo = new PortalInfoView({
             model: portal,
