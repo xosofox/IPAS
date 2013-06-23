@@ -15,7 +15,6 @@
     <script type="text/javascript" src="js/settings.js"></script>
     <script type="text/javascript" src="js/util.js"></script>
 
-    <!--
     <script type="text/javascript" src="js/models/Attack.js"></script>
     <script type="text/javascript" src="js/models/AttackCollection.js"></script>
     <script type="text/javascript" src="js/models/AttackSetup.js"></script>
@@ -27,6 +26,8 @@
     <script type="text/javascript" src="js/models/ResonatorCollection.js"></script>
     <script type="text/javascript" src="js/models/Mod.js"></script>
     <script type="text/javascript" src="js/models/ModCollection.js"></script>
+    <script type="text/javascript" src="js/models/Link.js"></script>
+    <script type="text/javascript" src="js/models/LinkCollection.js"></script>
 
     <script type="text/javascript" src="js/views/AttackDamageView.js"></script>
     <script type="text/javascript" src="js/views/AttackInfoView.js"></script>
@@ -43,8 +44,10 @@
     <script type="text/javascript" src="js/views/ResonatorView.js"></script>
     <script type="text/javascript" src="js/views/ModList.js"></script>
     <script type="text/javascript" src="js/views/ModView.js"></script>
-    -->
+    <script type="text/javascript" src="js/views/LinkInfoView.js"></script>
+    <!--
     <script type="text/javascript" src="js/ipas.min.js"></script>
+    -->
 
     <script type="text/javascript" src="js/router/AppRouter.js"></script>
 
@@ -70,16 +73,19 @@
     Simulate an Attack!<br />Select a configuration, drag & drop the resos or use the arrows, then click to
     attack.<br />
     <br />
-    <b>Work in progress</b>: I am currently working on collecting data to fully understand AND CONFIRM new shield and link mitigation<br />
+    <b>Work in progress</b>: I am currently working on collecting data to fully understand AND CONFIRM new shield and
+    link mitigation<br />
     <b>Yet to come</b>: Renew the UI - switch between config & attack mode to avoid strange behaviours<br />
-	<br />
+    <br />
 </div>
 <div style="width: 45%; float: left; margin-left: 10px;padding: 2px;">
     Latest changes
     <ul>
         <li>13-06-07 1.0.3: Include new shields, prepare for other mods</li>
         <li>13-05-28 1.0.2: Show XM cost for deploying the current portal config as well as for firing XMPs</li>
-        <li class="old">13-04-23 1.0.1: Add new formula / fix bug not taking shield config into account when coming from IITC</li>
+        <li class="old">13-04-23 1.0.1: Add new formula / fix bug not taking shield config into account when coming from
+            IITC
+        </li>
         <li class="old">13-04-19 1.0.0: Shields implemented, some minor UI changes</li>
         <li class="old">13-04-09 0.9.9: Set individual reso levels</li>
         <li class="old">13-04-08 0.9.8: HEATMAP by <a href="https://github.com/eggers">eggers</a> integrated</li>
@@ -125,11 +131,14 @@
         <table width="100%">
             <tbody id="resonatorlist"></tbody>
         </table>
-        Mods
+        Mods (click mod to change)
         <table width="100%">
             <tbody id="modlist"></tbody>
         </table>
-        Click mod to change. Total mitigation: <span id="totalMitigation">0</span>
+        Mod mitigation: <span id="modMitigation">0</span><br />
+        <br />
+        <div id="linkInfo"></div>
+        Total mitigation: <span id="totalMitigation">0</span>
     </div>
     <a style="cursor: pointer" onclick="router.navigate(portal.getConfigHash(), {trigger: true, replace: true});">Portal
         Configuration Permalink</a><br />
@@ -156,7 +165,9 @@
 <a href="iitc.html">IITC Integration Information</a>
 <br />
 News about IPAS and updates on my findings of the mechanics in the <a
-        href="https://plus.google.com/communities/115073414859905315934">G+ Group</a> - or have a look at the <a href="analysis.html">collected damage data here</a> or the <a href="mitigation.html">mitigation view</a> of it<br /><a
+        href="https://plus.google.com/communities/115073414859905315934">G+ Group</a> - or have a look at the <a
+        href="analysis.html">collected damage data here</a> or the <a href="mitigation.html">mitigation view</a> of
+it<br /><a
         href="https://github.com/Xosofox/IPAS/issues">Bug? Feature request? Check here</a><br />
 <span>V 1.0.3 - Resistance FTW! Made by GraphRacer <a href="http://github.com/xosofox/IPAS">GitHub</a></span> <a
         href="http://profiles.google.com/xosofox">G+</a> <a href="http://twitter.com/xosofox">Twitter</a>
@@ -254,6 +265,11 @@ News about IPAS and updates on my findings of the mechanics in the <a
         var modlist = new ModList({
             el: "#modlist",
             collection: portal.get("mods")
+        })
+
+        var linklist = new LinkInfoView({
+            el: '#linkInfo',
+            collection: portal.get("links")
         })
 
         var pinfo = new PortalInfoView({

@@ -61,7 +61,32 @@ window.plugin.ipasLink.getHash = function (d) {
         hashParts.push(s);
     });
     var shields = hashParts.join(",");
-    return resos + "|" + shields;
+
+    var linkParts=[];
+    var edges=d.portalV2.linkedEdges;
+
+    var portalL = new L.LatLng(d.portal)
+    $.each(edges, function (ind, edge) {
+        //calc distance in m here
+        var distance=1; //default to 1m, so a low level portal would support it
+
+        //Try to find other portals details
+        var guid = edge.otherPortalGuid
+    	if (window.portals[guid] !== undefined) {
+	        //get other portals details as o
+        	var o = window.portals[guid].options.details;
+    	    var otherPortalL = new L.LatLng(o.locationE6.latE6/1E6,o.locationE6.lngE6/1E6);
+	        var distance = Math.round(portalL.distanceTo(otherPortalL));
+        }
+
+        if (!(edge.isOrigin)) {
+            distance = distance * -1;
+        }
+        linkParts.push(distance);
+    });
+    var links=linkParts.join(",");
+
+    return resos + "/" + shields + "/" + links; //changed with IPAS 1.1 to / instead of |
 }
 
 var setup =  function() {

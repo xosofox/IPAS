@@ -1,6 +1,7 @@
 var Portal = Backbone.Model.extend({
     resonators: {},
     mods: {},
+    links: {},
     level: {},
     defaults: {
         decayDays: 0,
@@ -9,11 +10,13 @@ var Portal = Backbone.Model.extend({
         totalRechargeXMused: 0
     },
     initialize: function () {
-        _.bindAll(this, "reposition", "applyPreset", "saveConfig", "reset", "recharge", "fill", "applyMods");
+        _.bindAll(this, "reposition", "applyPreset", "saveConfig", "reset", "recharge", "fill", "applyMitigation");
         this.set("resonators", new ResonatorCollection());
         this.set("mods", new ModCollection());
+        this.set("links",new LinkCollection());
         this.resonators = this.get("resonators");
         this.mods = this.get("mods");
+        this.links=this.get("links");
         //init 8 resos
         this.listenTo(this.resonators, "add change", this.reposition);
         this.saveConfig();
@@ -48,9 +51,14 @@ var Portal = Backbone.Model.extend({
         this.commit();
     },
     loadFromConfigHash: function (confighash) {
-        var parts = confighash.split("|");
+        if (confighash.indexOf("|")>=0) {
+            alert("Looks like you are using an old version of the IITC IPAS plugin - please make sure to update your user scripts");
+        }
+
+        var parts = confighash.split("/");
         var resohash = parts[0];
         var modhash = parts[1];
+        var linkhash = parts[2];
 
         var oldTypes={
             "c":"cs10",
@@ -76,6 +84,12 @@ var Portal = Backbone.Model.extend({
             }
             this.mods.at(i).setType(shortType);
         },this);
+
+        var linkVals = linkhash.split(",");
+        console.log(linkVals);
+        _.each(linkVals, function (distance,i) {
+            this.links.add(new Link(distance));
+        },this);
         this.saveConfig();
     },
     getConfigHash: function () {
@@ -83,7 +97,7 @@ var Portal = Backbone.Model.extend({
         this.resonators.each(function (reso) {
             hashparts.push(reso.get("level") + "," + reso.get("distanceToPortal") + "," + reso.get("energyTotal"));
         });
-        return hashparts.join(";") + "|" + this.get("mods").getHash();
+        return hashparts.join(";") + "/" + this.get("mods").getHash() + "/" + this.get("links").getHash();
     },
     saveConfig: function () {
         this.set("config", this.getConfigHash());
@@ -144,9 +158,9 @@ var Portal = Backbone.Model.extend({
         });
         return xm;
     },
-    applyMods: function (damage) {
-        //reduce damage due to mods
-        return damage * (100 - this.mods.totalMitigation()) / 100;
+    applyMitigation: function (damage) {
+        //reduce damage due to mods and links
+        return damage * (100 - this.totalMitigation()) / 100;
     },
     reset: function () {
         this.set({"rechargeXMused": 0, "totalRechargeXMused": 0});

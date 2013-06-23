@@ -17,6 +17,6 @@ var ModList = Backbone.View.extend({
             tr.append(sv.el);
         });
         this.$el.html(tr);
-        $('#totalMitigation').text(this.collection.totalMitigation());
+        $('#modMitigation').text(this.collection.modMitigation());
     }
 });
