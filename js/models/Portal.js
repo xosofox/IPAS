@@ -10,7 +10,7 @@ var Portal = Backbone.Model.extend({
         totalRechargeXMused: 0
     },
     initialize: function () {
-        _.bindAll(this, "reposition", "applyPreset", "saveConfig", "reset", "recharge", "fill", "applyMitigation");
+        _.bindAll(this, "reposition", "applyPreset", "saveConfig", "reset", "recharge", "fill", "applyMitigation","maxLinkLength");
         this.set("resonators", new ResonatorCollection());
         this.set("mods", new ModCollection());
         this.set("links",new LinkCollection());
@@ -170,6 +170,31 @@ var Portal = Backbone.Model.extend({
     applyMitigation: function (damage) {
         //reduce damage due to mods and links
         return damage * (100 - this.totalMitigation()) / 100;
+    },
+    getPortalEnergy: function() {
+        var energy=0;
+        this.resos.each(function(reso) {
+            var e = reso.get("energyTotal");
+            energy += e;
+        });
+        return energy;
+
+    },
+    getPortalEnergyMax: function() {
+        var energy=0;
+        this.resos.each(function(reso) {
+            var e = reso_capacity[reso.get("level")]
+            energy += e;
+        });
+        return energy;
+    },
+    linkLength: function() {
+        //Portal Range  = 160m x (average resonator level) ^ 4 - says decodeingress...
+        //even though I doubt it's "the level" but rather the energy of the resos...
+        return 123;
+    }
+    maxLinkLength: function() {
+        return 860;
     },
     reset: function () {
         this.set({"rechargeXMused": 0, "totalRechargeXMused": 0});

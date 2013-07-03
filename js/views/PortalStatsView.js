@@ -20,4 +20,5 @@ var PortalStatsView = Backbone.View.extend({
 
 var PortalStatsTemplate = '\
     Total mitigation: <span id="totalMitigation">0</span><br />\
+    Supported link length: <span id="linkLenght">0</span><br />\
 ';
