@@ -15,10 +15,11 @@ var PortalStatsView = Backbone.View.extend({
             text += " (max)";
         }
         $('#totalMitigation').text(text);
+        $('#portalRange').text(this.model.portalRangeText());
     }
 });
 
 var PortalStatsTemplate = '\
     Total mitigation: <span id="totalMitigation">0</span><br />\
-    Supported link length: <span id="linkLenght">0</span><br />\
+    Supported link length: <span id="portalRange">0</span><br />\
 ';

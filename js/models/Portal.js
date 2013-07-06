@@ -6,11 +6,12 @@ var Portal = Backbone.Model.extend({
     defaults: {
         decayDays: 0,
         level: 1,
+    	exactlevel: 1,
         rechargeXMused: -1,
         totalRechargeXMused: 0
     },
     initialize: function () {
-        _.bindAll(this, "reposition", "applyPreset", "saveConfig", "reset", "recharge", "fill", "applyMitigation","maxLinkLength");
+        _.bindAll(this, "reposition", "applyPreset", "saveConfig", "reset", "recharge", "fill", "applyMitigation","portalRange");
         this.set("resonators", new ResonatorCollection());
         this.set("mods", new ModCollection());
         this.set("links",new LinkCollection());
@@ -188,13 +189,13 @@ var Portal = Backbone.Model.extend({
         });
         return energy;
     },
-    linkLength: function() {
+    portalRange: function() {
         //Portal Range  = 160m x (average resonator level) ^ 4 - says decodeingress...
-        //even though I doubt it's "the level" but rather the energy of the resos...
-        return 123;
-    }
-    maxLinkLength: function() {
-        return 860;
+	var range = 160 * Math.pow(this.get("exactlevel"),4);
+	return range;
+    },
+    portalRangeText: function() {
+        return Math.round(this.portalRange()) + " m";
     },
     reset: function () {
         this.set({"rechargeXMused": 0, "totalRechargeXMused": 0});
