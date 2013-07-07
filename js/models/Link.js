@@ -1,6 +1,7 @@
 var Link = Backbone.Model.extend({
 	defaults: {
         distance: 1,
+    	active: true,
         isOrigin: true
     },
     initialize: function(d) {

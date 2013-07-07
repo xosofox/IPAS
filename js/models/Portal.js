@@ -30,6 +30,7 @@ var Portal = Backbone.Model.extend({
         level = level / 8;
         this.set("exactlevel", level);
         this.set("level", level >= 1 ? Math.floor(level) : 1);
+	this.links.checkLinkSupport();
     },
     decay: function () {
         this.reset();
