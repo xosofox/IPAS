@@ -43,19 +43,33 @@ window.plugin.ipasLink.getHash = function (d) {
 
     hashParts = [];
     $.each(d.portalV2.linkedModArray, function (ind, mod) {
-        //shields only, so far...
-        var modCodes={
-            c: "cs",
-            r: "rs",
-            v: "vrs"
-        };
+	// s - shields
+	// h - heat sink
+	// i - intentionally left in
+	// t - turret
+	//
+	// f - force amp
+	// m - multi-hack
+	// l - link-amp
+	//
+	var modCodes = {
+		"RES_SHIELD" : "s",
+	    	"HEAT_SINK"  : "h"
+		"TURRET"     : "t",
+		"FORCE_AMP"  : "f",
+	    	"MULTI_HACK" : "m",
+		"LINK_AMP"   : "l",
+	}
 
-        var s = "0";
+        var mc = "0";
         if (mod) {
-            if (mod.type === "RES_SHIELD") {
-                s = mod.rarity.charAt(0).toLowerCase();
-                s=modCodes[s];
-                s = s + mod.stats.MITIGATION;
+            if (mod.type in modCodes) {
+		mc = modCode(mod.type) + mod.rarity.charAt(0).toLowerCase();
+
+		//special for shields to distinguish old/new mitigation
+		if (mod.type="RES_SHIELD") {
+                	mc += mod.stats.MITIGATION;
+		}
             }
         }
         hashParts.push(s);
