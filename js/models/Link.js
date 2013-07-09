@@ -1,13 +1,13 @@
 var Link = Backbone.Model.extend({
-	defaults: {
+    defaults: {
         distance: 1,
-    	active: true,
+        active: true,
         isOrigin: true
     },
-    initialize: function(d) {
-        this.set("distance",d)
-        if (d<0) {
-            this.set("isOrigin",false);
+    initialize: function (d) {
+        this.set("distance", d)
+        if (d < 0) {
+            this.set("isOrigin", false);
         }
     }
 });

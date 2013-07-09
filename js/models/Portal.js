@@ -6,31 +6,33 @@ var Portal = Backbone.Model.extend({
     defaults: {
         decayDays: 0,
         level: 1,
-    	exactlevel: 1,
+        exactlevel: 1,
         rechargeXMused: -1,
         totalRechargeXMused: 0
     },
     initialize: function () {
-        _.bindAll(this, "reposition", "applyPreset", "saveConfig", "reset", "recharge", "fill", "applyMitigation","portalRange");
+        _.bindAll(this, "reposition", "applyPreset", "saveConfig", "reset", "recharge", "fill", "applyMitigation", "portalRange");
         this.set("resonators", new ResonatorCollection());
         this.set("mods", new ModCollection());
-        this.set("links",new LinkCollection());
+        this.set("links", new LinkCollection());
         this.resonators = this.get("resonators");
         this.mods = this.get("mods");
-        this.links=this.get("links");
+        this.links = this.get("links");
         this.listenTo(this.resonators, "add change", this.reposition);
         this.saveConfig();
     },
     reposition: function () {
         var level = 0;
-        var resos = this.resonators.filter(function(r) { return r.get("energyTotal")>0;});
+        var resos = this.resonators.filter(function (r) {
+            return r.get("energyTotal") > 0;
+        });
         _.each(resos, function (r) {
             level += r.get("level");
         });
         level = level / 8;
         this.set("exactlevel", level);
         this.set("level", level >= 1 ? Math.floor(level) : 1);
-	this.links.checkLinkSupport();
+        this.links.checkLinkSupport();
     },
     decay: function () {
         this.reset();
@@ -53,20 +55,25 @@ var Portal = Backbone.Model.extend({
         this.commit();
     },
     loadFromConfigHash: function (confighash) {
-        if (confighash.indexOf("|")>=0) {
+        var parts;
+        if (confighash.indexOf("|") >= 0) {
             alert("Looks like you are using an old version of the IITC IPAS plugin - please make sure to update your user scripts");
+            parts = confighash.split("|");
+            parts[2] = "";
+        } else {
+            parts = confighash.split("/");
         }
 
-        var parts = confighash.split("/");
         var resohash = parts[0];
         var modhash = parts[1];
         var linkhash = parts[2];
 
-        var oldTypes={
-            "c":"cs10",
-            "r":"rs20",
-            "v":"vrs30"
+        var oldModTypes = {
+            "c": "sc10",
+            "r": "sr20",
+            "v": "sv30"
         };
+
         var resoVals = resohash.split(";");
         _.each(resoVals, function (resoval, i) {
             var values = resoval.split(",");
@@ -77,21 +84,21 @@ var Portal = Backbone.Model.extend({
             });
         });
         var modVals = modhash.split(",");
-        _.each(modVals, function (shortType,i) {
+        _.each(modVals, function (modCode, i) {
             //convert 0 to -
-            shortType = (shortType === "0") ? "-" : shortType;
+            modCode = (modCode === "0") ? "-" : modCode;
             //BC break - convert c,r,v to new shields
-            if (shortType in oldTypes) {
-                shortType=oldTypes[shortType];
+            if (modCode in oldModTypes) {
+                modCode = oldModTypes[modCode];
             }
-            this.mods.at(i).setType(shortType);
-        },this);
+            this.mods.at(i).setModCode(modCode);
+        }, this);
 
         var linkVals = linkhash.split(",");
         this.links.reset();
-        _.each(linkVals, function (distance,i) {
+        _.each(linkVals, function (distance, i) {
             this.links.add(new Link(distance));
-        },this);
+        }, this);
         this.saveConfig();
     },
     getConfigHash: function () {
@@ -146,56 +153,56 @@ var Portal = Backbone.Model.extend({
         t += used;
         var t = this.set("totalRechargeXMused", t);
     },
-    deployCost: function() {
-        var xm=0;
-        this.resonators.each(function(reso,i) {
-            var l=reso.get("level");
-            if (l>=1) {
-                xm+=reso_deploy_cost[l-1];
+    deployCost: function () {
+        var xm = 0;
+        this.resonators.each(function (reso, i) {
+            var l = reso.get("level");
+            if (l >= 1) {
+                xm += reso_deploy_cost[l - 1];
             }
         });
 
-        this.mods.each(function(mod,i) {
-            xm+=mod.getDeployCost();
+        this.mods.each(function (mod, i) {
+            xm += mod.getDeployCost();
         });
         return xm;
     },
-    totalMitigation: function() {
-        var totMit=0;
+    totalMitigation: function () {
+        var totMit = 0;
         var modMit = this.mods.modMitigation();
         var linkMit = this.links.linkMitigation();
 
-        totMit=modMit + linkMit;
-        if (totMit>95) totMit = 95;
+        totMit = modMit + linkMit;
+        if (totMit > 95) totMit = 95;
         return totMit;
     },
     applyMitigation: function (damage) {
         //reduce damage due to mods and links
         return damage * (100 - this.totalMitigation()) / 100;
     },
-    getPortalEnergy: function() {
-        var energy=0;
-        this.resos.each(function(reso) {
+    getPortalEnergy: function () {
+        var energy = 0;
+        this.resos.each(function (reso) {
             var e = reso.get("energyTotal");
             energy += e;
         });
         return energy;
 
     },
-    getPortalEnergyMax: function() {
-        var energy=0;
-        this.resos.each(function(reso) {
+    getPortalEnergyMax: function () {
+        var energy = 0;
+        this.resos.each(function (reso) {
             var e = reso_capacity[reso.get("level")]
             energy += e;
         });
         return energy;
     },
-    portalRange: function() {
+    portalRange: function () {
         //Portal Range  = 160m x (average resonator level) ^ 4 - says decodeingress...
-	var range = 160 * Math.pow(this.get("exactlevel"),4);
-	return range;
+        var range = 160 * Math.pow(this.get("exactlevel"), 4);
+        return range;
     },
-    portalRangeText: function() {
+    portalRangeText: function () {
         return Math.round(this.portalRange()) + " m";
     },
     reset: function () {

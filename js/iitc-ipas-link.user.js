@@ -15,110 +15,112 @@
 
 function wrapper() {
 // ensure plugin framework is there, even if iitc is not yet loaded
-if(typeof window.plugin !== 'function') window.plugin = function() {};
+    if (typeof window.plugin !== 'function') window.plugin = function () {
+    };
 
 // PLUGIN START ////////////////////////////////////////////////////////
 
 // use own namespace for plugin
-window.plugin.ipasLink = function() {};
+    window.plugin.ipasLink = function () {
+    };
 
-window.plugin.ipasLink.setupCallback = function() {
-  addHook('portalDetailsUpdated', window.plugin.ipasLink.addLink);
-}
+    window.plugin.ipasLink.setupCallback = function () {
+        addHook('portalDetailsUpdated', window.plugin.ipasLink.addLink);
+    }
 
-window.plugin.ipasLink.addLink = function(d) {
-  $('.linkdetails').append('<aside><a href="http://ipas.graphracer.com/index.html#' + window.plugin.ipasLink.getHash(d.portalDetails) + '" target="ipaswindow" title="Use IAPS to simulate an attack on this portal">Simulate attack</a></aside>');
-}
+    window.plugin.ipasLink.addLink = function (d) {
+        $('.linkdetails').append('<aside><a href="http://ipas.graphracer.com/index.html#' + window.plugin.ipasLink.getHash(d.portalDetails) + '" target="ipaswindow" title="Use IAPS to simulate an attack on this portal">Simulate attack</a></aside>');
+    }
 
-window.plugin.ipasLink.getHash = function (d) {
-    var hashParts = [];
-    $.each(d.resonatorArray.resonators, function (ind, reso) {
-        if (reso) {
-            hashParts.push(reso.level + "," + reso.distanceToPortal + "," + reso.energyTotal);
-        } else {
-            hashParts.push("1,20,0");
-        }
-    });
-    var resos = hashParts.join(";");
-
-    hashParts = [];
-    $.each(d.portalV2.linkedModArray, function (ind, mod) {
-	// s - shields
-	// h - heat sink
-	// i - intentionally left in
-	// t - turret
-	//
-	// f - force amp
-	// m - multi-hack
-	// l - link-amp
-	//
-	var modCodes = {
-		"RES_SHIELD" : "s",
-	    	"HEAT_SINK"  : "h"
-		"TURRET"     : "t",
-		"FORCE_AMP"  : "f",
-	    	"MULTI_HACK" : "m",
-		"LINK_AMP"   : "l",
-	}
-
-        var mc = "0";
-        if (mod) {
-            if (mod.type in modCodes) {
-		mc = modCode(mod.type) + mod.rarity.charAt(0).toLowerCase();
-
-		//special for shields to distinguish old/new mitigation
-		if (mod.type="RES_SHIELD") {
-                	mc += mod.stats.MITIGATION;
-		}
+    window.plugin.ipasLink.getHash = function (d) {
+        var hashParts = [];
+        $.each(d.resonatorArray.resonators, function (ind, reso) {
+            if (reso) {
+                hashParts.push(reso.level + "," + reso.distanceToPortal + "," + reso.energyTotal);
+            } else {
+                hashParts.push("1,20,0");
             }
-        }
-        hashParts.push(s);
-    });
-    var shields = hashParts.join(",");
+        });
+        var resos = hashParts.join(";");
 
-    var linkParts=[];
-    var edges=d.portalV2.linkedEdges;
+        hashParts = [];
+        $.each(d.portalV2.linkedModArray, function (ind, mod) {
+            // s - shields
+            // h - heat sink
+            // i - intentionally left in
+            // t - turret
+            //
+            // f - force amp
+            // m - multi-hack
+            // l - link-amp
+            //
+            var modCodes = {
+                "RES_SHIELD": "s",
+                "HEATSINK": "h"
+                "TURRET": "t",
+                "FORCE_AMP": "f",
+                "MULTIHACK": "m",
+                "LINK_AMPLIFIER": "l"
+            }
 
-    var portalL = new L.LatLng(d.portal)
-    $.each(edges, function (ind, edge) {
-        //calc distance in m here
-        var distance=1; //default to 1m, so a low level portal would support it
+            var mc = "0";
+            if (mod) {
+                if (mod.type in modCodes) {
+                    mc = modCode(mod.type) + mod.rarity.charAt(0).toLowerCase();
 
-        //Try to find other portals details
-        var guid = edge.otherPortalGuid
-    	if (window.portals[guid] !== undefined) {
-	        //get other portals details as o
-        	var o = window.portals[guid].options.details;
-    	    var otherPortalL = new L.LatLng(o.locationE6.latE6/1E6,o.locationE6.lngE6/1E6);
-	        var distance = Math.round(portalL.distanceTo(otherPortalL));
-        }
+                    //special for shields to distinguish old/new mitigation
+                    if (mod.type = "RES_SHIELD") {
+                        mc += mod.stats.MITIGATION;
+                    }
+                }
+            }
+            hashParts.push(s);
+        });
+        var shields = hashParts.join(",");
 
-        if (!(edge.isOrigin)) {
-            distance = distance * -1;
-        }
-        linkParts.push(distance);
-    });
-    var links=linkParts.join(",");
+        var linkParts = [];
+        var edges = d.portalV2.linkedEdges;
 
-    return resos + "/" + shields + "/" + links; //changed with IPAS 1.1 to / instead of |
-}
+        var portalL = new L.LatLng(d.portal)
+        $.each(edges, function (ind, edge) {
+            //calc distance in m here
+            var distance = 1; //default to 1m, so a low level portal would support it
 
-var setup =  function() {
-  window.plugin.ipasLink.setupCallback();
-}
+            //Try to find other portals details
+            var guid = edge.otherPortalGuid
+            if (window.portals[guid] !== undefined) {
+                //get other portals details as o
+                var o = window.portals[guid].options.details;
+                var otherPortalL = new L.LatLng(o.locationE6.latE6 / 1E6, o.locationE6.lngE6 / 1E6);
+                var distance = Math.round(portalL.distanceTo(otherPortalL));
+            }
+
+            if (!(edge.isOrigin)) {
+                distance = distance * -1;
+            }
+            linkParts.push(distance);
+        });
+        var links = linkParts.join(",");
+
+        return resos + "/" + shields + "/" + links; //changed with IPAS 1.1 to / instead of |
+    }
+
+    var setup = function () {
+        window.plugin.ipasLink.setupCallback();
+    }
 
 // PLUGIN END //////////////////////////////////////////////////////////
 
-if(window.iitcLoaded && typeof setup === 'function') {
-  setup();
-} else {
-  if(window.bootPlugins)
-    window.bootPlugins.push(setup);
-  else
-    window.bootPlugins = [setup];
-}
+    if (window.iitcLoaded && typeof setup === 'function') {
+        setup();
+    } else {
+        if (window.bootPlugins)
+            window.bootPlugins.push(setup);
+        else
+            window.bootPlugins = [setup];
+    }
 } // wrapper end
 // inject code into site context
 var script = document.createElement('script');
-script.appendChild(document.createTextNode('('+ wrapper +')();'));
+script.appendChild(document.createTextNode('(' + wrapper + ')();'));
 (document.body || document.head || document.documentElement).appendChild(script);

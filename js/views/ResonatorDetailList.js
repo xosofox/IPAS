@@ -13,8 +13,8 @@ var ResonatorDetailList = Backbone.View.extend({
         portal.recharge();
     },
     showRechargeXM: function() {
-        $('#rechargeXMused').text(portal.get("rechargeXMused"));
-        $('#totalRechargeXMused').text(portal.get("totalRechargeXMused"));
+        $('#rechargeXMused').text(Math.round(portal.get("rechargeXMused")));
+        $('#totalRechargeXMused').text(Math.round(portal.get("totalRechargeXMused")));
     },
     showDeployCost: function() {
 	$('#deployCostXM').text(portal.deployCost());

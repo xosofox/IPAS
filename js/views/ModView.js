@@ -4,7 +4,7 @@ var ModView = Backbone.View.extend({
     model: Mod,
     initialize: function (args) {
         //this.listenTo(this.model, "change", this.render);
-        this.template=_.template(ModTemplate);
+        this.template = _.template(ModTemplate);
         //_bindAll(this,"incLevel","decLevel"
     },
     events: {
@@ -15,8 +15,12 @@ var ModView = Backbone.View.extend({
     },
     render: function () {
         var data = this.model.toJSON;
-        data.title = MOD_TITLE[this.model.get("shortType")];
-    data.color = MOD_COLOR[this.model.get("shortType")];
+        data.title = MOD_TYPES[this.model.get("modType")];
+        if (this.model.get("modType") != "-") {
+            data.title += " (" + MOD_RARITIES[this.model.get("rarity")] + ")";
+        }
+
+        data.color = MOD_RARITY_COLOR[this.model.get("rarity")];
         this.$el.html(this.template(data));
         return this;
     }
