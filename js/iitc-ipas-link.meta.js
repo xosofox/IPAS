@@ -1,7 +1,7 @@
 // ==UserScript==
 // @id             iitc-plugin-ipas-link@graphracer
 // @name           IITC Plugin: simulate an attack on portal
-// @version        1.1.0.20130610.000000
+// @version        1.1.0.20130610.000001
 // @namespace      https://github.com/xosofox/IPAS
 // @updateURL      http://ipas.graphracer.com/js/iitc-ipas-link.meta.js
 // @downloadURL    http://ipas.graphracer.com/js/iitc-ipas-link.user.js

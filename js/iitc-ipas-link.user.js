@@ -1,7 +1,7 @@
 // ==UserScript==
 // @id             iitc-plugin-ipas-link@graphracer
 // @name           IITC Plugin: simulate an attack on portal
-// @version        1.1.0.20130610.000000
+// @version        1.1.0.20130610.000001
 // @namespace      https://github.com/xosofox/IPAS
 // @updateURL      http://ipas.graphracer.com/js/iitc-ipas-link.meta.js
 // @downloadURL    http://ipas.graphracer.com/js/iitc-ipas-link.user.js
@@ -69,7 +69,7 @@ function wrapper() {
                     mc = modCodes[mod.type] + mod.rarity.charAt(0).toLowerCase();
 
                     //special for shields to distinguish old/new mitigation
-                    if (mod.type = "RES_SHIELD") {
+                    if (mod.type == "RES_SHIELD") {
                         mc += mod.stats.MITIGATION;
                     }
                 }
