@@ -1,9 +1,9 @@
 var ResonatorDetailList = Backbone.View.extend({
     initialize: function () {
         this.render();
-        this.listenTo(portal,"change:rechargeXMused change:totalRechargeXMused",this.showRechargeXM)
-        this.listenTo(portal.mods,"change",this.showDeployCost)
-        this.listenTo(portal.resonators,"change",this.showDeployCost)
+        this.listenTo(portal, "change:rechargeXMused change:totalRechargeXMused", this.showRechargeXM)
+        this.listenTo(portal.mods, "change", this.showDeployCost)
+        this.listenTo(portal.resonators, "change", this.showDeployCost)
     },
     collection: ResonatorCollection,
     events: {
@@ -12,12 +12,12 @@ var ResonatorDetailList = Backbone.View.extend({
     portalrecharge: function () {
         portal.recharge();
     },
-    showRechargeXM: function() {
+    showRechargeXM: function () {
         $('#rechargeXMused').text(Math.round(portal.get("rechargeXMused")));
         $('#totalRechargeXMused').text(Math.round(portal.get("totalRechargeXMused")));
     },
-    showDeployCost: function() {
-	$('#deployCostXM').text(portal.deployCost());
+    showDeployCost: function () {
+        $('#deployCostXM').text(portal.deployCost());
     },
     render: function () {
         var tr;
@@ -36,7 +36,7 @@ var ResonatorDetailList = Backbone.View.extend({
             rdv.render();
             tr.append(rdv.el);
         });
-        this.$el.append('<tr><td colspan="2">Deploy cost: <span id="deployCostXM">'+portal.deployCost()+'</span> XM</td></tr>');
+        this.$el.append('<tr><td colspan="2">Deploy cost: <span id="deployCostXM">' + portal.deployCost() + '</span> XM</td></tr>');
         this.$el.append('<tr><td colspan="2"><input type="button" value="Recharge" id="recharge">XM (last/total): <span id="rechargeXMused">0</span>/<span id="totalRechargeXMused">0</span></td></tr>');
     }
 });

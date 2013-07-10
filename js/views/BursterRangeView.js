@@ -5,11 +5,11 @@ var BursterRangeView = Backbone.View.extend({
         border.mouseover(this.show);
         border.mouseout(this.hide);
         border.mousemove(this.render);
-        this.listenTo(attackSetup, "change level",this.range);
+        this.listenTo(attackSetup, "change level", this.range);
     },
-    range: function() {
+    range: function () {
         var level = attackSetup.get("level");
-        this.raphael.attr("r",mInPx(burster_range[level-1]));
+        this.raphael.attr("r", mInPx(burster_range[level - 1]));
     },
     hide: function () {
         this.raphael.hide();

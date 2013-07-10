@@ -2,7 +2,7 @@ var ResonatorView = Backbone.View.extend({
     model: Resonator,
     initialize: function (args) {
         this.raphaElement = paper.circle(portalX, portalY, RESO_RADIUS);
-        this.raphaElementTxt = paper.text(portalX, portalY, "1").attr("pointer-events","none");
+        this.raphaElementTxt = paper.text(portalX, portalY, "1").attr("pointer-events", "none");
         this.raphaElement.drag(
             function (dx, dy, x, y, e) {
                 var el = this.raphaElement;
@@ -49,9 +49,9 @@ var ResonatorView = Backbone.View.extend({
 
     render: function () {
         if (this.model.get("highlight")) {
-            this.raphaElement.attr("r",RESO_RADIUS*2);
+            this.raphaElement.attr("r", RESO_RADIUS * 2);
         } else {
-            this.raphaElement.attr("r",RESO_RADIUS);
+            this.raphaElement.attr("r", RESO_RADIUS);
         }
         if (this.model.get("energyTotal") <= 0) {
             this.raphaElement.hide();

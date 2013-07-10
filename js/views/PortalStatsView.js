@@ -4,14 +4,14 @@ var PortalStatsView = Backbone.View.extend({
         this.listenTo(this.model, "change", this.render)
         this.listenTo(this.model.mods, "add remove change", this.render)
         this.listenTo(this.model.links, "add remove change", this.render)
-        this.template=_.template(PortalStatsTemplate);
+        this.template = _.template(PortalStatsTemplate);
         this.$el.html(this.template());
         this.render();
     },
     render: function () {
         var totMit = this.model.totalMitigation();
-        var text= totMit;
-        if (totMit==95) {
+        var text = totMit;
+        if (totMit == 95) {
             text += " (max)";
         }
         $('#totalMitigation').text(text);

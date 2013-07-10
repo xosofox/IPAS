@@ -3,8 +3,8 @@ var LinkInfoView = Backbone.View.extend({
     className: "linkInfo",
     collection: LinkCollection,
     initialize: function (args) {
-        this.listenTo(this.collection,"add remove change",this.render);
-        this.template=_.template(LinkTemplate);
+        this.listenTo(this.collection, "add remove change", this.render);
+        this.template = _.template(LinkTemplate);
         this.$el.html(this.template());
         this.render();
     },
@@ -14,23 +14,23 @@ var LinkInfoView = Backbone.View.extend({
         "click .outLink-up": "incOutgoingLinks",
         "click .outLink-down": "decOutgoingLinks"
     },
-    incIncomingLinks: function() {
+    incIncomingLinks: function () {
         this.collection.add(new Link(-1));
     },
-    decIncomingLinks: function() {
-        if (this.collection.countIncoming()>0) {
+    decIncomingLinks: function () {
+        if (this.collection.countIncoming() > 0) {
             var incoming = this.collection.getIncoming();
             var f = incoming[0];
             this.collection.remove(f);
         }
     },
-    incOutgoingLinks: function() {
-        if (this.collection.countOutgoing()<8) {
+    incOutgoingLinks: function () {
+        if (this.collection.countOutgoing() < 8) {
             this.collection.add(new Link(1));
         }
     },
-    decOutgoingLinks: function() {
-        if (this.collection.countOutgoing()>0) {
+    decOutgoingLinks: function () {
+        if (this.collection.countOutgoing() > 0) {
             var outgoing = this.collection.getOutgoing();
             var f = outgoing[0];
             this.collection.remove(f);

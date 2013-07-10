@@ -27,7 +27,7 @@ var AttackDamageView = Backbone.View.extend({
             } else {
                 this.dmgViews[i].attr("opacity", 0);
             }
-        },this)
+        }, this)
         var fade = Raphael.animation({opacity: 0}, 400);
         this.dmgViewElements.animate(fade.delay(3000));
     }
