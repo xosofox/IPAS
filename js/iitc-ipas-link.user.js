@@ -56,7 +56,7 @@ function wrapper() {
             //
             var modCodes = {
                 "RES_SHIELD": "s",
-                "HEATSINK": "h"
+                "HEATSINK": "h",
                 "TURRET": "t",
                 "FORCE_AMP": "f",
                 "MULTIHACK": "m",
