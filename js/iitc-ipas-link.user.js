@@ -66,7 +66,7 @@ function wrapper() {
             var mc = "0";
             if (mod) {
                 if (mod.type in modCodes) {
-                    mc = modCode(mod.type) + mod.rarity.charAt(0).toLowerCase();
+                    mc = modCodes[mod.type] + mod.rarity.charAt(0).toLowerCase();
 
                     //special for shields to distinguish old/new mitigation
                     if (mod.type = "RES_SHIELD") {
@@ -74,14 +74,14 @@ function wrapper() {
                     }
                 }
             }
-            hashParts.push(s);
+            hashParts.push(mc);
         });
         var shields = hashParts.join(",");
 
         var linkParts = [];
         var edges = d.portalV2.linkedEdges;
 
-        var portalL = new L.LatLng(d.portal)
+        var portalL = new L.LatLng(d.locationE6.latE6 / 1E6, d.locationE6.lngE6 / 1E6)
         $.each(edges, function (ind, edge) {
             //calc distance in m here
             var distance = 1; //default to 1m, so a low level portal would support it
