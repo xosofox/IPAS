@@ -57,7 +57,7 @@ var Portal = Backbone.Model.extend({
     loadFromConfigHash: function (confighash) {
         var parts;
         if (confighash.indexOf("|") >= 0) {
-            //alert("Looks like you are using an old version of the IITC IPAS plugin - please make sure to update your user scripts to use the full functionality, including link mitigation and new mods");
+            alert("Looks like you are using an old version of the IITC IPAS plugin - please make sure to update your user scripts to use the full functionality, including link mitigation and new mods");
             parts = confighash.split("|");
             parts[2] = "";
         } else {
