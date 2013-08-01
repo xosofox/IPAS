@@ -35,6 +35,8 @@ var burster_steps = [8, 9, 11, 14, 18, 22, 27, 33];
 var level_color = ['#000', "#fece5a", "#ffa630", "#ff7315", "#e40000", "#fd2992", "#eb26cd", "#c124e0", "#9627f4"];
 var burster_cost = [ 50, 100, 150, 200, 250, 300, 350, 400 ];
 //"xmpFiringCostByLevel": [ 10, 20, 70, 140, 250, 360, 490, 640 ],  http://www.reddit.com/r/Ingress/comments/1f7byk/spotted_heatsink_force_amplifier_portal_turret/
+var spike_range = [10, 13, 16, 18, 21, 24, 27, 30];
+var spike_damage = [0, 0, 0, 0, 0, 0, 0, 0];
 var reso_deploy_cost = [ 50, 100, 150, 200, 250, 300, 350, 400 ];
 var MOD_DEPLOY_COST = {
     "-": 0,
