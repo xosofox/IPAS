@@ -5,7 +5,7 @@ var ResonatorDetailView = Backbone.View.extend({
     position: "N",
     initialize: function (args) {
         this.listenTo(this.model, "change", this.render);
-        this.template=_.template(ResonatorDetailViewTemplate);
+        this.template = _.template(ResonatorDetailViewTemplate);
         //_bindAll(this,"incLevel","decLevel"
     },
     events: {
@@ -18,28 +18,28 @@ var ResonatorDetailView = Backbone.View.extend({
     },
     incLevel: function () {
         var level = this.model.get("level");
-        if (level<8) {
-            this.model.set({"level":level+1,"energyTotal":1}); //set energy >0 to force the reso to be reloaded
+        if (level < 8) {
+            this.model.set({"level": level + 1, "energyTotal": 1}); //set energy >0 to force the reso to be reloaded
         }
         portal.commit();
     },
     decLevel: function () {
         var level = this.model.get("level");
-        if (level<=0) {
+        if (level <= 0) {
             return false;
         }
 
-        if (level==1) {
-            this.model.set("energyTotal",0);
-            this.model.set("level",0);
+        if (level == 1) {
+            this.model.set("energyTotal", 0);
+            this.model.set("level", 0);
         } else {
-            this.model.set("level",level-1);
+            this.model.set("level", level - 1);
         }
         portal.commit();
     },
-    incDist: function() {
+    incDist: function () {
         var d = this.model.get("distanceToPortal");
-        if (d<40) {
+        if (d < 40) {
             d++;
             if (EQUIDISTANT) {
                 resonators.invoke("set", {"distanceToPortal": d });
@@ -48,9 +48,9 @@ var ResonatorDetailView = Backbone.View.extend({
             }
         }
     },
-    decDist: function() {
+    decDist: function () {
         var d = this.model.get("distanceToPortal");
-        if (d>1) {
+        if (d > 1) {
             d--;
             if (EQUIDISTANT) {
                 resonators.invoke("set", {"distanceToPortal": d });
@@ -60,10 +60,10 @@ var ResonatorDetailView = Backbone.View.extend({
         }
     },
     highlight: function (e) {
-        this.model.set("highlight",true)
+        this.model.set("highlight", true)
     },
-    unhighlight: function(e) {
-        this.model.set("highlight",false);
+    unhighlight: function (e) {
+        this.model.set("highlight", false);
     },
     render: function () {
         var level = this.model.get("level");
@@ -72,12 +72,12 @@ var ResonatorDetailView = Backbone.View.extend({
             perc = .1;
         }
         var data = this.model.toJSON();
-        data.perc=perc;
-        data.levelcolor=level_color[level];
+        data.perc = perc;
+        data.levelcolor = level_color[level];
         if (this.model.get("highlight")) {
-            data.highlightclass="highlight";
+            data.highlightclass = "highlight";
         } else {
-            data.highlightclass="";
+            data.highlightclass = "";
         }
         this.$el.html(this.template(data));
         return this;

@@ -57,7 +57,7 @@ var Portal = Backbone.Model.extend({
     loadFromConfigHash: function (confighash) {
         var parts;
         if (confighash.indexOf("|") >= 0) {
-            alert("Looks like you are using an old version of the IITC IPAS plugin - please make sure to update your user scripts");
+            alert("Looks like you are using an old version of the IITC IPAS plugin - please make sure to update your user scripts to use the full functionality, including link mitigation and new mods");
             parts = confighash.split("|");
             parts[2] = "";
         } else {
@@ -71,7 +71,10 @@ var Portal = Backbone.Model.extend({
         var oldModTypes = {
             "c": "sc10",
             "r": "sr20",
-            "v": "sv30"
+            "v": "sv30",
+            "cs10": "sc10",
+            "rs20": "sr20",
+            "vrs30": "sv30"
         };
 
         var resoVals = resohash.split(";");
@@ -87,18 +90,20 @@ var Portal = Backbone.Model.extend({
         _.each(modVals, function (modCode, i) {
             //convert 0 to -
             modCode = (modCode === "0") ? "-" : modCode;
-            //BC break - convert c,r,v to new shields
+            //to avoid BC break, convert c,r,v to new shields
             if (modCode in oldModTypes) {
                 modCode = oldModTypes[modCode];
             }
             this.mods.at(i).setModCode(modCode);
         }, this);
 
-        var linkVals = linkhash.split(",");
-        this.links.reset();
-        _.each(linkVals, function (distance, i) {
-            this.links.add(new Link(distance));
-        }, this);
+        if (linkhash) {
+            var linkVals = linkhash.split(",");
+            this.links.reset();
+            _.each(linkVals, function (distance, i) {
+                this.links.add(new Link(distance));
+            }, this);
+        }
         this.saveConfig();
     },
     getConfigHash: function () {
@@ -203,7 +208,13 @@ var Portal = Backbone.Model.extend({
         return range;
     },
     portalRangeText: function () {
-        return Math.round(this.portalRange()) + " m";
+        var range = Math.round(this.portalRange());
+        if (range > 1000) {
+            return Math.round(range/100)/10 + " km";
+        } else {
+            return Math.round(this.portalRange()) + " m";
+        }
+
     },
     reset: function () {
         this.set({"rechargeXMused": 0, "totalRechargeXMused": 0});

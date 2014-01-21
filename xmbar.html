@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+	<script type="text/javascript">
+
+        var XMBar = {
+            'max' : 8000,
+            'min' : 0,
+            'value' : 300,
+setValue: function (v)
+{
+    if (v>this.max) v=this.max;
+    if (v<this.min) v=this.min;
+
+    var p = 0;
+    if (this.max!=0) {
+        p = v/this.max*100;
+    }
+
+	var first="meter";
+	var second="meteryellow";
+    if (v>this.value) {
+		first="meteryellow";
+		second="meter";
+	}
+    console.log(p);
+
+	$("#"+first).css("width",p + "%");
+	$("#"+second).animate({"width":p + "%"},800);
+
+    this.value=v;
+}
+
+        }
+
+	</script>
+
+<body bgcolor="black">
+
+	<div id ="cont" style="position: relative; width: 200px; height: 20px; background-color: blacl; border: 1px solid yellow">
+		<div id ="meteryellow" style="position: absolute; width: 80%; height: 20px; background-color: yellow"></div>
+		<div id ="meter" style="position: absolute; width: 80%; height: 20px; background-color: blue"></div>
+	</div>
+    <input type="text" value="300" onclick="XMBar.setValue(this.value)" />
+</body>
+
+
+</html>
