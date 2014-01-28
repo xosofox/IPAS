@@ -5,13 +5,15 @@ var PaperBag = function (el, paper) {
     this.$el = $(el);
     this.scale = 1;
     this.tmpScale = 1;
-    this.offsetX = 0;
-    this.offsetY = 0;
+    this.offsetX = el.offsetLeft;
+    this.offsetY = el.offsetTop;
+    this.tmpPageX=0;
+    this.tmpPageY=0;
     this.dragX = 0; //positive will "move the stuff to the left"
     this.tmpX = 0;
     this.dragY = 0; //positive will "move the stuff upwards"
     this.tmpY = 0;
-    this.changed =false;
+    this.changed = false;
     //this.outerWidth = this.$el.width();
     //this.outerHeight = this.$el.height();
     this.origWidth = paper.width;
@@ -20,8 +22,16 @@ var PaperBag = function (el, paper) {
     this.innerHeight = this.origHeight;
     this.rotation = 0;
 
-    this.debug = function() {
-        var str ="";
+    this.debug = function () {
+        var str="";
+        if ((me.tmpPageX !== 0 ) || (me.tmpPageY !== 0)) {
+            str = "PageX: " + me.tmpPageX + ", PageY: " + me.tmpPageY + "<br>";
+            var x = me.tmpPageX - me.offsetX;
+            var y = me.tmpPageY - me.offsetY;
+            str += "on plane: " + x + "|" + y;
+        } else {
+            str = "No tmpPageXY";
+        }
         $('#debug').text(str);
     };
 
@@ -38,7 +48,7 @@ var PaperBag = function (el, paper) {
     };
 
     this.update = function () {
-        //console.log("Updating to ", this.dragX, this.dragY, this.innerWidth, this.innerHeight);
+        me.debug();
         var x = this.dragX + this.tmpX;
         var y = this.dragY + this.tmpY;
         var scale = this.scale * this.tmpScale;
@@ -55,36 +65,44 @@ var PaperBag = function (el, paper) {
     };
 
     this.handlePinch = function (e) {
-        //console.log(e);
+        console.log(e);
         me.tmpScale = e.gesture.scale;
+        me.tmpPageX = e.gesture.center.pageX;
+        me.tmpPageY = e.gesture.center.pageY;
         me.changed = true;
         me.update();
     };
 
     this.handleRelease = function () {
         console.log("Released");
+        me.done();
+    }
+
+    this.done = function () {
         if (me.changed) {
             me.saveTmp();
         }
         me.resetTmp();
     };
 
-    this.saveTmp = function() {
+    this.saveTmp = function () {
         console.log("Save ");
         me.scale *= me.tmpScale;
         me.dragX += me.tmpX;
         me.dragY += me.tmpY;
     };
 
-    this.resetTmp = function() {
+    this.resetTmp = function () {
         //reset tmp
-        me.tmpScale=1;
-        me.tmpX=0;
+        me.tmpScale = 1;
+        me.tmpX = 0;
         me.tmpY = 0;
+        me.tmpPageX = 0;
+        me.tmpPageY = 0;
         me.changed = false;
     };
 
-    this.handleScroll = function(e) {
+    this.handleScroll = function (e) {
         //console.log(e);
         e.delta = null;
         if (e.originalEvent) {
@@ -95,20 +113,18 @@ var PaperBag = function (el, paper) {
         //console.log(e.delta);
         if (e.delta > 0) {
             //zoom out
-            me.zoom(1.1,100,100);
+            me.tmpScale = 1.1;
         } else {
             //zoom in
-            me.zoom(0.9,100,100);
+            me.tmpScale = .9;
         }
-        e.preventDefault();
-    };
 
-    this.zoom = function(scale, x, y) {
-        console.log(scale, x, y);
-        me.tmpScale=scale;
-        me.saveTmp();
+        me.tmpPageX = e.pageX;
+        me.tmpPageY = e.pageY;
+        me.changed = true;
         me.update();
-        me.resetTmp();
+        me.done();
+        e.preventDefault();
     };
 
     this.init = function () {
@@ -127,7 +143,7 @@ var PaperBag = function (el, paper) {
         ;
 
         //now bind scroll for zoom on desktop
-        me.$el.on("mousewheel DOMMouseScroll",this.handleScroll);
+        me.$el.on("mousewheel DOMMouseScroll", this.handleScroll);
         return true;
     };
 
