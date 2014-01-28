@@ -1,0 +1,8 @@
+How does the damage decline with distance?
+
+Even though there are some source out there that claim otherwise, the formula IPAS is applying resembles the logic of Ingress out there.
+Damage does not decline linear or quadratic, but in "steps".
+
+Like the circles on an archer's target around the bull's eye, the damage of a burster is declining in circles.
+
+This means, depending on the burster fired, it makes no difference if your target is 3 or 8 meters away as long as the target is within the same circle

@@ -15,7 +15,6 @@
     <script type="text/javascript" src="js/settings.js"></script>
     <script type="text/javascript" src="js/util.js"></script>
 
-    <!--
     <script type="text/javascript" src="js/models/Attack.js"></script>
     <script type="text/javascript" src="js/models/AttackCollection.js"></script>
     <script type="text/javascript" src="js/models/AttackSetup.js"></script>
@@ -47,8 +46,10 @@
     <script type="text/javascript" src="js/views/ModView.js"></script>
     <script type="text/javascript" src="js/views/LinkInfoView.js"></script>
     <script type="text/javascript" src="js/views/PortalStatsView.js"></script>
-    -->
+
+    <!--
     <script type="text/javascript" src="js/ipas.min.js?v=1.1.0b"></script>
+    -->
 
     <script type="text/javascript" src="js/router/AppRouter.js"></script>
 
@@ -214,7 +215,7 @@ it<br /><a
     var rim = paper.circle(250, 250, 200);
     rim.attr("stroke", "#f3f");
 
-    //to be refactored
+    //to be refactored to go into a class
     $("#paper").click(function (e) {
         //if (typeof e.offsetX === "undefined" || typeof e.offsetY === "undefined") {
         var targetOffset = $(e.currentTarget).offset();
@@ -259,6 +260,7 @@ it<br /><a
             resonatorViews.push(rv);
             rv.render();
         })
+        //end of raphael set
         portalElements = paper.setFinish();
 
         var resolist = new ResonatorDetailList({

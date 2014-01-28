@@ -1,39 +1,53 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
     <meta charset="utf-8">
     <title>SVG Fiddle</title>
     <script type="text/javascript" src="js/libs/jquery-1.9.1.min.js"></script>
     <script type="text/javascript" src="js/libs/raphael-min.js"></script>
+    <script type="text/javascript" src="js/libs/PaperBag.js"></script>
+    <script type="text/javascript" src="js/libs/hammer.min.js"></script>
+    <script type="text/javascript" src="js/libs/hammer.showtouches.js"></script>
+    <script type="text/javascript" src="js/libs/hammer.fakemultitouch.js"></script>
 </head>
 
 <body>
 
 <h1>SVG Fiddle</h1>
 
-<input type="text" id="svgpath" size="500" value="M30,30C10,20,300,308,250,38" />
+<input type="text" id="svgpath" size="500" value="M30,30C10,20,300,308,250,38"/>
+
 <div id="paper" style="background-color: #333; width: 500px; height: 500px; float: left"></div>
+<div id="debug" style="width: 500px; float: left"></div>
 <script type="text/javascript">
 
-    var width = 500;
-    var height = 500;
+    Hammer.plugins.fakeMultitouch();
+    Hammer.plugins.showTouches();
+
+    var width = 300;
+    var height = 400;
 
     // Creates canvas
     var paper = Raphael(document.getElementById("paper"), width, height);
+    $("svg").css("border", "1px solid yellow");
 
-    var i=document.getElementById('svgpath');
+    var i = document.getElementById('svgpath');
     var e;
     $("#svgpath").keyup(render);
-	function render () {
-		var path=i.value;
-		if (path != "") {
-			if (typeof e != "undefined") {
-				e.remove();
-			}
-			e=paper.path(path).attr({fill:"red",stroke:"white"});
-		}
-	};
-	render();
+    function render() {
+        var path = i.value;
+        if (path != "") {
+            if (typeof e != "undefined") {
+                e.remove();
+            }
+            e = paper.path(path).attr({fill: "red", stroke: "white"});
+        }
+    }
+    ;
+    render();
+
+    var paperBag = new PaperBag(document.getElementById("paper"), paper);
 </script>
 </body>
 </html>
