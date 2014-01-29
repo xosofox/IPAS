@@ -24,14 +24,22 @@ setValue: function (v)
 		second="meter";
 	}
     console.log(p);
+	console.log(first, second);
 
-	$("#"+first).css("width",p + "%");
-	$("#"+second).animate({"width":p + "%"},800);
+	$("#"+first).stop(true).css("width",p + "%");
+	$("#"+second).stop(true).animate({"width":p + "%"},800);
 
     this.value=v;
 }
 
         }
+
+		$(document).ready(function() {
+			$('#xmvalue').keyup(function(e) {
+				var v = parseInt(e.currentTarget.value,10)
+				XMBar.setValue(v);
+			});
+		});
 
 	</script>
 
@@ -41,7 +49,7 @@ setValue: function (v)
 		<div id ="meteryellow" style="position: absolute; width: 80%; height: 20px; background-color: yellow"></div>
 		<div id ="meter" style="position: absolute; width: 80%; height: 20px; background-color: blue"></div>
 	</div>
-    <input type="text" value="300" onclick="XMBar.setValue(this.value)" />
+    <input id="xmvalue" type="text" value="300" />
 </body>
 
 
