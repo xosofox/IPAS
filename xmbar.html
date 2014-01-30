@@ -1,56 +1,112 @@
 <!doctype html>
 <html>
-	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
-	<script type="text/javascript">
+    <head>
+        <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+        <style type="text/css">
+            body {
+                color: #ffffff;
+            }
 
-        var XMBar = {
-            'max' : 8000,
-            'min' : 0,
-            'value' : 300,
-setValue: function (v)
-{
-    if (v>this.max) v=this.max;
-    if (v<this.min) v=this.min;
+            .xmbar {
+                position: relative;
+                width: 200px;
+                height: 15px;
+                background-color: black;
+                border: 2px solid yellow;
+                padding: 2px;
+            }
 
-    var p = 0;
-    if (this.max!=0) {
-        p = v/this.max*100;
-    }
+            .xmbarbox {
+                width: 200px;
+                height: 15px;
+                position: relative;
+            }
 
-	var first="meter";
-	var second="meteryellow";
-    if (v>this.value) {
-		first="meteryellow";
-		second="meter";
-	}
-    console.log(p);
-	console.log(first, second);
+            .meterbar {
+                position: absolute;
+                height: 15px;
+            }
 
-	$("#"+first).stop(true).css("width",p + "%");
-	$("#"+second).stop(true).animate({"width":p + "%"},800);
+        </style>
+    </head>
+    <body bgcolor="black">
+        <div class="xmbar">
+            <div class="xmbarbox">
+                <div id="meterbg" class="meterbar" style="width: 100%;  background-color: yellow;"></div>
+                <div id="meterfg" class="meterbar" style="width: 0%;  background-color: blue;"></div>
+            </div>
+        </div>
 
-    this.value=v;
-}
+        <p>
+            <input id="xmvalue" type="text" value="300" />
+        </p>
 
-        }
-
-		$(document).ready(function() {
-			$('#xmvalue').keyup(function(e) {
-				var v = parseInt(e.currentTarget.value,10)
-				XMBar.setValue(v);
-			});
-		});
-
-	</script>
-
-<body bgcolor="black">
-
-	<div id ="cont" style="position: relative; width: 200px; height: 20px; background-color: blacl; border: 1px solid yellow">
-		<div id ="meteryellow" style="position: absolute; width: 80%; height: 20px; background-color: yellow"></div>
-		<div id ="meter" style="position: absolute; width: 80%; height: 20px; background-color: blue"></div>
-	</div>
-    <input id="xmvalue" type="text" value="300" />
-</body>
+        <p>Hint: click on the XM bar to change the value</p>
 
 
+        <script type="text/javascript">
+            var XMBar = {
+                'max': 10000,
+                'min': 0,
+                'value': 300,
+                setValue: function (v) {
+                    if (v > this.max) v = this.max;
+                    if (v < this.min) v = this.min;
+
+                    var p = 0;
+                    if (this.max != 0) {
+                        p = v / this.max * 100;
+                    }
+
+                    var first = "meterfg";
+                    var second = "meterbg";
+                    if (v > this.value) {
+                        first = "meterbg";
+                        second = "meterfg";
+                    }
+                    //console.log(p);
+                    //console.log(first, second);
+
+                    $("#" + first).stop(true).css("width", p + "%");
+                    $("#" + second).stop(true).animate({"width": p + "%"}, 800);
+
+                    this.value = v;
+                },
+
+                setPercentage: function (p) {
+                    this.setValue(this.max * p);
+                },
+
+                getValue: function () {
+                    return Math.round(this.value);
+                }
+            }
+
+            $(document).ready(function () {
+                $('#xmvalue').keyup(function (e) {
+                    var v = parseInt(e.currentTarget.value, 10)
+                    XMBar.setValue(v);
+                });
+
+                $('.xmbarbox').click(function (e) {
+                    var pageX = e.pageX;
+                    var offX = $(e.currentTarget).offset().left;
+                    var pos = pageX - offX;
+                    var w = $(e.currentTarget).width();
+                    console.log(pageX, offX, pos, w);
+                    var p = pos / w;
+                    XMBar.setPercentage(p);
+                    $('#xmvalue').val(XMBar.getValue());
+                })
+
+                $('#xmvalue').val(5678);
+                setTimeout(function () {
+                    XMBar.setValue(5678);
+                }, 500);
+            });
+
+        </script>
+    </body>
 </html>
+
+  
