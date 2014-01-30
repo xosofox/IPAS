@@ -24,15 +24,11 @@ var PaperBag = function (el, paper) {
 
     this.debug = function () {
         var str="";
-        if ((me.tmpPageX !== 0 ) || (me.tmpPageY !== 0)) {
-            str = "PageX: " + me.tmpPageX + ", PageY: " + me.tmpPageY + "<br>";
-            var x = me.tmpPageX - me.offsetX;
-            var y = me.tmpPageY - me.offsetY;
-            str += "on plane: " + x + "|" + y;
-        } else {
-            str = "No tmpPageXY";
+        var debux = ["tmpPageX", "tmpPageY", "dragX", "dragY", "tmpX", "tmpY", "tmpScale", "scale"]
+        for (var i = 0; i<debux.length; i++) {
+            str += debux[i] + ": " + me[debux[i]] + "<br>";
         }
-        $('#debug').text(str);
+        $('#debug').html(str);
     };
 
     this.adjustToScale = function (pixels) {
@@ -83,6 +79,7 @@ var PaperBag = function (el, paper) {
             me.saveTmp();
         }
         me.resetTmp();
+        //me.debug();
     };
 
     this.saveTmp = function () {
@@ -118,9 +115,10 @@ var PaperBag = function (el, paper) {
             //zoom in
             me.tmpScale = .9;
         }
+        console.log(e);
 
-        me.tmpPageX = e.pageX;
-        me.tmpPageY = e.pageY;
+        me.tmpPageX = e.pageX || e.originalEvent.pageX;
+        me.tmpPageY = e.pageY || e.originalEvent.pageY;
         me.changed = true;
         me.update();
         me.done();
