@@ -49,13 +49,20 @@ var PaperBag = function (el, paper) {
     };
 
     this.update = function () {
-        var x = this.dragX + this.tmpX;
-        var y = this.dragY + this.tmpY;
-        var scale = this.scale * this.tmpScale;
-        me.innerWidth = me.origWidth / scale;
-        me.innerHeight = me.origHeight / scale;
-        me.debug({x: x, y: y, w: me.innerWidth, h: me.innerHeight});
-        paper.setViewBox(-x, -y, me.innerWidth, me.innerHeight);
+        var viewbox;
+        viewbox=false;
+        viewbox=true;
+        if (viewbox) {
+            var x = this.dragX + this.tmpX;
+            var y = this.dragY + this.tmpY;
+            var scale = this.scale * this.tmpScale;
+            me.innerWidth = me.origWidth / scale;
+            me.innerHeight = me.origHeight / scale;
+            me.debug({x: x, y: y, w: me.innerWidth, h: me.innerHeight});
+            paper.setViewBox(-x, -y, me.innerWidth, me.innerHeight);
+        } else {
+            //me.$el.css("transform","translate("+x+"px,"+y+"px)");
+        }
     };
 
     this.handleDrag = function (e) {
@@ -67,7 +74,7 @@ var PaperBag = function (el, paper) {
         me.tmpY = me.adjustToScale(e.gesture.deltaY);
         me.changed = true;
         me.update();
-        ev.gesture.preventDefault() 
+        e.gesture.preventDefault() 
         me.lastGesture = e.type;
     };
 
@@ -152,8 +159,8 @@ var PaperBag = function (el, paper) {
         }
 
         me.hammertime = Hammer(el, {
-            transform_always_block: true,
-            prevent_default: true
+            transform_always_block: true //,
+            //prevent_default: true
         })
             .on("drag", me.handleDrag)
             .on("pinch", me.handlePinch)
