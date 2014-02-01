@@ -2,15 +2,16 @@ var PaperBag = function (el, paper) {
 
     var me = this;
     this.$el = $(el);
+	this.canvas = $(paper);
     this.scale = 1;
     this.tmpScale = 1;
     this.offsetX = el.offsetLeft;
     this.offsetY = el.offsetTop;
     this.tmpPageX=0;
     this.tmpPageY=0;
-    this.dragX = 0; //positive will "move the stuff to the left"
+    this.dragX = 100; //positive will "move the stuff to the left"
     this.tmpX = 0;
-    this.dragY = 0; //positive will "move the stuff upwards"
+    this.dragY = 100; //positive will "move the stuff upwards"
     this.tmpY = 0;
     this.changed = false;
     //this.outerWidth = this.$el.width();
@@ -50,18 +51,24 @@ var PaperBag = function (el, paper) {
 
     this.update = function () {
         var viewbox;
-        viewbox=false;
         viewbox=true;
+        viewbox=false;
+		var x = this.dragX + this.tmpX;
+		var y = this.dragY + this.tmpY;
+		var scale = this.scale * this.tmpScale;
         if (viewbox) {
-            var x = this.dragX + this.tmpX;
-            var y = this.dragY + this.tmpY;
-            var scale = this.scale * this.tmpScale;
             me.innerWidth = me.origWidth / scale;
             me.innerHeight = me.origHeight / scale;
             me.debug({x: x, y: y, w: me.innerWidth, h: me.innerHeight});
             paper.setViewBox(-x, -y, me.innerWidth, me.innerHeight);
         } else {
-            //me.$el.css("transform","translate("+x+"px,"+y+"px)");
+			var transform_translate = "translate("+x+"px,"+y+"px)";
+			var transform_scale = "scale(" + scale + ")";
+			console.log(transform_translate, transform_scale);
+            $('#paper').css({
+				"transform":transform_translate + " " + transform_scale,
+				"transform-origin": "50% 50%"
+			});
         }
     };
 
