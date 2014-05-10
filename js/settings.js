@@ -53,9 +53,9 @@ var MOD_RARITIES = {
 };
 var SHIELD_MITIGATION = {
     "-": 0,
-    c: 20,
-    r: 30,
-    v: 50
+    c: 30,
+    r: 40,
+    v: 60
 }
 
 var MOD_TYPES = {
