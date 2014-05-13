@@ -1,0 +1,27 @@
+{
+  "name": "IPAS",
+  "version": "1.1.2",
+  "description": "Simulate an attack on an Ingress Portal",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Xosofox/IPAS.git"
+  },
+  "keywords": [
+    "ipas"
+  ],
+  "author": "Peter Dietrich",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Xosofox/IPAS/issues"
+  },
+  "homepage": "https://ipas.graphracer.com",
+  "devDependencies": {
+    "grunt": "~0.4.5",
+    "grunt-contrib-uglify": "~0.4.0",
+    "grunt-text-replace": "~0.3.11"
+  }
+}
